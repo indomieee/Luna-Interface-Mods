@@ -1956,6 +1956,7 @@ local function Hide(Window, bind, notif)
 	
 		for _, TopbarButton in ipairs(Window.Controls:GetChildren()) do
 			if TopbarButton.ClassName == "Frame" then
+				Navigation.Visible = true
 				TopbarButton.Visible = true
 				tween(TopbarButton, {BackgroundTransparency = 0.25})
 				tween(TopbarButton.UIStroke, {Transparency = 0.5})
@@ -1967,9 +1968,9 @@ local function Hide(Window, bind, notif)
 			if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "InActive Template" then
 				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0.41}):Play()
-				TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
-				TweenService:Create(tabbtn.DropShadowHolder.DropShadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 			end
+			TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+			TweenService:Create(tabbtn.DropShadowHolder.DropShadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 		end
 	end)
 end
