@@ -33,9 +33,10 @@ local HttpService 		= game:GetService("HttpService")
 local RunService 		= game:GetService("RunService")
 local Localization 		= game:GetService("LocalizationService")
 local Players 			= game:GetService("Players")
+
 local player
 repeat
-	player = Players.LocalPlayer
+	player 				= Players.LocalPlayer
 	task.wait()
 until player
 
@@ -56,6 +57,38 @@ FloatingIcon.Position 	= UDim2.new(0,20,0.5,-30)
 FloatingIcon.BackgroundTransparency = 1
 FloatingIcon.Image 		= "rbxassetid://136023512730220" -- your logo
 FloatingIcon.Parent 	= FloatingGui
+
+local dragging = false
+local dragInput, dragStart, startPos
+
+FloatingIcon.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = FloatingIcon.Position
+	end
+end)
+
+FloatingIcon.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+
+		local delta = input.Position - dragStart
+
+		FloatingIcon.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+
+	end
+end)
 
 local isStudio
 local website = "github.com/Nebula-Softworks"
@@ -1902,15 +1935,43 @@ local function Hide(Window, bind, notif)
 	-- show floating reopen icon
 	FloatingGui.Enabled = true
 
-	FloatingIcon.MouseButton1Click:Once(function()
+	FloatingIcon.MouseButton1Click:Connect(function()
 
-	FloatingGui.Enabled = false
-
-	-- restore window
-	Window.Visible = true
-	Window.Size = SizeBleh
-	Window.Parent.ShadowHolder.Visible = true
-	Window.Elements.Parent.Visible = true
+		FloatingGui.Enabled = false
+	
+		Window.Visible = true
+		Window.Size = SizeBleh
+	
+		Window.Parent.ShadowHolder.Visible = true
+		Window.Elements.Parent.Visible = true
+	
+		-- restore transparency
+		tween(Window, {BackgroundTransparency = 0})
+		tween(Window.Elements, {BackgroundTransparency = 0})
+		tween(Window.Line, {BackgroundTransparency = 0})
+		tween(Window.Title.Title, {TextTransparency = 0})
+		tween(Window.Title.subtitle, {TextTransparency = 0})
+		tween(Window.Logo, {ImageTransparency = 0})
+		tween(Window.Navigation.Line, {BackgroundTransparency = 0})
+	
+		for _, TopbarButton in ipairs(Window.Controls:GetChildren()) do
+			if TopbarButton.ClassName == "Frame" then
+				TopbarButton.Visible = true
+				tween(TopbarButton, {BackgroundTransparency = 0})
+				tween(TopbarButton.UIStroke, {Transparency = 0})
+				tween(TopbarButton.ImageLabel, {ImageTransparency = 0})
+			end
+		end
+	
+		for _, tabbtn in ipairs(Window.Navigation.Tabs:GetChildren()) do
+			if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "InActive Template" then
+				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+				TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+				TweenService:Create(tabbtn.DropShadowHolder.DropShadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+			end
+		end
+	
 	end)
 end
 
