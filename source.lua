@@ -2224,51 +2224,21 @@ function Luna:Notification(data) -- action e.g open messages
 	end)
 end
 
--- local function Unhide(Window, currentTab)
--- 	Window.Size = SizeBleh
--- 	Window.Elements.Visible = true
--- 	Window.Visible = true
--- 	task.wait()
--- 	tween(Window, {BackgroundTransparency = 0.2})
--- 	tween(Window.Elements, {BackgroundTransparency = 0.08})
--- 	tween(Window.Line, {BackgroundTransparency = 0})
--- 	tween(Window.Title.Title, {TextTransparency = 0})
--- 	tween(Window.Title.subtitle, {TextTransparency = 0})
--- 	tween(Window.Logo, {ImageTransparency = 0})
--- 	tween(Window.Navigation.Line, {BackgroundTransparency = 0})
-
--- 	for _, TopbarButton in ipairs(Window.Controls:GetChildren()) do
--- 		if TopbarButton.ClassName == "Frame" and TopbarButton.Name ~= "Theme" then
--- 			TopbarButton.Visible = true
--- 			tween(TopbarButton, {BackgroundTransparency = 0.25})
--- 			tween(TopbarButton.UIStroke, {Transparency = 0.5})
--- 			tween(TopbarButton.ImageLabel, {ImageTransparency = 0.25})
--- 		end
--- 	end
--- 	for _, tabbtn in ipairs(Window.Navigation.Tabs:GetChildren()) do
--- 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "InActive Template" then
--- 			if tabbtn.Name == currentTab then
--- 				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
--- 				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0.41}):Play()
--- 			end
--- 			TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
--- 			TweenService:Create(tabbtn.DropShadowHolder.DropShadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
--- 		end
--- 	end
-
--- end
 local function Unhide(Window, currentTab)
+	-- restore hidden parents
+	if Window.Parent:FindFirstChild("ShadowHolder") then
+		Window.Parent.ShadowHolder.Visible = true
+	end
 
-	-- restore parents that Hide() disabled
-	Window.Parent.ShadowHolder.Visible = true
-	Window.Elements.Parent.Visible = true
+	if Window.Elements and Window.Elements.Parent then
+		Window.Elements.Parent.Visible = true
+	end
 
+	-- restore main window
+	Window.Visible = true
 	Window.Size = SizeBleh
 	Window.Elements.Visible = true
-	Window.Visible = true
-
 	task.wait()
-
 	tween(Window, {BackgroundTransparency = 0.2})
 	tween(Window.Elements, {BackgroundTransparency = 0.08})
 	tween(Window.Line, {BackgroundTransparency = 0})
@@ -2285,7 +2255,6 @@ local function Unhide(Window, currentTab)
 			tween(TopbarButton.ImageLabel, {ImageTransparency = 0.25})
 		end
 	end
-
 	for _, tabbtn in ipairs(Window.Navigation.Tabs:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "InActive Template" then
 			if tabbtn.Name == currentTab then
