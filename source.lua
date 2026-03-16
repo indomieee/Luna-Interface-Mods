@@ -1934,8 +1934,15 @@ local function Hide(Window, bind, notif)
 	-- show floating reopen icon
 	FloatingGui.Enabled = true
 
-	FloatingIcon.MouseButton1Click:Connect(function(Bind)
+	FloatingIcon.MouseButton1Click:Connect(function()
+
 		FloatingGui.Enabled = false
+	
+		local key = Window.Bind
+	
+		game:GetService("VirtualInputManager"):SendKeyEvent(true, key, false, game)
+		game:GetService("VirtualInputManager"):SendKeyEvent(false, key, false, game)
+	
 	end)
 end
 
