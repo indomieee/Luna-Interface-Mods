@@ -1894,8 +1894,8 @@ local SizeBleh = nil
 
 local function Hide(Window, bind, notif)
 	SizeBleh = Window.Size
-	-- bind = string.split(tostring(bind), "Enum.KeyCode.")
-	-- bind = bind[2]
+	bind = string.split(tostring(bind), "Enum.KeyCode.")
+	bind = bind[2]
 	if notif then
 		Luna:Notification({Title = "Interface Hidden", Content = "The interface has been hidden, you may reopen the interface by Pressing the icon"})
 	end
