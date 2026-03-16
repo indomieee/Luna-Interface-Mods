@@ -1934,14 +1934,16 @@ local function Hide(Window, bind, notif)
 	-- show floating reopen icon
 	FloatingGui.Enabled = true
 
-	FloatingIcon.MouseButton1Click:Connect(function()
+	FloatingIcon.MouseButton1Click:Once(function()
 
 		FloatingGui.Enabled = false
 	
-		local key = Window.Bind
+		local key = Enum.KeyCode[bind]
 	
-		game:GetService("VirtualInputManager"):SendKeyEvent(true, key, false, game)
-		game:GetService("VirtualInputManager"):SendKeyEvent(false, key, false, game)
+		local vim = game:GetService("VirtualInputManager")
+	
+		vim:SendKeyEvent(true, key, false, game)
+		vim:SendKeyEvent(false, key, false, game)
 	
 	end)
 end
