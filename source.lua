@@ -1936,14 +1936,11 @@ local function Hide(Window, bind, notif)
 	FloatingGui.Enabled = true
 
 	FloatingIcon.MouseButton1Click:Connect(function()
-
 		FloatingGui.Enabled = false
-	
 		Unhide(Main, Window.CurrentTab)
-	
+		LunaUI.MobileSupport.Visible = false
 		dragBar.Visible = true
 		Window.State = true
-	
 	end)
 end
 
