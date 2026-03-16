@@ -24,8 +24,6 @@ Deity/dp4pv/x64x70 | Certain Scripting and Testing ig
 ]]
 
 local Release = "Prerelease Beta 6.1"
-
-local StoredTransparency = {}
 local Luna = { Folder = "Luna", Options = {}, ThemeGradient = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(117, 164, 206)), ColorSequenceKeypoint.new(0.50, Color3.fromRGB(123, 201, 201)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(224, 138, 175))} }
 
 local UserInputService 	= game:GetService("UserInputService")
@@ -1901,13 +1899,6 @@ local function Hide(Window, bind, notif)
 	if notif then
 		Luna:Notification({Title = "Interface Hidden", Content = "The interface has been hidden, you may reopen the interface by Pressing the icon"})
 	end
-	StoredTransparency.WindowBG = Window.BackgroundTransparency
-	StoredTransparency.ElementsBG = Window.Elements.BackgroundTransparency
-	StoredTransparency.LineBG = Window.Line.BackgroundTransparency
-	StoredTransparency.TitleText = Window.Title.Title.TextTransparency
-	StoredTransparency.SubtitleText = Window.Title.subtitle.TextTransparency
-	StoredTransparency.Logo = Window.Logo.ImageTransparency
-
 	tween(Window, {BackgroundTransparency = 1})
 	tween(Window.Elements, {BackgroundTransparency = 1})
 	tween(Window.Line, {BackgroundTransparency = 1})
@@ -1943,20 +1934,8 @@ local function Hide(Window, bind, notif)
 	-- show floating reopen icon
 	FloatingGui.Enabled = true
 
-	FloatingIcon.MouseButton1Click:Connect(function()
+	FloatingIcon.MouseButton1Click:Connect(function(Bind)
 		FloatingGui.Enabled = false
-	
-		Window.Visible = true
-		Window.Size = SizeBleh
-		Window.Parent.ShadowHolder.Visible = true
-		Window.Elements.Parent.Visible = true
-	
-		tween(Window, {BackgroundTransparency = StoredTransparency.WindowBG})
-		tween(Window.Elements, {BackgroundTransparency = StoredTransparency.ElementsBG})
-		tween(Window.Line, {BackgroundTransparency = StoredTransparency.LineBG})
-		tween(Window.Title.Title, {TextTransparency = StoredTransparency.TitleText})
-		tween(Window.Title.subtitle, {TextTransparency = StoredTransparency.SubtitleText})
-		tween(Window.Logo, {ImageTransparency = StoredTransparency.Logo})
 	end)
 end
 
