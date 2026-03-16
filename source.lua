@@ -1963,11 +1963,35 @@ local function Hide(Window, bind, notif)
 		end
 	
 		for _, tabbtn in ipairs(Window.Navigation.Tabs:GetChildren()) do
-			if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "InActive Template" then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
-				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0.41}):Play()
-				TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
-				TweenService:Create(tabbtn.DropShadowHolder.DropShadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+			if tabbtn:IsA("Frame") and tabbtn.Name ~= "InActive Template" then
+				
+				tabbtn.Visible = true
+				
+				TweenService:Create(tabbtn, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
+					BackgroundTransparency = 0
+				}):Play()
+		
+				if tabbtn:FindFirstChild("ImageLabel") then
+					TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
+						ImageTransparency = 0
+					}):Play()
+				end
+		
+				if tabbtn:FindFirstChild("UIStroke") then
+					TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
+						Transparency = 0.41
+					}):Play()
+				end
+		
+				if tabbtn:FindFirstChild("DropShadowHolder") then
+					local shadow = tabbtn.DropShadowHolder:FindFirstChild("DropShadow")
+					if shadow then
+						TweenService:Create(shadow, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
+							ImageTransparency = 0
+						}):Play()
+					end
+				end
+		
 			end
 		end
 	end)
