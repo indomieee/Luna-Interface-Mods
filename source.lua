@@ -1956,6 +1956,7 @@ local function Hide(Window, bind, notif)
 	
 		for _, TopbarButton in ipairs(Window.Controls:GetChildren()) do
 			if TopbarButton.ClassName == "Frame" then
+				TopbarButton.Visible = true
 				tween(TopbarButton, {BackgroundTransparency = 0.25})
 				tween(TopbarButton.UIStroke, {Transparency = 0.5})
 				tween(TopbarButton.ImageLabel, {ImageTransparency = 0.25})
