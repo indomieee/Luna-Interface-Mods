@@ -25,6 +25,7 @@ Deity/dp4pv/x64x70 | Certain Scripting and Testing ig
 
 local Release = "Prerelease Beta 6.1"
 
+local StoredTransparency = {}
 local Luna = { Folder = "Luna", Options = {}, ThemeGradient = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(117, 164, 206)), ColorSequenceKeypoint.new(0.50, Color3.fromRGB(123, 201, 201)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(224, 138, 175))} }
 
 local UserInputService 	= game:GetService("UserInputService")
@@ -1900,6 +1901,13 @@ local function Hide(Window, bind, notif)
 	if notif then
 		Luna:Notification({Title = "Interface Hidden", Content = "The interface has been hidden, you may reopen the interface by Pressing the icon"})
 	end
+	StoredTransparency.WindowBG = Window.BackgroundTransparency
+	StoredTransparency.ElementsBG = Window.Elements.BackgroundTransparency
+	StoredTransparency.LineBG = Window.Line.BackgroundTransparency
+	StoredTransparency.TitleText = Window.Title.Title.TextTransparency
+	StoredTransparency.SubtitleText = Window.Title.subtitle.TextTransparency
+	StoredTransparency.Logo = Window.Logo.ImageTransparency
+
 	tween(Window, {BackgroundTransparency = 1})
 	tween(Window.Elements, {BackgroundTransparency = 1})
 	tween(Window.Line, {BackgroundTransparency = 1})
@@ -1936,64 +1944,19 @@ local function Hide(Window, bind, notif)
 	FloatingGui.Enabled = true
 
 	FloatingIcon.MouseButton1Click:Connect(function()
-
-		Window.Size = SizeBleh
-		Window.Visible = true
 		FloatingGui.Enabled = false
-		
+	
+		Window.Visible = true
+		Window.Size = SizeBleh
 		Window.Parent.ShadowHolder.Visible = true
 		Window.Elements.Parent.Visible = true
-		
-		-- restore transparency
-		task.wait()
-		tween(Window, {BackgroundTransparency = 0.2})
-		tween(Window.Elements, {BackgroundTransparency = 0.08})
-		tween(Window.Line, {BackgroundTransparency = 0})
-		tween(Window.Title.Title, {TextTransparency = 0})
-		tween(Window.Title.subtitle, {TextTransparency = 0})
-		tween(Window.Logo, {ImageTransparency = 0})
-		tween(Window.Navigation.Line, {BackgroundTransparency = 0})
 	
-		for _, TopbarButton in ipairs(Window.Controls:GetChildren()) do
-			if TopbarButton.ClassName == "Frame" then
-				tween(TopbarButton, {BackgroundTransparency = 0.25})
-				tween(TopbarButton.UIStroke, {Transparency = 0.5})
-				tween(TopbarButton.ImageLabel, {ImageTransparency = 0.25})
-			end
-		end
-	
-		for _, tabbtn in ipairs(Window.Navigation.Tabs:GetChildren()) do
-			if tabbtn:IsA("Frame") and tabbtn.Name ~= "InActive Template" then
-				
-				tabbtn.Visible = true
-				
-				TweenService:Create(tabbtn, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
-					BackgroundTransparency = 0
-				}):Play()
-		
-				if tabbtn:FindFirstChild("ImageLabel") then
-					TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
-						ImageTransparency = 0
-					}):Play()
-				end
-		
-				if tabbtn:FindFirstChild("UIStroke") then
-					TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
-						Transparency = 0.41
-					}):Play()
-				end
-		
-				if tabbtn:FindFirstChild("DropShadowHolder") then
-					local shadow = tabbtn.DropShadowHolder:FindFirstChild("DropShadow")
-					if shadow then
-						TweenService:Create(shadow, TweenInfo.new(0.25, Enum.EasingStyle.Exponential), {
-							ImageTransparency = 0
-						}):Play()
-					end
-				end
-		
-			end
-		end
+		tween(Window, {BackgroundTransparency = StoredTransparency.WindowBG})
+		tween(Window.Elements, {BackgroundTransparency = StoredTransparency.ElementsBG})
+		tween(Window.Line, {BackgroundTransparency = StoredTransparency.LineBG})
+		tween(Window.Title.Title, {TextTransparency = StoredTransparency.TitleText})
+		tween(Window.Title.subtitle, {TextTransparency = StoredTransparency.SubtitleText})
+		tween(Window.Logo, {ImageTransparency = StoredTransparency.Logo})
 	end)
 end
 
