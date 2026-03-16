@@ -1942,7 +1942,6 @@ local function Hide(Window, bind, notif)
 		FloatingGui.Enabled = false
 		
 		Window.Parent.ShadowHolder.Visible = true
-		window.Elements.Visible = true
 		Window.Elements.Parent.Visible = true
 		
 		-- restore transparency
