@@ -1942,6 +1942,7 @@ local function Hide(Window, bind, notif)
 		FloatingGui.Enabled = false
 		
 		Window.Parent.ShadowHolder.Visible = true
+		window.Elements.Visible = true
 		Window.Elements.Parent.Visible = true
 		
 		-- restore transparency
@@ -1959,7 +1960,7 @@ local function Hide(Window, bind, notif)
 				TopbarButton.Visible = true
 				tween(TopbarButton, {BackgroundTransparency = 0.25})
 				tween(TopbarButton.UIStroke, {Transparency = 0.5})
-				-- tween(TopbarButton.ImageLabel, {ImageTransparency = 0.25})
+				tween(TopbarButton.ImageLabel, {ImageTransparency = 0.25})
 			end
 		end
 	
@@ -1968,7 +1969,7 @@ local function Hide(Window, bind, notif)
 				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0.41}):Play()
 			end
-			-- TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
+			TweenService:Create(tabbtn.ImageLabel, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 			TweenService:Create(tabbtn.DropShadowHolder.DropShadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
 		end
 	
