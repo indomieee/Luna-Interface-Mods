@@ -33,15 +33,20 @@ local HttpService 		= game:GetService("HttpService")
 local RunService 		= game:GetService("RunService")
 local Localization 		= game:GetService("LocalizationService")
 local Players 			= game:GetService("Players")
-local Player 			= Players.LocalPlayer or Players.PlayerAdded:Wait()
+local player
+repeat
+	player = Players.LocalPlayer
+	task.wait()
+until player
+
 local playerGui 		= player:WaitForChild("PlayerGui")
 local Camera 			= workspace.CurrentCamera
 local CoreGui 			= game:GetService("CoreGui")
 
 local FloatingGui 		= Instance.new("ScreenGui")
 FloatingGui.Name 		= "FloatingIcon"
-FloatingGui.ResetOnSpawn = false
-FloatingGui.Enabled 	= false
+FloatingGui.ResetOnSpawn 		= false
+FloatingGui.Enabled 			= false
 FloatingGui.Parent 		= playerGui
 
 local FloatingIcon 		= Instance.new("ImageButton")
