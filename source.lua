@@ -6723,13 +6723,14 @@ function Luna:CreateWindow(WindowSettings)
 
 			for _, name in ipairs(getAllBrainrotNames()) do
 				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(1,0,0,32)
-				btn.Text = name
+				btn.Size = UDim2.new(1, -10, 0, 32)
 				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
 				btn.TextColor3 = Color3.new(1,1,1)
+				btn.Text = name
 				btn.Font = Enum.Font.Gotham
 				btn.TextSize = 14
-				btn.ZIndex = 1002
+				btn.BorderSizePixel = 0
+				btn.AutoButtonColor = false
 				btn.Parent = Scroll
 
 				local corner = Instance.new("UICorner", btn)
@@ -6745,6 +6746,8 @@ function Luna:CreateWindow(WindowSettings)
 					end
 				end)
 			end
+
+			print("Children in scroll:", #Scroll:GetChildren())
 
 			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 				Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
