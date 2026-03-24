@@ -6667,7 +6667,6 @@ function Luna:CreateWindow(WindowSettings)
 			local Overlay = Instance.new("Frame")
 			Overlay.Size = UDim2.new(1,0,1,0)
 			Overlay.BackgroundColor3 = Color3.new(0,0,0)
-			Overlay.BackgroundTransparency = 0.4
 			Overlay.ZIndex = 999
 			Overlay.Parent = LunaUI.SmartWindow
 			Overlay.Active = true
@@ -6677,13 +6676,22 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Frame = Instance.new("Frame")
-			Frame.Size = UDim2.new(0, 420, 0, 400)
 			Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 			Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 			Frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-			Frame.BackgroundTransparency = 0.4
 			Frame.ZIndex = 1000
 			Frame.Parent = Overlay
+
+			local TweenService = game:GetService("TweenService")
+
+			-- start small
+			Frame.Size = UDim2.new(0, 0, 0, 0)
+			Frame.BackgroundTransparency = 1
+
+			TweenService:Create(Frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {
+				Size = UDim2.new(0, 350, 0, 350),
+				BackgroundTransparency = 0
+			}):Play()
 
 			Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
 
@@ -6705,9 +6713,20 @@ function Luna:CreateWindow(WindowSettings)
 			-- SCROLL (MAIN CONTAINER)
 			-------------------------------------------------
 
+			local SearchBox = Instance.new("TextBox")
+			SearchBox.Size = UDim2.new(1, -20, 0, 35)
+			SearchBox.Position = UDim2.new(0,10,0,45)
+			SearchBox.PlaceholderText = "Search..."
+			SearchBox.Text = ""
+			SearchBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+			SearchBox.TextColor3 = Color3.new(1,1,1)
+			SearchBox.Parent = Frame
+
+			Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0,8)
+
 			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Size = UDim2.new(1, -20, 1, -130) -- more space
-			Scroll.Position = UDim2.new(0,10,0,45)
+			Scroll.Position = UDim2.new(0,10,0,85)
+			Scroll.Size = UDim2.new(1, -20, 1, -170)
 			Scroll.BackgroundTransparency = 1
 			Scroll.ScrollBarThickness = 4
 			Scroll.CanvasSize = UDim2.new(0,0,0,0)
@@ -6771,6 +6790,18 @@ function Luna:CreateWindow(WindowSettings)
 					Overlay:Destroy()
 				end)
 			end
+			
+			local SelectAll = Instance.new("TextButton")
+			SelectAll.Size = UDim2.new(0.5, -15, 0, 30)
+			SelectAll.Position = UDim2.new(0,10,0,45)
+			SelectAll.Text = "Select All"
+			SelectAll.Parent = Frame
+
+			local UnselectAll = Instance.new("TextButton")
+			UnselectAll.Size = UDim2.new(0.5, -15, 0, 30)
+			UnselectAll.Position = UDim2.new(0.5,5,0,45)
+			UnselectAll.Text = "Unselect All"
+			UnselectAll.Parent = Frame
 
 			createButton("Cancel", 0)
 			createButton("Apply", 0.5, config.Callback)
