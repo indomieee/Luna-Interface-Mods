@@ -6677,7 +6677,7 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Frame = Instance.new("Frame")
-			Frame.Size = UDim2.new(0, 420, 0, 450)
+			Frame.Size = UDim2.new(0, 420, 0, 430)
 			Frame.Position = UDim2.new(0.5, -210, 0.5, -225)
 			Frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
 			Frame.ZIndex = 1000
@@ -6704,7 +6704,7 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Size = UDim2.new(1, -20, 1, -110)
+			Scroll.Size = UDim2.new(1, -20, 1, -130) -- more space
 			Scroll.Position = UDim2.new(0,10,0,45)
 			Scroll.BackgroundTransparency = 1
 			Scroll.ScrollBarThickness = 4
@@ -6743,7 +6743,7 @@ function Luna:CreateWindow(WindowSettings)
 			local function createButton(text, posX, callback)
 				local btn = Instance.new("TextButton")
 				btn.Size = UDim2.new(0.5, -10, 0, 45)
-				btn.Position = UDim2.new(posX, 10, 1, -55)
+				btn.Position = UDim2.new(posX, 10, 1, -60)
 				btn.Text = text
 				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
 				btn.TextColor3 = Color3.new(1,1,1)
