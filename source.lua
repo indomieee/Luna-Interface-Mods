@@ -6655,6 +6655,71 @@ function Luna:CreateWindow(WindowSettings)
 			end 
 		end
 
+		function Window:CreateModal(config)
+			local Modal = {}
+
+			-- overlay
+			local Overlay = Instance.new("Frame")
+			Overlay.Size = UDim2.new(1,0,1,0)
+			Overlay.BackgroundColor3 = Color3.new(0,0,0)
+			Overlay.BackgroundTransparency = 0.4
+			Overlay.ZIndex = 999
+			Overlay.Parent = Window.Main -- IMPORTANT (same UI layer)
+
+			-- modal frame
+			local Frame = Instance.new("Frame")
+			Frame.Size = UDim2.new(0, 350, 0, 400)
+			Frame.Position = UDim2.new(0.5, -175, 0.5, -200)
+			Frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+			Frame.ZIndex = 1000
+			Frame.Parent = Overlay
+
+			-- title
+			local Title = Instance.new("TextLabel")
+			Title.Size = UDim2.new(1,0,0,40)
+			Title.Text = config.Title or "Modal"
+			Title.BackgroundTransparency = 1
+			Title.TextColor3 = Color3.new(1,1,1)
+			Title.ZIndex = 1001
+			Title.Parent = Frame
+
+			-- content container
+			local Container = Instance.new("Frame")
+			Container.Size = UDim2.new(1, -10, 1, -100)
+			Container.Position = UDim2.new(0,5,0,40)
+			Container.BackgroundTransparency = 1
+			Container.ZIndex = 1001
+			Container.Parent = Frame
+
+			-- let user build UI inside
+			if config.Content then
+				config.Content(Container)
+			end
+
+			-- buttons
+			local function createButton(text, posX, callback)
+				local btn = Instance.new("TextButton")
+				btn.Size = UDim2.new(0.5, -5, 0, 40)
+				btn.Position = UDim2.new(posX, 5, 1, -45)
+				btn.Text = text
+				btn.ZIndex = 1002
+				btn.Parent = Frame
+
+				btn.MouseButton1Click:Connect(function()
+					if callback then callback() end
+					Overlay:Destroy()
+				end)
+			end
+
+			if config.Buttons then
+				for i, b in ipairs(config.Buttons) do
+					createButton(b.Name, (i-1)*0.5, b.Callback)
+				end
+			end
+
+			return Modal
+		end
+
 		function Luna:RefreshConfigList()
 			if isStudio then return "Config system unavailable." end
 
