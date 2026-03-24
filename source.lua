@@ -6664,7 +6664,7 @@ function Luna:CreateWindow(WindowSettings)
 			Overlay.BackgroundColor3 = Color3.new(0,0,0)
 			Overlay.BackgroundTransparency = 0.4
 			Overlay.ZIndex = 999
-			Overlay.Parent = Window.Main -- IMPORTANT (same UI layer)
+			Overlay.Parent = LunaUI.SmartWindow
 
 			-- modal frame
 			local Frame = Instance.new("Frame")
