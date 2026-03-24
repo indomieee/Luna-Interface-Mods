@@ -6743,6 +6743,18 @@ function Luna:CreateWindow(WindowSettings)
 				Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
 			end)
 
+			local SelectAll = Instance.new("TextButton")
+			SelectAll.Size = UDim2.new(0.5, -15, 0, 30)
+			SelectAll.Position = UDim2.new(0,10,0,45)
+			SelectAll.Text = "Select All"
+			SelectAll.Parent = Frame
+
+			local UnselectAll = Instance.new("TextButton")
+			UnselectAll.Size = UDim2.new(0.5, -15, 0, 30)
+			UnselectAll.Position = UDim2.new(0.5,5,0,45)
+			UnselectAll.Text = "Unselect All"
+			UnselectAll.Parent = Frame
+
 			-------------------------------------------------
 			-- PASS SCROLL AS CONTAINER
 			-------------------------------------------------
@@ -6793,18 +6805,6 @@ function Luna:CreateWindow(WindowSettings)
 					Overlay:Destroy()
 				end)
 			end
-
-			local SelectAll = Instance.new("TextButton")
-			SelectAll.Size = UDim2.new(0.5, -15, 0, 30)
-			SelectAll.Position = UDim2.new(0,10,0,45)
-			SelectAll.Text = "Select All"
-			SelectAll.Parent = Frame
-
-			local UnselectAll = Instance.new("TextButton")
-			UnselectAll.Size = UDim2.new(0.5, -15, 0, 30)
-			UnselectAll.Position = UDim2.new(0.5,5,0,45)
-			UnselectAll.Text = "Unselect All"
-			UnselectAll.Parent = Frame
 
 			createButton("Cancel", 0)
 			createButton("Apply", 0.5, config.Callback)
