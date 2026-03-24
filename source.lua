@@ -6667,6 +6667,7 @@ function Luna:CreateWindow(WindowSettings)
 			local Overlay = Instance.new("Frame")
 			Overlay.Size = UDim2.new(1,0,1,0)
 			Overlay.BackgroundColor3 = Color3.new(0,0,0)
+			Overlay.BackgroundTransparency = 0.4
 			Overlay.ZIndex = 999
 			Overlay.Parent = LunaUI.SmartWindow
 			Overlay.Active = true
@@ -6701,6 +6702,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Title = Instance.new("TextLabel")
 			Title.Size = UDim2.new(1,0,0,40)
+			Title.Position = UDim2.new(0,0,0,0)
 			Title.Text = config.Title or "Modal"
 			Title.BackgroundTransparency = 1
 			Title.TextColor3 = Color3.new(1,1,1)
@@ -6715,7 +6717,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local SearchBox = Instance.new("TextBox")
 			SearchBox.Size = UDim2.new(1, -20, 0, 35)
-			SearchBox.Position = UDim2.new(0,10,0,45)
+			SearchBox.Position = UDim2.new(0,10,0,40)
 			SearchBox.PlaceholderText = "Search..."
 			SearchBox.Text = ""
 			SearchBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
@@ -6725,8 +6727,8 @@ function Luna:CreateWindow(WindowSettings)
 			Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0,8)
 
 			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Position = UDim2.new(0,10,0,85)
-			Scroll.Size = UDim2.new(1, -20, 1, -170)
+			Scroll.Position = UDim2.new(0,10,0,120)
+			Scroll.Size = UDim2.new(1, -20, 1, -180)
 			Scroll.BackgroundTransparency = 1
 			Scroll.ScrollBarThickness = 4
 			Scroll.CanvasSize = UDim2.new(0,0,0,0)
@@ -6745,13 +6747,13 @@ function Luna:CreateWindow(WindowSettings)
 
 			local SelectAll = Instance.new("TextButton")
 			SelectAll.Size = UDim2.new(0.5, -15, 0, 30)
-			SelectAll.Position = UDim2.new(0,10,0,45)
+			SelectAll.Position = UDim2.new(0,10,0,80)
 			SelectAll.Text = "Select All"
 			SelectAll.Parent = Frame
 
 			local UnselectAll = Instance.new("TextButton")
 			UnselectAll.Size = UDim2.new(0.5, -15, 0, 30)
-			UnselectAll.Position = UDim2.new(0.5,5,0,45)
+			UnselectAll.Position = UDim2.new(0.5,5,0,80)
 			UnselectAll.Text = "Unselect All"
 			UnselectAll.Parent = Frame
 
