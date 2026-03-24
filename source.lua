@@ -6747,15 +6747,18 @@ function Luna:CreateWindow(WindowSettings)
 			-- PASS SCROLL AS CONTAINER
 			-------------------------------------------------
 
-			if config.Content then
-				config.Content(
-					Scroll,
-					function(value)
-						result = value
-					end,
-					config.Default or {} 
-				)
-			end
+			config.Content(
+				Scroll,
+				function(value)
+					result = value
+				end,
+				config.Default or {},
+				{
+					SearchBox = SearchBox,
+					SelectAll = SelectAll,
+					UnselectAll = UnselectAll
+				}
+			)
 
 			-------------------------------------------------
 			-- BUTTONS
@@ -6790,7 +6793,7 @@ function Luna:CreateWindow(WindowSettings)
 					Overlay:Destroy()
 				end)
 			end
-			
+
 			local SelectAll = Instance.new("TextButton")
 			SelectAll.Size = UDim2.new(0.5, -15, 0, 30)
 			SelectAll.Position = UDim2.new(0,10,0,45)
