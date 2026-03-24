@@ -6751,7 +6751,7 @@ function Luna:CreateWindow(WindowSettings)
 			end
 
 			createButton("Cancel", 0, Color3.fromRGB(40,40,40))
-			createButton("Apply", 0.5, Color3.fromRGB(60,60,60), function(sel)
+			createButton("Apply", 0, Color3.fromRGB(40,40,40), function(sel)
 				selectedNames = sel
 			end)
 
