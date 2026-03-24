@@ -6658,15 +6658,15 @@ function Luna:CreateWindow(WindowSettings)
 		function Window:CreateModal(config)
 			local Modal = {}
 
-			local Main = LunaUI.SmartWindow
-
+			-- overlay
 			local Overlay = Instance.new("Frame")
 			Overlay.Size = UDim2.new(1,0,1,0)
 			Overlay.BackgroundColor3 = Color3.new(0,0,0)
 			Overlay.BackgroundTransparency = 0.4
 			Overlay.ZIndex = 999
-			Overlay.Parent = Main
-			Overlay.Active = true -- 🔥 block clicks
+			Overlay.Parent = LunaUI.SmartWindow
+			Overlay.Active = true
+			Overlay.Selectable = true
 
 			-------------------------------------------------
 			-- MODAL FRAME
@@ -6702,56 +6702,28 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Size = UDim2.new(1, 0, 1, 0) -- 🔥 FULL SIZE
-			Scroll.Position = UDim2.new(0, 0, 0, 0)
+			Scroll.Size = UDim2.new(1, -20, 1, -120)
+			Scroll.Position = UDim2.new(0,10,0,50)
 			Scroll.BackgroundTransparency = 1
-			Scroll.ScrollBarThickness = 6
-			Scroll.BorderSizePixel = 0
-			Scroll.ClipsDescendants = true
-			Scroll.Parent = Container
+			Scroll.ScrollBarThickness = 4
+			Scroll.ZIndex = 1001
+			Scroll.Parent = Frame
 
-			-- 🔥 IMPORTANT
-			Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+			local Layout = Instance.new("UIListLayout", Scroll)
+			Layout.Padding = UDim.new(0,6)
 
-			local Layout = Instance.new("UIListLayout")
-			Layout.Parent = Scroll
-			Layout.Padding = UDim.new(0, 6)
-			Layout.SortOrder = Enum.SortOrder.LayoutOrder
+			-- content container
+			local Container = Instance.new("Frame")
+			Container.Size = UDim2.new(1, -10, 1, -100)
+			Container.Position = UDim2.new(0,5,0,40)
+			Container.BackgroundTransparency = 1
+			Container.ZIndex = 1001
+			Container.Parent = Frame
 
-			local selected = {}
-
-			for _, name in ipairs(getAllBrainrotNames()) do
-				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(1, -10, 0, 32)
-				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-				btn.TextColor3 = Color3.new(1,1,1)
-				btn.Text = name
-				btn.Font = Enum.Font.Gotham
-				btn.TextSize = 14
-				btn.BorderSizePixel = 0
-				btn.AutoButtonColor = false
-				btn.Parent = Scroll
-
-				local corner = Instance.new("UICorner", btn)
-				corner.CornerRadius = UDim.new(0,8)
-
-				btn.MouseButton1Click:Connect(function()
-					if table.find(selected, name) then
-						table.remove(selected, table.find(selected, name))
-						btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-					else
-						table.insert(selected, name)
-						btn.BackgroundColor3 = Color3.fromRGB(0,170,100)
-					end
-				end)
+			-- let user build UI inside
+			if config.Content then
+				config.Content(Container)
 			end
-
-			print("Children in scroll:", #Scroll:GetChildren())
-
-			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
-			end)
 
 			-------------------------------------------------
 			-- BUTTONS
