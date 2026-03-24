@@ -6677,9 +6677,11 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Frame = Instance.new("Frame")
-			Frame.Size = UDim2.new(0, 420, 0, 410)
-			Frame.Position = UDim2.new(0.5, -210, 0.5, -225)
+			Frame.Size = UDim2.new(0, 420, 0, 400)
+			Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+			Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 			Frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+			Frame.BackgroundTransparency = 0.4
 			Frame.ZIndex = 1000
 			Frame.Parent = Overlay
 
@@ -6750,8 +6752,6 @@ function Luna:CreateWindow(WindowSettings)
 				ButtonContainer.Parent = Frame
 
 				-- then buttons inside it
-				btn.Parent = ButtonContainer
-				btn.Position = UDim2.new(posX, 10, 0, 10)
 
 				local btn = Instance.new("TextButton")
 				btn.Size = UDim2.new(0.5, -10, 0, 45)
@@ -6761,6 +6761,8 @@ function Luna:CreateWindow(WindowSettings)
 				btn.Font = Enum.Font.GothamBold
 				btn.TextSize = 14
 				btn.ZIndex = 1002
+				btn.Parent = ButtonContainer
+				btn.Position = UDim2.new(posX, 10, 0, 10)
 
 				Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
 
