@@ -6658,64 +6658,119 @@ function Luna:CreateWindow(WindowSettings)
 		function Window:CreateModal(config)
 			local Modal = {}
 
-			-- overlay
+			local Main = LunaUI.SmartWindow
+
 			local Overlay = Instance.new("Frame")
 			Overlay.Size = UDim2.new(1,0,1,0)
 			Overlay.BackgroundColor3 = Color3.new(0,0,0)
 			Overlay.BackgroundTransparency = 0.4
 			Overlay.ZIndex = 999
-			Overlay.Parent = LunaUI.SmartWindow
+			Overlay.Parent = Main
+			Overlay.Active = true -- 🔥 block clicks
 
-			-- modal frame
+			-------------------------------------------------
+			-- MODAL FRAME
+			-------------------------------------------------
+
 			local Frame = Instance.new("Frame")
-			Frame.Size = UDim2.new(0, 350, 0, 400)
-			Frame.Position = UDim2.new(0.5, -175, 0.5, -200)
-			Frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+			Frame.Size = UDim2.new(0, 420, 0, 450)
+			Frame.Position = UDim2.new(0.5, -210, 0.5, -225)
+			Frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
 			Frame.ZIndex = 1000
 			Frame.Parent = Overlay
 
-			-- title
+			-- Rounded corners
+			local UICorner = Instance.new("UICorner", Frame)
+			UICorner.CornerRadius = UDim.new(0, 12)
+
+			-------------------------------------------------
+			-- TITLE
+			-------------------------------------------------
+
 			local Title = Instance.new("TextLabel")
 			Title.Size = UDim2.new(1,0,0,40)
-			Title.Text = config.Title or "Modal"
+			Title.Text = "Select Brainrots"
 			Title.BackgroundTransparency = 1
 			Title.TextColor3 = Color3.new(1,1,1)
+			Title.TextSize = 18
+			Title.Font = Enum.Font.GothamBold
 			Title.ZIndex = 1001
 			Title.Parent = Frame
 
-			-- content container
-			local Container = Instance.new("Frame")
-			Container.Size = UDim2.new(1, -10, 1, -100)
-			Container.Position = UDim2.new(0,5,0,40)
-			Container.BackgroundTransparency = 1
-			Container.ZIndex = 1001
-			Container.Parent = Frame
+			-------------------------------------------------
+			-- SCROLL LIST
+			-------------------------------------------------
 
-			-- let user build UI inside
-			if config.Content then
-				config.Content(Container)
+			local Scroll = Instance.new("ScrollingFrame")
+			Scroll.Size = UDim2.new(1, -20, 1, -120)
+			Scroll.Position = UDim2.new(0,10,0,50)
+			Scroll.BackgroundTransparency = 1
+			Scroll.ScrollBarThickness = 4
+			Scroll.ZIndex = 1001
+			Scroll.Parent = Frame
+
+			local Layout = Instance.new("UIListLayout", Scroll)
+			Layout.Padding = UDim.new(0,6)
+
+			local selected = {}
+
+			for _, name in ipairs(getAllBrainrotNames()) do
+				local btn = Instance.new("TextButton")
+				btn.Size = UDim2.new(1,0,0,32)
+				btn.Text = name
+				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+				btn.TextColor3 = Color3.new(1,1,1)
+				btn.Font = Enum.Font.Gotham
+				btn.TextSize = 14
+				btn.ZIndex = 1002
+				btn.Parent = Scroll
+
+				local corner = Instance.new("UICorner", btn)
+				corner.CornerRadius = UDim.new(0,8)
+
+				btn.MouseButton1Click:Connect(function()
+					if table.find(selected, name) then
+						table.remove(selected, table.find(selected, name))
+						btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+					else
+						table.insert(selected, name)
+						btn.BackgroundColor3 = Color3.fromRGB(0,170,100)
+					end
+				end)
 			end
 
-			-- buttons
-			local function createButton(text, posX, callback)
+			task.wait()
+			Scroll.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y)
+
+			-------------------------------------------------
+			-- BUTTONS
+			-------------------------------------------------
+
+			local function createButton(text, posX, color, callback)
 				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(0.5, -5, 0, 40)
-				btn.Position = UDim2.new(posX, 5, 1, -45)
+				btn.Size = UDim2.new(0.5, -10, 0, 45)
+				btn.Position = UDim2.new(posX, 10, 1, -55)
 				btn.Text = text
+				btn.BackgroundColor3 = color
+				btn.TextColor3 = Color3.new(1,1,1)
+				btn.Font = Enum.Font.GothamBold
+				btn.TextSize = 14
 				btn.ZIndex = 1002
 				btn.Parent = Frame
 
+				local corner = Instance.new("UICorner", btn)
+				corner.CornerRadius = UDim.new(0,10)
+
 				btn.MouseButton1Click:Connect(function()
-					if callback then callback() end
+					if callback then callback(selected) end
 					Overlay:Destroy()
 				end)
 			end
 
-			if config.Buttons then
-				for i, b in ipairs(config.Buttons) do
-					createButton(b.Name, (i-1)*0.5, b.Callback)
-				end
-			end
+			createButton("Cancel", 0, Color3.fromRGB(40,40,40))
+			createButton("Apply", 0.5, Color3.fromRGB(60,60,60), function(sel)
+				selectedNames = sel
+			end)
 
 			return Modal
 		end
