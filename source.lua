@@ -6702,17 +6702,22 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Size = UDim2.new(1, -20, 1, -120)
-			Scroll.Position = UDim2.new(0,10,0,50)
+			Scroll.Size = UDim2.new(1, 0, 1, 0) -- 🔥 FULL SIZE
+			Scroll.Position = UDim2.new(0, 0, 0, 0)
 			Scroll.BackgroundTransparency = 1
-			Scroll.ScrollBarThickness = 4
-			Scroll.ZIndex = 1001
-			Scroll.Parent = Frame
+			Scroll.ScrollBarThickness = 6
+			Scroll.BorderSizePixel = 0
+			Scroll.ClipsDescendants = true
+			Scroll.Parent = Container
 
+			-- 🔥 IMPORTANT
+			Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
-			local Layout = Instance.new("UIListLayout", Scroll)
-			Layout.Padding = UDim.new(0,6)
+			local Layout = Instance.new("UIListLayout")
+			Layout.Parent = Scroll
+			Layout.Padding = UDim.new(0, 6)
+			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 			local selected = {}
 
