@@ -6709,6 +6709,8 @@ function Luna:CreateWindow(WindowSettings)
 			Scroll.ZIndex = 1001
 			Scroll.Parent = Frame
 
+			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
 			local Layout = Instance.new("UIListLayout", Scroll)
 			Layout.Padding = UDim.new(0,6)
 
@@ -6739,8 +6741,9 @@ function Luna:CreateWindow(WindowSettings)
 				end)
 			end
 
-			task.wait()
-			Scroll.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y)
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
+			end)
 
 			-------------------------------------------------
 			-- BUTTONS
