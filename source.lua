@@ -6727,9 +6727,13 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			if config.Content then
-				config.Content(Scroll, function(value)
-					result = value
-				end)
+				config.Content(
+					Scroll,
+					function(value)
+						result = value
+					end,
+					config.Default or {} 
+				)
 			end
 
 			-------------------------------------------------
