@@ -6677,7 +6677,7 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Frame = Instance.new("Frame")
-			Frame.Size = UDim2.new(0, 420, 0, 430)
+			Frame.Size = UDim2.new(0, 420, 0, 410)
 			Frame.Position = UDim2.new(0.5, -210, 0.5, -225)
 			Frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
 			Frame.ZIndex = 1000
@@ -6741,16 +6741,26 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local function createButton(text, posX, callback)
+				-- BUTTON CONTAINER
+				local ButtonContainer = Instance.new("Frame")
+				ButtonContainer.Size = UDim2.new(1, 0, 0, 60)
+				ButtonContainer.Position = UDim2.new(0, 0, 1, -60)
+				ButtonContainer.BackgroundTransparency = 1
+				ButtonContainer.ZIndex = 1001
+				ButtonContainer.Parent = Frame
+
+				-- then buttons inside it
+				btn.Parent = ButtonContainer
+				btn.Position = UDim2.new(posX, 10, 0, 10)
+
 				local btn = Instance.new("TextButton")
 				btn.Size = UDim2.new(0.5, -10, 0, 45)
-				btn.Position = UDim2.new(posX, 10, 1, -60)
 				btn.Text = text
 				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
 				btn.TextColor3 = Color3.new(1,1,1)
 				btn.Font = Enum.Font.GothamBold
 				btn.TextSize = 14
 				btn.ZIndex = 1002
-				btn.Parent = Frame
 
 				Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
 
