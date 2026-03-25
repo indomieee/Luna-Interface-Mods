@@ -6657,17 +6657,28 @@ function Luna:CreateWindow(WindowSettings)
 
 		function Window:CreateModal(config)
 			local Modal = {}
-
 			local result = nil
+			local TweenService = game:GetService("TweenService")
+
+			-- Shared colors
+			local COLOR_BG         = Color3.fromRGB(18, 20, 31)   -- deep navy
+			local COLOR_BG_TOP     = Color3.fromRGB(26, 29, 46)   -- slightly lighter top
+			local COLOR_SURFACE    = Color3.fromRGB(255, 255, 255) -- used with transparency
+			local COLOR_ACCENT_A   = Color3.fromRGB(99, 102, 241)  -- indigo
+			local COLOR_ACCENT_B   = Color3.fromRGB(139, 92, 246)  -- violet
+			local COLOR_TEXT       = Color3.fromRGB(255, 255, 255)
+			local COLOR_SUBTEXT    = Color3.fromRGB(140, 145, 175)
+			local COLOR_GHOST_BTN  = Color3.fromRGB(30, 33, 50)
+			local COLOR_DIVIDER    = Color3.fromRGB(40, 44, 65)
 
 			-------------------------------------------------
-			-- OVERLAY
+			-- OVERLAY  (blur-tinted backdrop)
 			-------------------------------------------------
 
 			local Overlay = Instance.new("Frame")
-			Overlay.Size = UDim2.new(1,0,1,0)
-			Overlay.BackgroundColor3 = Color3.new(0,0,0)
-			Overlay.BackgroundTransparency = 0.4
+			Overlay.Size = UDim2.new(1, 0, 1, 0)
+			Overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+			Overlay.BackgroundTransparency = 0.5
 			Overlay.ZIndex = 999
 			Overlay.Parent = LunaUI.SmartWindow
 			Overlay.Active = true
@@ -6679,59 +6690,221 @@ function Luna:CreateWindow(WindowSettings)
 			local Frame = Instance.new("Frame")
 			Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 			Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-			Frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+			Frame.BackgroundColor3 = COLOR_BG
 			Frame.ZIndex = 1000
-			Frame.Parent = Overlay
-
-			local TweenService = game:GetService("TweenService")
-
+			Frame.ClipsDescendants = true
+			Frame.BorderSizePixel = 0
 			Frame.Size = UDim2.new(0, 0, 0, 0)
 			Frame.BackgroundTransparency = 1
+			Frame.Parent = Overlay
 
-			TweenService:Create(Frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {
-				Size = UDim2.new(0, 350, 0, 400),
-				BackgroundTransparency = 0
+			-- Rounded corners
+			local FrameCorner = Instance.new("UICorner")
+			FrameCorner.CornerRadius = UDim.new(0, 18)
+			FrameCorner.Parent = Frame
+
+			-- Subtle outer stroke (border)
+			local FrameStroke = Instance.new("UIStroke")
+			FrameStroke.Color = Color3.fromRGB(60, 65, 100)
+			FrameStroke.Transparency = 0.6
+			FrameStroke.Thickness = 1
+			FrameStroke.Parent = Frame
+
+			-- Vertical gradient so top is slightly lighter
+			local FrameGradient = Instance.new("UIGradient")
+			FrameGradient.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, COLOR_BG_TOP),
+				ColorSequenceKeypoint.new(1, COLOR_BG),
+			})
+			FrameGradient.Rotation = 90
+			FrameGradient.Parent = Frame
+
+			-- Animate in (scale up from center + fade)
+			TweenService:Create(Frame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 370, 0, 460),
+				BackgroundTransparency = 0,
 			}):Play()
 
-			Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
-
 			-------------------------------------------------
-			-- TITLE  (0 -> 40px)
+			-- HEADER BAR  (0 → 62px)
 			-------------------------------------------------
 
+			local Header = Instance.new("Frame")
+			Header.Size = UDim2.new(1, 0, 0, 62)
+			Header.Position = UDim2.new(0, 0, 0, 0)
+			Header.BackgroundTransparency = 1
+			Header.ZIndex = 1001
+			Header.Parent = Frame
+
+			-- Accent icon badge (left of title)
+			local IconBadge = Instance.new("Frame")
+			IconBadge.Size = UDim2.new(0, 30, 0, 30)
+			IconBadge.Position = UDim2.new(0, 16, 0.5, -15)
+			IconBadge.BorderSizePixel = 0
+			IconBadge.BackgroundColor3 = COLOR_ACCENT_A
+			IconBadge.ZIndex = 1002
+			IconBadge.Parent = Header
+
+			local IconBadgeCorner = Instance.new("UICorner")
+			IconBadgeCorner.CornerRadius = UDim.new(0, 8)
+			IconBadgeCorner.Parent = IconBadge
+
+			local IconBadgeGradient = Instance.new("UIGradient")
+			IconBadgeGradient.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
+				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
+			})
+			IconBadgeGradient.Rotation = 135
+			IconBadgeGradient.Parent = IconBadge
+
+			-- Icon glyph (checkmark-ish text substitute)
+			local IconLabel = Instance.new("TextLabel")
+			IconLabel.Size = UDim2.new(1, 0, 1, 0)
+			IconLabel.Text = "✓"
+			IconLabel.TextColor3 = COLOR_TEXT
+			IconLabel.Font = Enum.Font.GothamBold
+			IconLabel.TextSize = 14
+			IconLabel.BackgroundTransparency = 1
+			IconLabel.ZIndex = 1003
+			IconLabel.Parent = IconBadge
+
+			-- Title
 			local Title = Instance.new("TextLabel")
-			Title.Size = UDim2.new(1, 0, 0, 40)
-			Title.Position = UDim2.new(0, 0, 0, 0)
+			Title.Size = UDim2.new(1, -110, 0, 20)
+			Title.Position = UDim2.new(0, 56, 0.5, -18)
 			Title.Text = config.Title or "Modal"
 			Title.BackgroundTransparency = 1
-			Title.TextColor3 = Color3.new(1, 1, 1)
+			Title.TextColor3 = COLOR_TEXT
 			Title.Font = Enum.Font.GothamBold
-			Title.TextSize = 18
-			Title.ZIndex = 1001
-			Title.Parent = Frame
+			Title.TextSize = 15
+			Title.TextXAlignment = Enum.TextXAlignment.Left
+			Title.ZIndex = 1002
+			Title.Parent = Header
+
+			-- Selection count subtitle
+			local CountLabel = Instance.new("TextLabel")
+			CountLabel.Size = UDim2.new(1, -110, 0, 14)
+			CountLabel.Position = UDim2.new(0, 56, 0.5, 4)
+			CountLabel.Text = "0 selected"
+			CountLabel.BackgroundTransparency = 1
+			CountLabel.TextColor3 = COLOR_SUBTEXT
+			CountLabel.Font = Enum.Font.Gotham
+			CountLabel.TextSize = 11
+			CountLabel.TextXAlignment = Enum.TextXAlignment.Left
+			CountLabel.ZIndex = 1002
+			CountLabel.Parent = Header
+
+			-- Close button (top-right)
+			local CloseBtn = Instance.new("TextButton")
+			CloseBtn.Size = UDim2.new(0, 28, 0, 28)
+			CloseBtn.Position = UDim2.new(1, -44, 0.5, -14)
+			CloseBtn.Text = "✕"
+			CloseBtn.Font = Enum.Font.GothamSemibold
+			CloseBtn.TextSize = 12
+			CloseBtn.TextColor3 = COLOR_SUBTEXT
+			CloseBtn.BackgroundColor3 = COLOR_GHOST_BTN
+			CloseBtn.AutoButtonColor = false
+			CloseBtn.BorderSizePixel = 0
+			CloseBtn.ZIndex = 1003
+			CloseBtn.Parent = Header
+
+			local CloseBtnCorner = Instance.new("UICorner")
+			CloseBtnCorner.CornerRadius = UDim.new(0, 8)
+			CloseBtnCorner.Parent = CloseBtn
+
+			CloseBtn.MouseButton1Click:Connect(function()
+				Overlay:Destroy()
+			end)
+			CloseBtn.MouseEnter:Connect(function()
+				TweenService:Create(CloseBtn, TweenInfo.new(0.15), {
+					TextColor3 = COLOR_TEXT,
+					BackgroundColor3 = Color3.fromRGB(50, 54, 80),
+				}):Play()
+			end)
+			CloseBtn.MouseLeave:Connect(function()
+				TweenService:Create(CloseBtn, TweenInfo.new(0.15), {
+					TextColor3 = COLOR_SUBTEXT,
+					BackgroundColor3 = COLOR_GHOST_BTN,
+				}):Play()
+			end)
+
+			-- Divider under header
+			local HeaderDivider = Instance.new("Frame")
+			HeaderDivider.Size = UDim2.new(1, -32, 0, 1)
+			HeaderDivider.Position = UDim2.new(0, 16, 0, 62)
+			HeaderDivider.BackgroundColor3 = COLOR_DIVIDER
+			HeaderDivider.BorderSizePixel = 0
+			HeaderDivider.ZIndex = 1001
+			HeaderDivider.Parent = Frame
 
 			-------------------------------------------------
-			-- SEARCH BAR  (45 -> 80px)
+			-- SEARCH BAR  (70 → 108px)
 			-------------------------------------------------
+
+			local SearchWrapper = Instance.new("Frame")
+			SearchWrapper.Size = UDim2.new(1, -32, 0, 36)
+			SearchWrapper.Position = UDim2.new(0, 16, 0, 72)
+			SearchWrapper.BackgroundColor3 = COLOR_GHOST_BTN
+			SearchWrapper.BorderSizePixel = 0
+			SearchWrapper.ZIndex = 1001
+			SearchWrapper.Parent = Frame
+
+			local SearchWrapperCorner = Instance.new("UICorner")
+			SearchWrapperCorner.CornerRadius = UDim.new(0, 10)
+			SearchWrapperCorner.Parent = SearchWrapper
+
+			local SearchWrapperStroke = Instance.new("UIStroke")
+			SearchWrapperStroke.Color = Color3.fromRGB(60, 65, 100)
+			SearchWrapperStroke.Transparency = 0.4
+			SearchWrapperStroke.Thickness = 1
+			SearchWrapperStroke.Parent = SearchWrapper
+
+			-- Search icon (text substitute)
+			local SearchIcon = Instance.new("TextLabel")
+			SearchIcon.Size = UDim2.new(0, 28, 1, 0)
+			SearchIcon.Position = UDim2.new(0, 0, 0, 0)
+			SearchIcon.Text = "🔍"
+			SearchIcon.TextSize = 12
+			SearchIcon.BackgroundTransparency = 1
+			SearchIcon.TextColor3 = COLOR_SUBTEXT
+			SearchIcon.ZIndex = 1002
+			SearchIcon.Parent = SearchWrapper
 
 			local SearchBox = Instance.new("TextBox")
-			SearchBox.Size = UDim2.new(1, -20, 0, 35)
-			SearchBox.Position = UDim2.new(0, 10, 0, 45)
+			SearchBox.Size = UDim2.new(1, -36, 1, 0)
+			SearchBox.Position = UDim2.new(0, 28, 0, 0)
 			SearchBox.PlaceholderText = "Search..."
+			SearchBox.PlaceholderColor3 = Color3.fromRGB(90, 95, 130)
 			SearchBox.Text = ""
-			SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-			SearchBox.TextColor3 = Color3.new(1, 1, 1)
-			SearchBox.ZIndex = 1001
-			SearchBox.Parent = Frame
+			SearchBox.BackgroundTransparency = 1
+			SearchBox.TextColor3 = COLOR_TEXT
+			SearchBox.Font = Enum.Font.Gotham
+			SearchBox.TextSize = 13
+			SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+			SearchBox.ClearTextOnFocus = false
+			SearchBox.ZIndex = 1002
+			SearchBox.Parent = SearchWrapper
 
-			Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0, 8)
+			-- Focus highlight on search
+			SearchBox.Focused:Connect(function()
+				TweenService:Create(SearchWrapperStroke, TweenInfo.new(0.15), {
+					Color = COLOR_ACCENT_A,
+					Transparency = 0.3,
+				}):Play()
+			end)
+			SearchBox.FocusLost:Connect(function()
+				TweenService:Create(SearchWrapperStroke, TweenInfo.new(0.15), {
+					Color = Color3.fromRGB(60, 65, 100),
+					Transparency = 0.4,
+				}):Play()
+			end)
 
 			-------------------------------------------------
-			-- BOTTOM CONTAINER  (last 95px)
-			-- Row1 = 35px  |  gap 5px  |  Row2 = 50px  |  padding 5px = 95px
+			-- BOTTOM CONTAINER  (last 100px)
+			-- Divider + Row1(35px) + gap(5px) + Row2(38px) + padding(10px) = 98px
 			-------------------------------------------------
 
-			local BOTTOM_H = 95
+			local BOTTOM_H = 100
 
 			local BottomContainer = Instance.new("Frame")
 			BottomContainer.Size = UDim2.new(1, 0, 0, BOTTOM_H)
@@ -6740,95 +6913,127 @@ function Luna:CreateWindow(WindowSettings)
 			BottomContainer.ZIndex = 1001
 			BottomContainer.Parent = Frame
 
-			-- Stack rows inside BottomContainer with UIListLayout
+			-- Divider above bottom container
+			local BottomDivider = Instance.new("Frame")
+			BottomDivider.Size = UDim2.new(1, -32, 0, 1)
+			BottomDivider.Position = UDim2.new(0, 16, 0, 0)
+			BottomDivider.BackgroundColor3 = COLOR_DIVIDER
+			BottomDivider.BorderSizePixel = 0
+			BottomDivider.ZIndex = 1001
+			BottomDivider.Parent = BottomContainer
+
 			local BottomLayout = Instance.new("UIListLayout")
 			BottomLayout.FillDirection = Enum.FillDirection.Vertical
-			BottomLayout.Padding = UDim.new(0, 5)
+			BottomLayout.Padding = UDim.new(0, 6)
 			BottomLayout.SortOrder = Enum.SortOrder.LayoutOrder
-			BottomLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+			BottomLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
 			BottomLayout.Parent = BottomContainer
 
 			local BottomPadding = Instance.new("UIPadding")
-			BottomPadding.PaddingBottom = UDim.new(0, 5)
+			BottomPadding.PaddingBottom = UDim.new(0, 10)
+			BottomPadding.PaddingLeft = UDim.new(0, 12)
+			BottomPadding.PaddingRight = UDim.new(0, 12)
 			BottomPadding.Parent = BottomContainer
+
+			-------------------------------------------------
+			-- Helper: ghost button factory
+			-------------------------------------------------
+
+			local function makeGhostButton(parent, text, layoutOrder)
+				local btn = Instance.new("TextButton")
+				btn.Size = UDim2.new(1, 0, 0, 32)
+				btn.Text = text
+				btn.BackgroundColor3 = COLOR_GHOST_BTN
+				btn.TextColor3 = COLOR_SUBTEXT
+				btn.Font = Enum.Font.GothamSemibold
+				btn.TextSize = 12
+				btn.AutoButtonColor = false
+				btn.BorderSizePixel = 0
+				btn.ZIndex = 1002
+				btn.LayoutOrder = layoutOrder
+				btn.Parent = parent
+
+				local corner = Instance.new("UICorner")
+				corner.CornerRadius = UDim.new(0, 9)
+				corner.Parent = btn
+
+				local stroke = Instance.new("UIStroke")
+				stroke.Color = Color3.fromRGB(60, 65, 100)
+				stroke.Transparency = 0.5
+				stroke.Thickness = 1
+				stroke.Parent = btn
+
+				btn.MouseEnter:Connect(function()
+					TweenService:Create(btn, TweenInfo.new(0.12), {
+						BackgroundColor3 = Color3.fromRGB(40, 44, 68),
+						TextColor3 = COLOR_TEXT,
+					}):Play()
+				end)
+				btn.MouseLeave:Connect(function()
+					TweenService:Create(btn, TweenInfo.new(0.12), {
+						BackgroundColor3 = COLOR_GHOST_BTN,
+						TextColor3 = COLOR_SUBTEXT,
+					}):Play()
+				end)
+
+				return btn
+			end
 
 			-------------------------------------------------
 			-- ROW 1  –  Unselect All | Select All
 			-------------------------------------------------
 
 			local Row1 = Instance.new("Frame")
-			Row1.Size = UDim2.new(1, 0, 0, 35)
+			Row1.Size = UDim2.new(1, 0, 0, 32)
 			Row1.BackgroundTransparency = 1
 			Row1.LayoutOrder = 1
 			Row1.Parent = BottomContainer
 
-			-- "Unselect All" on the LEFT
-			local UnselectAll = Instance.new("TextButton")
-			UnselectAll.Size = UDim2.new(0.5, -8, 1, 0)
-			UnselectAll.Position = UDim2.new(0, 5, 0, 0)
-			UnselectAll.Text = "Unselect All"
-			UnselectAll.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			UnselectAll.TextColor3 = Color3.new(1, 1, 1)
-			UnselectAll.Font = Enum.Font.GothamSemibold
-			UnselectAll.TextSize = 13
-			UnselectAll.AutoButtonColor = false
-			UnselectAll.BorderSizePixel = 0
-			UnselectAll.ZIndex = 1002
-			UnselectAll.Parent = Row1
-			Instance.new("UICorner", UnselectAll).CornerRadius = UDim.new(0, 8)
+			local Row1Layout = Instance.new("UIListLayout")
+			Row1Layout.FillDirection = Enum.FillDirection.Horizontal
+			Row1Layout.Padding = UDim.new(0, 6)
+			Row1Layout.SortOrder = Enum.SortOrder.LayoutOrder
+			Row1Layout.Parent = Row1
 
-			-- "Select All" on the RIGHT
-			local SelectAll = Instance.new("TextButton")
-			SelectAll.Size = UDim2.new(0.5, -8, 1, 0)
-			SelectAll.Position = UDim2.new(0.5, 3, 0, 0)
-			SelectAll.Text = "Select All"
-			SelectAll.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			SelectAll.TextColor3 = Color3.new(1, 1, 1)
-			SelectAll.Font = Enum.Font.GothamSemibold
-			SelectAll.TextSize = 13
-			SelectAll.AutoButtonColor = false
-			SelectAll.BorderSizePixel = 0
-			SelectAll.ZIndex = 1002
-			SelectAll.Parent = Row1
-			Instance.new("UICorner", SelectAll).CornerRadius = UDim.new(0, 8)
+			local UnselectAll = makeGhostButton(Row1, "Unselect All", 1)
+			UnselectAll.Size = UDim2.new(0.5, -3, 1, 0)
+
+			local SelectAll = makeGhostButton(Row1, "Select All", 2)
+			SelectAll.Size = UDim2.new(0.5, -3, 1, 0)
 
 			-------------------------------------------------
 			-- ROW 2  –  Cancel | Apply
 			-------------------------------------------------
 
 			local Row2 = Instance.new("Frame")
-			Row2.Size = UDim2.new(1, 0, 0, 35)
+			Row2.Size = UDim2.new(1, 0, 0, 38)
 			Row2.BackgroundTransparency = 1
 			Row2.LayoutOrder = 2
 			Row2.Parent = BottomContainer
 
 			local Row2Layout = Instance.new("UIListLayout")
 			Row2Layout.FillDirection = Enum.FillDirection.Horizontal
-			Row2Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			Row2Layout.VerticalAlignment = Enum.VerticalAlignment.Center
-			Row2Layout.Padding = UDim.new(0, 10)
+			Row2Layout.Padding = UDim.new(0, 6)
+			Row2Layout.SortOrder = Enum.SortOrder.LayoutOrder
 			Row2Layout.Parent = Row2
 
 			-------------------------------------------------
-			-- SCROLL FRAME  (90px from top -> above BottomContainer)
+			-- SCROLL FRAME  (118px from top → above BottomContainer)
 			-------------------------------------------------
 
 			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Position = UDim2.new(0, 10, 0, 90)
-			Scroll.Size = UDim2.new(1, -20, 1, -(90 + BOTTOM_H + 5))
+			Scroll.Position = UDim2.new(0, 12, 0, 118)
+			Scroll.Size = UDim2.new(1, -24, 1, -(118 + BOTTOM_H + 4))
 			Scroll.BackgroundTransparency = 1
-			Scroll.ScrollBarThickness = 4
+			Scroll.ScrollBarThickness = 3
+			Scroll.ScrollBarImageColor3 = COLOR_ACCENT_A
 			Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 			Scroll.ZIndex = 1001
 			Scroll.Parent = Frame
 
-			-------------------------------------------------
-			-- LIST LAYOUT INSIDE SCROLL
-			-------------------------------------------------
-
 			local Layout = Instance.new("UIListLayout")
-			Layout.Padding = UDim.new(0, 5)
+			Layout.Padding = UDim.new(0, 4)
 			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 			Layout.Parent = Scroll
 
@@ -6840,16 +7045,26 @@ function Luna:CreateWindow(WindowSettings)
 			-- PASS SCROLL AS CONTAINER
 			-------------------------------------------------
 
+			local selectedCount = 0
+
 			config.Content(
 				Scroll,
 				function(value)
 					result = value
+					-- Update count label if value is a table
+					if type(value) == "table" then
+						local n = 0
+						for _ in pairs(value) do n = n + 1 end
+						selectedCount = n
+						CountLabel.Text = tostring(selectedCount) .. " selected"
+					end
 				end,
 				config.Default or {},
 				{
-					SearchBox = SearchBox,
-					UnselectAll = UnselectAll,
-					SelectAll = SelectAll
+					SearchBox    = SearchBox,
+					UnselectAll  = UnselectAll,
+					SelectAll    = SelectAll,
+					CountLabel   = CountLabel,
 				}
 			)
 
@@ -6857,29 +7072,61 @@ function Luna:CreateWindow(WindowSettings)
 			-- CANCEL / APPLY BUTTONS
 			-------------------------------------------------
 
-			local function createButton(text, callback)
-				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(0.5, -8, 1, 0)
-				btn.Text = text
-				btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-				btn.TextColor3 = Color3.new(1, 1, 1)
-				btn.Font = Enum.Font.GothamSemibold
-				btn.TextSize = 13
-				btn.AutoButtonColor = false
-				btn.BorderSizePixel = 0
-				btn.ZIndex = 1002
-				btn.Parent = Row2
+			-- Cancel (ghost style)
+			local CancelBtn = makeGhostButton(Row2, "Cancel", 1)
+			CancelBtn.Size = UDim2.new(0.42, 0, 1, 0)
+			CancelBtn.MouseButton1Click:Connect(function()
+				Overlay:Destroy()
+			end)
 
-				Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+			-- Apply (accent gradient style)
+			local ApplyBtn = Instance.new("TextButton")
+			ApplyBtn.Size = UDim2.new(0.58, -6, 1, 0)
+			ApplyBtn.Text = "Apply"
+			ApplyBtn.BackgroundColor3 = COLOR_ACCENT_A
+			ApplyBtn.TextColor3 = COLOR_TEXT
+			ApplyBtn.Font = Enum.Font.GothamBold
+			ApplyBtn.TextSize = 13
+			ApplyBtn.AutoButtonColor = false
+			ApplyBtn.BorderSizePixel = 0
+			ApplyBtn.ZIndex = 1002
+			ApplyBtn.LayoutOrder = 2
+			ApplyBtn.Parent = Row2
 
-				btn.MouseButton1Click:Connect(function()
-					if callback then callback(result) end
-					Overlay:Destroy()
-				end)
-			end
+			local ApplyCorner = Instance.new("UICorner")
+			ApplyCorner.CornerRadius = UDim.new(0, 9)
+			ApplyCorner.Parent = ApplyBtn
 
-			createButton("Cancel")
-			createButton("Apply", config.Callback)
+			-- Purple gradient on Apply
+			local ApplyGradient = Instance.new("UIGradient")
+			ApplyGradient.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
+				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
+			})
+			ApplyGradient.Rotation = 135
+			ApplyGradient.Parent = ApplyBtn
+
+			-- Soft glow stroke around Apply
+			local ApplyStroke = Instance.new("UIStroke")
+			ApplyStroke.Color = COLOR_ACCENT_B
+			ApplyStroke.Transparency = 0.6
+			ApplyStroke.Thickness = 1
+			ApplyStroke.Parent = ApplyBtn
+
+			ApplyBtn.MouseEnter:Connect(function()
+				TweenService:Create(ApplyBtn, TweenInfo.new(0.12), {
+					BackgroundColor3 = Color3.fromRGB(120, 80, 255),
+				}):Play()
+			end)
+			ApplyBtn.MouseLeave:Connect(function()
+				TweenService:Create(ApplyBtn, TweenInfo.new(0.12), {
+					BackgroundColor3 = COLOR_ACCENT_A,
+				}):Play()
+			end)
+			ApplyBtn.MouseButton1Click:Connect(function()
+				if config.Callback then config.Callback(result) end
+				Overlay:Destroy()
+			end)
 
 			return Modal
 		end
