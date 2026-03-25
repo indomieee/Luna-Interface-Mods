@@ -6736,6 +6736,10 @@ function Luna:CreateWindow(WindowSettings)
 			Scroll.ZIndex = 1001
 			Scroll.Parent = Frame
 
+			-------------------------------------------------
+			-- BOTTOM CONTAINER
+			-------------------------------------------------
+
 			local BottomContainer = Instance.new("Frame")
 			BottomContainer.Size = UDim2.new(1, 0, 0, 110)
 			BottomContainer.Position = UDim2.new(0, 0, 1, -110)
@@ -6743,34 +6747,48 @@ function Luna:CreateWindow(WindowSettings)
 			BottomContainer.ZIndex = 1001
 			BottomContainer.Parent = Frame
 
-			local SelectAll = Instance.new("TextButton")
-			SelectAll.Parent = Row1
-			SelectAll.Size = UDim2.new(0.5, -10, 1, 0)
-			SelectAll.Position = UDim2.new(0, 5, 0, 0)
-			
-			local UnselectAll = Instance.new("TextButton")
-			UnselectAll.Parent = Row1
-			UnselectAll.Size = UDim2.new(0.5, -10, 1, 0)
-			UnselectAll.Position = UDim2.new(0.5, 5, 0, 0)
+			-------------------------------------------------
+			-- LAYOUT
+			-------------------------------------------------
 
 			local layout = Instance.new("UIListLayout")
 			layout.Padding = UDim.new(0,5)
 			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = BottomContainer -- ✅ CORRECT
+			layout.Parent = BottomContainer
 
-			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				Scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
-			end)
+			-------------------------------------------------
+			-- ROW 1 (SELECT BUTTONS)
+			-------------------------------------------------
 
 			local Row1 = Instance.new("Frame")
 			Row1.Size = UDim2.new(1, 0, 0, 30)
 			Row1.BackgroundTransparency = 1
 			Row1.Parent = BottomContainer
 
+			-------------------------------------------------
+			-- ROW 2 (APPLY / CANCEL)
+			-------------------------------------------------
+
 			local Row2 = Instance.new("Frame")
 			Row2.Size = UDim2.new(1, 0, 0, 45)
 			Row2.BackgroundTransparency = 1
 			Row2.Parent = BottomContainer
+
+			-------------------------------------------------
+			-- SELECT BUTTONS (NOW SAFE)
+			-------------------------------------------------
+
+			local SelectAll = Instance.new("TextButton")
+			SelectAll.Size = UDim2.new(0.5, -10, 1, 0)
+			SelectAll.Position = UDim2.new(0, 5, 0, 0)
+			SelectAll.Text = "Select All"
+			SelectAll.Parent = Row1
+
+			local UnselectAll = Instance.new("TextButton")
+			UnselectAll.Size = UDim2.new(0.5, -10, 1, 0)
+			UnselectAll.Position = UDim2.new(0.5, 5, 0, 0)
+			UnselectAll.Text = "Unselect All"
+			UnselectAll.Parent = Row1
 
 			-------------------------------------------------
 			-- PASS SCROLL AS CONTAINER
@@ -6803,7 +6821,7 @@ function Luna:CreateWindow(WindowSettings)
 				btn.Font = Enum.Font.GothamBold
 				btn.TextSize = 14
 				btn.ZIndex = 1002
-				btn.Parent = Row2 -- ✅ IMPORTANT
+				btn.Parent = Row2
 
 				Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
 
