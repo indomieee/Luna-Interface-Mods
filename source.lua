@@ -6778,6 +6778,12 @@ function Luna:CreateWindow(WindowSettings)
 			Row2.BackgroundTransparency = 1
 			Row2.Parent = BottomContainer
 
+			local Row2Layout = Instance.new("UIListLayout")
+			Row2Layout.FillDirection = Enum.FillDirection.Horizontal
+			Row2Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+			Row2Layout.Padding = UDim.new(0,10)
+			Row2Layout.Parent = Row2
+
 			-------------------------------------------------
 			-- SELECT BUTTONS (NOW SAFE)
 			-------------------------------------------------
@@ -6816,8 +6822,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function createButton(text, posX, callback)
 				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(0.5, -10, 1, 0)
-				btn.Position = UDim2.new(posX, 5, 0, 0)
+				btn.Size = UDim2.new(0.5, -15, 1, 0)
 				btn.Text = text
 				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
 				btn.TextColor3 = Color3.new(1,1,1)
@@ -6828,9 +6833,6 @@ function Luna:CreateWindow(WindowSettings)
 
 				btn.ZIndex = 1002
 				btn.Parent = Row2
-				
-				local corner = Instance.new("UICorner", btn)
-				corner.CornerRadius = UDim.new(0,10)
 
 				Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
 
