@@ -6806,7 +6806,7 @@ function Luna:CreateWindow(WindowSettings)
 			Row2Layout.FillDirection = Enum.FillDirection.Horizontal
 			Row2Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 			Row2Layout.VerticalAlignment = Enum.VerticalAlignment.Center
-			Row2Layout.Padding = UDim.new(0, 20)
+			Row2Layout.Padding = UDim.new(0, 10)
 			Row2Layout.Parent = Row2
 
 			-------------------------------------------------
