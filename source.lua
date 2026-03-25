@@ -7004,12 +7004,21 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local selectedCount = 0
+			local default = config.Default or {}
+
+			-- INIT COUNT FROM DEFAULT
+			if type(default) == "table" then
+				local n = 0
+				for _ in pairs(default) do n = n + 1 end
+				selectedCount = n
+				CountLabel.Text = tostring(selectedCount) .. " selected"
+			end
 
 			config.Content(
 				Scroll,
 				function(value)
 					result = value
-					-- Update count label if value is a table
+
 					if type(value) == "table" then
 						local n = 0
 						for _ in pairs(value) do n = n + 1 end
@@ -7017,7 +7026,7 @@ function Luna:CreateWindow(WindowSettings)
 						CountLabel.Text = tostring(selectedCount) .. " selected"
 					end
 				end,
-				config.Default or {},
+				default,
 				{
 					SearchBox    = SearchBox,
 					UnselectAll  = UnselectAll,
