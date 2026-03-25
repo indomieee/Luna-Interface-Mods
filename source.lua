@@ -6666,6 +6666,7 @@ function Luna:CreateWindow(WindowSettings)
 			local COLOR_SURFACE    = Color3.fromRGB(255, 255, 255) -- used with transparency
 			local COLOR_ACCENT_A   = Color3.fromRGB(99, 102, 241)  -- indigo
 			local COLOR_ACCENT_B   = Color3.fromRGB(139, 92, 246)  -- violet
+			local COLOR_ACCENT_C   = Color3.fromRGB(253, 168, 173)  -- Pink
 			local COLOR_TEXT       = Color3.fromRGB(255, 255, 255)
 			local COLOR_SUBTEXT    = Color3.fromRGB(140, 145, 175)
 			local COLOR_GHOST_BTN  = Color3.fromRGB(30, 33, 50)
@@ -6741,7 +6742,7 @@ function Luna:CreateWindow(WindowSettings)
 			IconBadge.Size = UDim2.new(0, 30, 0, 30)
 			IconBadge.Position = UDim2.new(0, 16, 0.5, -15)
 			IconBadge.BorderSizePixel = 0
-			IconBadge.BackgroundColor3 = COLOR_ACCENT_A
+			IconBadge.BackgroundColor3 = COLOR_ACCENT_C
 			IconBadge.ZIndex = 1002
 			IconBadge.Parent = Header
 
@@ -6751,7 +6752,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local IconBadgeGradient = Instance.new("UIGradient")
 			IconBadgeGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
+				ColorSequenceKeypoint.new(0, COLOR_ACCENT_C),
 				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
 			})
 			IconBadgeGradient.Rotation = 135
@@ -6793,40 +6794,6 @@ function Luna:CreateWindow(WindowSettings)
 			CountLabel.TextXAlignment = Enum.TextXAlignment.Left
 			CountLabel.ZIndex = 1002
 			CountLabel.Parent = Header
-
-			-- Close button (top-right)
-			local CloseBtn = Instance.new("TextButton")
-			CloseBtn.Size = UDim2.new(0, 28, 0, 28)
-			CloseBtn.Position = UDim2.new(1, -44, 0.5, -14)
-			CloseBtn.Text = "✕"
-			CloseBtn.Font = Enum.Font.GothamSemibold
-			CloseBtn.TextSize = 12
-			CloseBtn.TextColor3 = COLOR_SUBTEXT
-			CloseBtn.BackgroundColor3 = COLOR_GHOST_BTN
-			CloseBtn.AutoButtonColor = false
-			CloseBtn.BorderSizePixel = 0
-			CloseBtn.ZIndex = 1003
-			CloseBtn.Parent = Header
-
-			local CloseBtnCorner = Instance.new("UICorner")
-			CloseBtnCorner.CornerRadius = UDim.new(0, 8)
-			CloseBtnCorner.Parent = CloseBtn
-
-			CloseBtn.MouseButton1Click:Connect(function()
-				Overlay:Destroy()
-			end)
-			CloseBtn.MouseEnter:Connect(function()
-				TweenService:Create(CloseBtn, TweenInfo.new(0.15), {
-					TextColor3 = COLOR_TEXT,
-					BackgroundColor3 = Color3.fromRGB(50, 54, 80),
-				}):Play()
-			end)
-			CloseBtn.MouseLeave:Connect(function()
-				TweenService:Create(CloseBtn, TweenInfo.new(0.15), {
-					TextColor3 = COLOR_SUBTEXT,
-					BackgroundColor3 = COLOR_GHOST_BTN,
-				}):Play()
-			end)
 
 			-- Divider under header
 			local HeaderDivider = Instance.new("Frame")
@@ -6888,7 +6855,7 @@ function Luna:CreateWindow(WindowSettings)
 			-- Focus highlight on search
 			SearchBox.Focused:Connect(function()
 				TweenService:Create(SearchWrapperStroke, TweenInfo.new(0.15), {
-					Color = COLOR_ACCENT_A,
+					Color = COLOR_ACCENT_C,
 					Transparency = 0.3,
 				}):Play()
 			end)
@@ -6912,15 +6879,6 @@ function Luna:CreateWindow(WindowSettings)
 			BottomContainer.BackgroundTransparency = 1
 			BottomContainer.ZIndex = 1001
 			BottomContainer.Parent = Frame
-
-			-- Divider above bottom container
-			local BottomDivider = Instance.new("Frame")
-			BottomDivider.Size = UDim2.new(1, -32, 0, 1)
-			BottomDivider.Position = UDim2.new(0, 16, 0, 0)
-			BottomDivider.BackgroundColor3 = COLOR_DIVIDER
-			BottomDivider.BorderSizePixel = 0
-			BottomDivider.ZIndex = 1001
-			BottomDivider.Parent = BottomContainer
 
 			local BottomLayout = Instance.new("UIListLayout")
 			BottomLayout.FillDirection = Enum.FillDirection.Vertical
@@ -7026,7 +6984,7 @@ function Luna:CreateWindow(WindowSettings)
 			Scroll.Size = UDim2.new(1, -24, 1, -(118 + BOTTOM_H + 4))
 			Scroll.BackgroundTransparency = 1
 			Scroll.ScrollBarThickness = 3
-			Scroll.ScrollBarImageColor3 = COLOR_ACCENT_A
+			Scroll.ScrollBarImageColor3 = COLOR_ACCENT_C
 			Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 			Scroll.ZIndex = 1001
@@ -7074,16 +7032,16 @@ function Luna:CreateWindow(WindowSettings)
 
 			-- Cancel (ghost style)
 			local CancelBtn = makeGhostButton(Row2, "Cancel", 1)
-			CancelBtn.Size = UDim2.new(0.42, 0, 1, 0)
+			CancelBtn.Size = UDim2.new(0.5, -3, 1, 0)
 			CancelBtn.MouseButton1Click:Connect(function()
 				Overlay:Destroy()
 			end)
 
 			-- Apply (accent gradient style)
 			local ApplyBtn = Instance.new("TextButton")
-			ApplyBtn.Size = UDim2.new(0.58, -6, 1, 0)
+			ApplyBtn.Size = UDim2.new(0.5, -3, 1, 0)
 			ApplyBtn.Text = "Apply"
-			ApplyBtn.BackgroundColor3 = COLOR_ACCENT_A
+			ApplyBtn.BackgroundColor3 = COLOR_ACCENT_C
 			ApplyBtn.TextColor3 = COLOR_TEXT
 			ApplyBtn.Font = Enum.Font.GothamBold
 			ApplyBtn.TextSize = 13
@@ -7100,7 +7058,7 @@ function Luna:CreateWindow(WindowSettings)
 			-- Purple gradient on Apply
 			local ApplyGradient = Instance.new("UIGradient")
 			ApplyGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
+				ColorSequenceKeypoint.new(0, COLOR_ACCENT_C),
 				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
 			})
 			ApplyGradient.Rotation = 135
@@ -7120,7 +7078,7 @@ function Luna:CreateWindow(WindowSettings)
 			end)
 			ApplyBtn.MouseLeave:Connect(function()
 				TweenService:Create(ApplyBtn, TweenInfo.new(0.12), {
-					BackgroundColor3 = COLOR_ACCENT_A,
+					BackgroundColor3 = COLOR_ACCENT_C,
 				}):Play()
 			end)
 			ApplyBtn.MouseButton1Click:Connect(function()
