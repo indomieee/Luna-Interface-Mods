@@ -6665,7 +6665,7 @@ function Luna:CreateWindow(WindowSettings)
 			local COLOR_BG_TOP     = Color3.fromRGB(26, 29, 46)   -- slightly lighter top
 			local COLOR_SURFACE    = Color3.fromRGB(255, 255, 255) -- used with transparency
 			local COLOR_ACCENT_A   = Color3.fromRGB(99, 102, 241)  -- indigo
-			local COLOR_ACCENT_B   = Color3.fromRGB(241, 99, 191)  -- 
+			local COLOR_ACCENT_B   = Color3.fromRGB(139, 92, 246)  -- purple
 			local COLOR_ACCENT_C   = Color3.fromRGB(253, 168, 173)  -- Pink
 			local COLOR_TEXT       = Color3.fromRGB(255, 255, 255)
 			local COLOR_SUBTEXT    = Color3.fromRGB(140, 145, 175)
@@ -6722,7 +6722,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			-- Animate in (scale up from center + fade)
 			TweenService:Create(Frame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-				Size = UDim2.new(0, 370, 0, 460),
+				Size = UDim2.new(0, 370, 0, 400),
 				BackgroundTransparency = 0,
 			}):Play()
 
