@@ -6751,12 +6751,12 @@ function Luna:CreateWindow(WindowSettings)
 			-- LAYOUT
 			-------------------------------------------------
 
-			local layout = Instance.new("UIListLayout")
-			layout.Padding = UDim.new(0,5)
-			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = BottomContainer
+			local Layout = Instance.new("UIListLayout")
+			Layout.Padding = UDim.new(0,5)
+			Layout.SortOrder = Enum.SortOrder.LayoutOrder
+			Layout.Parent = BottomContainer
 
-			layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 				Scroll.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y)
 			end)
 
