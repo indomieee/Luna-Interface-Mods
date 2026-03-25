@@ -6685,120 +6685,157 @@ function Luna:CreateWindow(WindowSettings)
 
 			local TweenService = game:GetService("TweenService")
 
-			-- start small
 			Frame.Size = UDim2.new(0, 0, 0, 0)
 			Frame.BackgroundTransparency = 1
 
 			TweenService:Create(Frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {
-				Size = UDim2.new(0, 350, 0, 350),
+				Size = UDim2.new(0, 350, 0, 400),
 				BackgroundTransparency = 0
 			}):Play()
 
 			Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 12)
 
 			-------------------------------------------------
-			-- TITLE
+			-- TITLE  (0 -> 40px)
 			-------------------------------------------------
 
 			local Title = Instance.new("TextLabel")
-			Title.Size = UDim2.new(1,0,0,40)
-			Title.Position = UDim2.new(0,0,0,0)
+			Title.Size = UDim2.new(1, 0, 0, 40)
+			Title.Position = UDim2.new(0, 0, 0, 0)
 			Title.Text = config.Title or "Modal"
 			Title.BackgroundTransparency = 1
-			Title.TextColor3 = Color3.new(1,1,1)
+			Title.TextColor3 = Color3.new(1, 1, 1)
 			Title.Font = Enum.Font.GothamBold
 			Title.TextSize = 18
 			Title.ZIndex = 1001
 			Title.Parent = Frame
 
 			-------------------------------------------------
-			-- SCROLL (MAIN CONTAINER)
+			-- SEARCH BAR  (45 -> 80px)
 			-------------------------------------------------
 
 			local SearchBox = Instance.new("TextBox")
 			SearchBox.Size = UDim2.new(1, -20, 0, 35)
-			SearchBox.Position = UDim2.new(0,10,0,40)
+			SearchBox.Position = UDim2.new(0, 10, 0, 45)
 			SearchBox.PlaceholderText = "Search..."
 			SearchBox.Text = ""
-			SearchBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
-			SearchBox.TextColor3 = Color3.new(1,1,1)
+			SearchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+			SearchBox.TextColor3 = Color3.new(1, 1, 1)
+			SearchBox.ZIndex = 1001
 			SearchBox.Parent = Frame
 
-			Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0,8)
-
-			local Scroll = Instance.new("ScrollingFrame")
-			Scroll.Position = UDim2.new(0,10,0,120)
-			Scroll.Size = UDim2.new(1, -20, 1, -160)
-			Scroll.BackgroundTransparency = 1
-			Scroll.ScrollBarThickness = 4
-			Scroll.CanvasSize = UDim2.new(0,0,0,0)
-			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-			Scroll.ZIndex = 1001
-			Scroll.Parent = Frame
+			Instance.new("UICorner", SearchBox).CornerRadius = UDim.new(0, 8)
 
 			-------------------------------------------------
-			-- BOTTOM CONTAINER
+			-- BOTTOM CONTAINER  (last 95px)
+			-- Row1 = 35px  |  gap 5px  |  Row2 = 50px  |  padding 5px = 95px
 			-------------------------------------------------
+
+			local BOTTOM_H = 95
 
 			local BottomContainer = Instance.new("Frame")
-			BottomContainer.Size = UDim2.new(1, 0, 0, 110)
-			BottomContainer.Position = UDim2.new(0, 0, 1, -110)
+			BottomContainer.Size = UDim2.new(1, 0, 0, BOTTOM_H)
+			BottomContainer.Position = UDim2.new(0, 0, 1, -BOTTOM_H)
 			BottomContainer.BackgroundTransparency = 1
 			BottomContainer.ZIndex = 1001
 			BottomContainer.Parent = Frame
 
-			-------------------------------------------------
-			-- LAYOUT
-			-------------------------------------------------
+			-- Stack rows inside BottomContainer with UIListLayout
+			local BottomLayout = Instance.new("UIListLayout")
+			BottomLayout.FillDirection = Enum.FillDirection.Vertical
+			BottomLayout.Padding = UDim.new(0, 5)
+			BottomLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			BottomLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+			BottomLayout.Parent = BottomContainer
 
-			local Layout = Instance.new("UIListLayout")
-			Layout.Padding = UDim.new(0,5)
-			Layout.SortOrder = Enum.SortOrder.LayoutOrder
-			Layout.Parent = Scroll
-
-			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				Scroll.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y)
-			end)
+			local BottomPadding = Instance.new("UIPadding")
+			BottomPadding.PaddingBottom = UDim.new(0, 5)
+			BottomPadding.Parent = BottomContainer
 
 			-------------------------------------------------
-			-- ROW 1 (SELECT BUTTONS)
+			-- ROW 1  –  Unselect All | Select All
 			-------------------------------------------------
 
 			local Row1 = Instance.new("Frame")
-			Row1.Size = UDim2.new(1, 0, 0, 30)
+			Row1.Size = UDim2.new(1, 0, 0, 35)
 			Row1.BackgroundTransparency = 1
+			Row1.LayoutOrder = 1
 			Row1.Parent = BottomContainer
 
+			-- "Unselect All" on the LEFT
+			local UnselectAll = Instance.new("TextButton")
+			UnselectAll.Size = UDim2.new(0.5, -8, 1, 0)
+			UnselectAll.Position = UDim2.new(0, 5, 0, 0)
+			UnselectAll.Text = "Unselect All"
+			UnselectAll.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			UnselectAll.TextColor3 = Color3.new(1, 1, 1)
+			UnselectAll.Font = Enum.Font.GothamSemibold
+			UnselectAll.TextSize = 13
+			UnselectAll.AutoButtonColor = false
+			UnselectAll.BorderSizePixel = 0
+			UnselectAll.ZIndex = 1002
+			UnselectAll.Parent = Row1
+			Instance.new("UICorner", UnselectAll).CornerRadius = UDim.new(0, 8)
+
+			-- "Select All" on the RIGHT
+			local SelectAll = Instance.new("TextButton")
+			SelectAll.Size = UDim2.new(0.5, -8, 1, 0)
+			SelectAll.Position = UDim2.new(0.5, 3, 0, 0)
+			SelectAll.Text = "Select All"
+			SelectAll.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			SelectAll.TextColor3 = Color3.new(1, 1, 1)
+			SelectAll.Font = Enum.Font.GothamSemibold
+			SelectAll.TextSize = 13
+			SelectAll.AutoButtonColor = false
+			SelectAll.BorderSizePixel = 0
+			SelectAll.ZIndex = 1002
+			SelectAll.Parent = Row1
+			Instance.new("UICorner", SelectAll).CornerRadius = UDim.new(0, 8)
+
 			-------------------------------------------------
-			-- ROW 2 (APPLY / CANCEL)
+			-- ROW 2  –  Cancel | Apply
 			-------------------------------------------------
 
 			local Row2 = Instance.new("Frame")
-			Row2.Size = UDim2.new(1, 0, 0, 45)
+			Row2.Size = UDim2.new(1, 0, 0, 50)
 			Row2.BackgroundTransparency = 1
+			Row2.LayoutOrder = 2
 			Row2.Parent = BottomContainer
 
 			local Row2Layout = Instance.new("UIListLayout")
 			Row2Layout.FillDirection = Enum.FillDirection.Horizontal
 			Row2Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			Row2Layout.Padding = UDim.new(0,10)
+			Row2Layout.VerticalAlignment = Enum.VerticalAlignment.Center
+			Row2Layout.Padding = UDim.new(0, 10)
 			Row2Layout.Parent = Row2
 
 			-------------------------------------------------
-			-- SELECT BUTTONS (NOW SAFE)
+			-- SCROLL FRAME  (90px from top -> above BottomContainer)
 			-------------------------------------------------
-			
-			local UnselectAll = Instance.new("TextButton")
-			UnselectAll.Size = UDim2.new(0.5, -10, 1, 0)
-			UnselectAll.Position = UDim2.new(0.5, 5, 0, 0)
-			UnselectAll.Text = "Unselect All"
-			UnselectAll.Parent = Row1
-			
-			local SelectAll = Instance.new("TextButton")
-			SelectAll.Size = UDim2.new(0.5, -10, 1, 0)
-			SelectAll.Position = UDim2.new(0, 5, 0, 0)
-			SelectAll.Text = "Select All"
-			SelectAll.Parent = Row1
+
+			local Scroll = Instance.new("ScrollingFrame")
+			Scroll.Position = UDim2.new(0, 10, 0, 90)
+			Scroll.Size = UDim2.new(1, -20, 1, -(90 + BOTTOM_H + 5))
+			Scroll.BackgroundTransparency = 1
+			Scroll.ScrollBarThickness = 4
+			Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+			Scroll.ZIndex = 1001
+			Scroll.Parent = Frame
+
+			-------------------------------------------------
+			-- LIST LAYOUT INSIDE SCROLL
+			-------------------------------------------------
+
+			local Layout = Instance.new("UIListLayout")
+			Layout.Padding = UDim.new(0, 5)
+			Layout.SortOrder = Enum.SortOrder.LayoutOrder
+			Layout.Parent = Scroll
+
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				Scroll.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y)
+			end)
+
 			-------------------------------------------------
 			-- PASS SCROLL AS CONTAINER
 			-------------------------------------------------
@@ -6817,24 +6854,23 @@ function Luna:CreateWindow(WindowSettings)
 			)
 
 			-------------------------------------------------
-			-- BUTTONS
+			-- CANCEL / APPLY BUTTONS
 			-------------------------------------------------
 
-			local function createButton(text, posX, callback)
+			local function createButton(text, callback)
 				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(0.5, -15, 1, 0)
+				btn.Size = UDim2.new(0, 130, 0, 38)
 				btn.Text = text
-				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-				btn.TextColor3 = Color3.new(1,1,1)
+				btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+				btn.TextColor3 = Color3.new(1, 1, 1)
 				btn.Font = Enum.Font.GothamSemibold
 				btn.TextSize = 14
 				btn.AutoButtonColor = false
 				btn.BorderSizePixel = 0
-
 				btn.ZIndex = 1002
 				btn.Parent = Row2
 
-				Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
+				Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
 
 				btn.MouseButton1Click:Connect(function()
 					if callback then callback(result) end
@@ -6842,8 +6878,8 @@ function Luna:CreateWindow(WindowSettings)
 				end)
 			end
 
-			createButton("Cancel", 0)
-			createButton("Apply", 0.5, config.Callback)
+			createButton("Cancel")
+			createButton("Apply", config.Callback)
 
 			return Modal
 		end
