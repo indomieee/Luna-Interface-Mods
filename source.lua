@@ -6859,12 +6859,12 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function createButton(text, callback)
 				local btn = Instance.new("TextButton")
-				btn.Size = UDim2.new(0, 130, 0, 38)
+				btn.Size = UDim2.new(0.5, -8, 1, 0)
 				btn.Text = text
 				btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 				btn.TextColor3 = Color3.new(1, 1, 1)
 				btn.Font = Enum.Font.GothamSemibold
-				btn.TextSize = 14
+				btn.TextSize = 13
 				btn.AutoButtonColor = false
 				btn.BorderSizePixel = 0
 				btn.ZIndex = 1002
