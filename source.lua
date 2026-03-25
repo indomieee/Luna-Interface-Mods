@@ -6742,7 +6742,7 @@ function Luna:CreateWindow(WindowSettings)
 			IconBadge.Size = UDim2.new(0, 30, 0, 30)
 			IconBadge.Position = UDim2.new(0, 16, 0.5, -15)
 			IconBadge.BorderSizePixel = 0
-			IconBadge.BackgroundColor3 = COLOR_ACCENT_C
+			IconBadge.BackgroundColor3 = COLOR_ACCENT_A
 			IconBadge.ZIndex = 1002
 			IconBadge.Parent = Header
 
@@ -6752,7 +6752,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local IconBadgeGradient = Instance.new("UIGradient")
 			IconBadgeGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, COLOR_ACCENT_C),
+				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
 				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
 			})
 			IconBadgeGradient.Rotation = 135
@@ -6855,7 +6855,7 @@ function Luna:CreateWindow(WindowSettings)
 			-- Focus highlight on search
 			SearchBox.Focused:Connect(function()
 				TweenService:Create(SearchWrapperStroke, TweenInfo.new(0.15), {
-					Color = COLOR_ACCENT_C,
+					Color = COLOR_ACCENT_A,
 					Transparency = 0.3,
 				}):Play()
 			end)
@@ -6984,7 +6984,7 @@ function Luna:CreateWindow(WindowSettings)
 			Scroll.Size = UDim2.new(1, -24, 1, -(118 + BOTTOM_H + 4))
 			Scroll.BackgroundTransparency = 1
 			Scroll.ScrollBarThickness = 3
-			Scroll.ScrollBarImageColor3 = COLOR_ACCENT_C
+			Scroll.ScrollBarImageColor3 = COLOR_ACCENT_A
 			Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 			Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 			Scroll.ZIndex = 1001
@@ -7041,7 +7041,7 @@ function Luna:CreateWindow(WindowSettings)
 			local ApplyBtn = Instance.new("TextButton")
 			ApplyBtn.Size = UDim2.new(0.5, -3, 1, 0)
 			ApplyBtn.Text = "Apply"
-			ApplyBtn.BackgroundColor3 = COLOR_ACCENT_C
+			ApplyBtn.BackgroundColor3 = COLOR_ACCENT_A
 			ApplyBtn.TextColor3 = COLOR_TEXT
 			ApplyBtn.Font = Enum.Font.GothamBold
 			ApplyBtn.TextSize = 13
@@ -7058,7 +7058,7 @@ function Luna:CreateWindow(WindowSettings)
 			-- Purple gradient on Apply
 			local ApplyGradient = Instance.new("UIGradient")
 			ApplyGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, COLOR_ACCENT_C),
+				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
 				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
 			})
 			ApplyGradient.Rotation = 135
@@ -7078,7 +7078,7 @@ function Luna:CreateWindow(WindowSettings)
 			end)
 			ApplyBtn.MouseLeave:Connect(function()
 				TweenService:Create(ApplyBtn, TweenInfo.new(0.12), {
-					BackgroundColor3 = COLOR_ACCENT_C,
+					BackgroundColor3 = COLOR_ACCENT_A,
 				}):Play()
 			end)
 			ApplyBtn.MouseButton1Click:Connect(function()
