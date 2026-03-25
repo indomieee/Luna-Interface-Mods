@@ -6751,10 +6751,14 @@ function Luna:CreateWindow(WindowSettings)
 			-- LAYOUT
 			-------------------------------------------------
 
-			local layout = Instance.new("UIListLayout")
-			layout.Padding = UDim.new(0,5)
-			layout.SortOrder = Enum.SortOrder.LayoutOrder
-			layout.Parent = BottomContainer
+			local Layout = Instance.new("UIListLayout")
+			Layout.Parent = Scroll
+			Layout.Padding = UDim.new(0,6)
+			Layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				Scroll.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y)
+			end)
 
 			-------------------------------------------------
 			-- ROW 1 (SELECT BUTTONS)
@@ -6777,19 +6781,18 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 			-- SELECT BUTTONS (NOW SAFE)
 			-------------------------------------------------
-
-			local SelectAll = Instance.new("TextButton")
-			SelectAll.Size = UDim2.new(0.5, -10, 1, 0)
-			SelectAll.Position = UDim2.new(0, 5, 0, 0)
-			SelectAll.Text = "Select All"
-			SelectAll.Parent = Row1
-
+			
 			local UnselectAll = Instance.new("TextButton")
 			UnselectAll.Size = UDim2.new(0.5, -10, 1, 0)
 			UnselectAll.Position = UDim2.new(0.5, 5, 0, 0)
 			UnselectAll.Text = "Unselect All"
 			UnselectAll.Parent = Row1
-
+			
+			local SelectAll = Instance.new("TextButton")
+			SelectAll.Size = UDim2.new(0.5, -10, 1, 0)
+			SelectAll.Position = UDim2.new(0, 5, 0, 0)
+			SelectAll.Text = "Select All"
+			SelectAll.Parent = Row1
 			-------------------------------------------------
 			-- PASS SCROLL AS CONTAINER
 			-------------------------------------------------
@@ -6802,8 +6805,8 @@ function Luna:CreateWindow(WindowSettings)
 				config.Default or {},
 				{
 					SearchBox = SearchBox,
-					SelectAll = SelectAll,
-					UnselectAll = UnselectAll
+					UnselectAll = UnselectAll,
+					SelectAll = SelectAll
 				}
 			)
 
@@ -6818,10 +6821,18 @@ function Luna:CreateWindow(WindowSettings)
 				btn.Text = text
 				btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
 				btn.TextColor3 = Color3.new(1,1,1)
-				btn.Font = Enum.Font.GothamBold
+				btn.Font = Enum.Font.GothamSemibold
 				btn.TextSize = 14
+				btn.AutoButtonColor = false
+				btn.BorderSizePixel = 0
+
 				btn.ZIndex = 1002
 				btn.Parent = Row2
+
+				btn.Visible = (query == "" or string.find(name:lower(), query))
+
+				local corner = Instance.new("UICorner", btn)
+				corner.CornerRadius = UDim.new(0,10)
 
 				Instance.new("UICorner", btn).CornerRadius = UDim.new(0,10)
 
