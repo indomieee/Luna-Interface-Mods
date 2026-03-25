@@ -6664,7 +6664,7 @@ function Luna:CreateWindow(WindowSettings)
 			local COLOR_BG         = Color3.fromRGB(18, 20, 31)   -- deep navy
 			local COLOR_BG_TOP     = Color3.fromRGB(26, 29, 46)   -- slightly lighter top
 			local COLOR_SURFACE    = Color3.fromRGB(255, 255, 255) -- used with transparency
-			local COLOR_ACCENT_A   = Color3.fromRGB(99, 102, 241)  -- indigo
+			local COLOR_ACCENT_A   = Color3.fromRGB(99,102,241)  -- indigo
 			local COLOR_ACCENT_B   = Color3.fromRGB(139, 92, 246)  -- purple
 			local COLOR_ACCENT_C   = Color3.fromRGB(253, 168, 173)  -- Pink
 			local COLOR_TEXT       = Color3.fromRGB(255, 255, 255)
@@ -6750,13 +6750,13 @@ function Luna:CreateWindow(WindowSettings)
 			IconBadgeCorner.CornerRadius = UDim.new(0, 8)
 			IconBadgeCorner.Parent = IconBadge
 
-			local IconBadgeGradient = Instance.new("UIGradient")
-			IconBadgeGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
-				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
-			})
-			IconBadgeGradient.Rotation = 135
-			IconBadgeGradient.Parent = IconBadge
+			-- local IconBadgeGradient = Instance.new("UIGradient")
+			-- IconBadgeGradient.Color = ColorSequence.new({
+			-- 	ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
+			-- 	ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
+			-- })
+			-- IconBadgeGradient.Rotation = 135
+			-- IconBadgeGradient.Parent = IconBadge
 
 			-- Icon glyph (checkmark-ish text substitute)
 			local IconLabel = Instance.new("TextLabel")
@@ -7056,13 +7056,13 @@ function Luna:CreateWindow(WindowSettings)
 			ApplyCorner.Parent = ApplyBtn
 
 			-- Purple gradient on Apply
-			local ApplyGradient = Instance.new("UIGradient")
-			ApplyGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
-				ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
-			})
-			ApplyGradient.Rotation = 135
-			ApplyGradient.Parent = ApplyBtn
+			-- local ApplyGradient = Instance.new("UIGradient")
+			-- ApplyGradient.Color = ColorSequence.new({
+			-- 	ColorSequenceKeypoint.new(0, COLOR_ACCENT_A),
+			-- 	ColorSequenceKeypoint.new(1, COLOR_ACCENT_B),
+			-- })
+			-- ApplyGradient.Rotation = 135
+			-- ApplyGradient.Parent = ApplyBtn
 
 			-- Soft glow stroke around Apply
 			local ApplyStroke = Instance.new("UIStroke")
