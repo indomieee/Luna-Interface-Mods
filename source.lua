@@ -6757,7 +6757,7 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Row1 = Instance.new("Frame")
-			Row1.Size = UDim2.new(1, 0, 0, 35)
+			Row1.Size = UDim2.new(5, 0, 0, 35)
 			Row1.BackgroundTransparency = 1
 			Row1.LayoutOrder = 1
 			Row1.Parent = BottomContainer
@@ -6797,7 +6797,7 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 
 			local Row2 = Instance.new("Frame")
-			Row2.Size = UDim2.new(1, 0, 0, 50)
+			Row2.Size = UDim2.new(5, 0, 0, 35)
 			Row2.BackgroundTransparency = 1
 			Row2.LayoutOrder = 2
 			Row2.Parent = BottomContainer
