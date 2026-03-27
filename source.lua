@@ -2153,7 +2153,8 @@ function Luna:Notification(data) -- action e.g open messages
 			Title = "Missing Title",
 			Content = "Missing or Unknown Content",
 			Icon = "view_in_ar",
-			ImageSource = "Material"
+			ImageSource = "Material",
+			StayVisible = false -- make notif stay visible
 		}, data or {})
 
 		-- Notification Object Creation
@@ -2207,8 +2208,13 @@ function Luna:Notification(data) -- action e.g open messages
 		TweenService:Create(newNotification.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {Transparency = 0.95}):Play()
 		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
 
-		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
-		task.wait(data.Duration or waitDuration)
+		if not data.StayVisible then
+			local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
+			task.wait(data.Duration or waitDuration)
+		else
+			-- keep alive until manually destroyed
+			repeat task.wait() until newNotification:GetAttribute("Destroying")
+		end
 
 		newNotification.Icon.Visible = false
 		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
@@ -2223,9 +2229,33 @@ function Luna:Notification(data) -- action e.g open messages
 
 		TweenService:Create(newNotification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -90, 0, -Notifications:FindFirstChild("UIListLayout").Padding.Offset)}):Play()
 
-		newNotification.Visible = false
-		newNotification:Destroy()
+		if not data.StayVisible then
+			newNotification.Visible = false
+			newNotification:Destroy()
+		else
+			-- wait for manual destroy trigger
+			newNotification:SetAttribute("Persistent", true)
+		end
 	end)
+end
+
+function Luna:RemoveNotification(name)
+    for _, notif in ipairs(Notifications:GetChildren()) do
+        if notif.Name == name then
+            
+            notif:SetAttribute("Destroying", true)
+
+            -- play same exit animation
+            TweenService:Create(notif, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+            TweenService:Create(notif.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+            TweenService:Create(notif.Description, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
+
+            task.wait(0.5)
+
+            notif:Destroy()
+            break
+        end
+    end
 end
 
 local function Unhide(Window, currentTab)
