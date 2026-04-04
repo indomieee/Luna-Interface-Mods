@@ -6318,7 +6318,7 @@ function Luna:CreateWindow(WindowSettings)
 				MultipleOptions = false,
 				SpecialType = nil,
 				Callback = function(Value)
-					selectedConfig = Value
+					selectedConfig = type(Value) == "table" and Value[1] or Value
 				end,
 			})
 
