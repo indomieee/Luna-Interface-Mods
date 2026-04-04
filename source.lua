@@ -6272,38 +6272,70 @@ function Luna:CreateWindow(WindowSettings)
 
 			local configSelection
 
-			Tab:CreateButton({
+			-- Helper
+			local function FeedbackButton(button, text, color)
+				if not button or not button.Set then return end
+
+				button:Set({
+					Name = text,
+					Color = color -- depends on Luna support (see note below)
+				})
+
+				task.delay(2, function()
+					if button then
+						button:Set({
+							Name = "Create Config",
+							Color = nil -- reset
+						})
+					end
+				end)
+			end
+
+
+			local createBtn
+			createBtn = Tab:CreateButton({
 				Name = "Create Config",
 				Description = "Create a config with all of your current settings.",
 				Callback = function()
-					if not inputPath or string.gsub(inputPath, " ", "") == "" then
+					if not inputPath or inputPath:gsub(" ", "") == "" then
 						Luna:Notification({
 							Title = "Interface",
 							Icon = "warning",
-							ImageSource = "Material",
 							Content = "Config name cannot be empty."
 						})
+
+						FeedbackButton(createBtn, "Error!", Color3.fromRGB(255, 80, 80)) -- 🔴
 						return
 					end
 
 					local success, returned = Luna:SaveConfig(inputPath)
+
 					if not success then
 						Luna:Notification({
 							Title = "Interface",
 							Icon = "error",
-							ImageSource = "Material",
-							Content = "Unable to save config, return error: " .. returned
+							Content = "Unable to save config: " .. returned
 						})
+
+						FeedbackButton(createBtn, "Failed ❌", Color3.fromRGB(255, 80, 80)) -- 🔴
+						return
 					end
 
 					Luna:Notification({
 						Title = "Interface",
 						Icon = "info",
-						ImageSource = "Material",
 						Content = string.format("Created config %q", inputPath),
 					})
 
-					configSelection:Set({ Options = Luna:RefreshConfigList() })
+					-- ✅ SAFE REFRESH (NO ERROR)
+					if configSelection and configSelection.Set then
+						configSelection:Set({
+							Options = Luna:RefreshConfigList()
+						})
+					end
+
+					-- ✅ SUCCESS FEEDBACK
+					FeedbackButton(createBtn, "Saved ✔", Color3.fromRGB(80, 200, 120)) -- 🟢
 				end
 			})
 
