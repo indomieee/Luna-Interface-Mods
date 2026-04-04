@@ -32,6 +32,13 @@ local HttpService 		= game:GetService("HttpService")
 local RunService 		= game:GetService("RunService")
 local Localization 		= game:GetService("LocalizationService")
 local Players 			= game:GetService("Players")
+local gameId 			= game.PlaceId
+local configFolder 		= Luna.Folder .. "/configs/" .. gameId
+local autoloadPath 		= Luna.Folder .. "/settings/" .. gameId .. "/autoload.txt"
+
+if not isfolder(configFolder) then
+	makefolder(configFolder)
+end
 
 local player
 repeat
@@ -6340,6 +6347,50 @@ function Luna:CreateWindow(WindowSettings)
 			})
 
 			Tab:CreateButton({
+				Name = "Delete Config",
+				Description = "Delete the selected config file.",
+				Callback = function()
+					if not selectedConfig or selectedConfig == "" then
+						Luna:Notification({
+							Title = "Interface",
+							Icon = "warning",
+							ImageSource = "Material",
+							Content = "No config selected."
+						})
+						return
+					end
+
+					local configPath = Luna.Folder .. "/settings/" .. gameId .. "/" .. selectedConfig .. ".luna"
+
+					if not isfile(configPath) then
+						Luna:Notification({
+							Title = "Interface",
+							Icon = "error",
+							ImageSource = "Material",
+							Content = "Config file does not exist."
+						})
+						return
+					end
+
+					delfile(configPath)
+
+					Luna:Notification({
+						Title = "Interface",
+						Icon = "info",
+						ImageSource = "Material",
+						Content = string.format("Deleted config %q", selectedConfig),
+					})
+
+					-- refresh dropdown
+					configSelection:Set({
+						Options = Luna:RefreshConfigList()
+					})
+
+					selectedConfig = nil
+				end
+			})
+
+			Tab:CreateButton({
 				Name = "Overwrite Config",
 				Description = "Overwrite your current config settings.",
 				Callback = function()
@@ -6377,7 +6428,7 @@ function Luna:CreateWindow(WindowSettings)
 				Description = "Set a config to auto load setting in your next session.",
 				Callback = function()
 					local name = selectedConfig
-					writefile(Luna.Folder .. "/settings/autoload.txt", name)
+					writefile(autoloadPath, name)
 					loadlabel:Set({ Text = "Current autoload config: " .. name })
 
 					Luna:Notification({
@@ -6399,7 +6450,7 @@ function Luna:CreateWindow(WindowSettings)
 				Description = "Delete The Autoload File",
 				Callback = function()
 					local name = selectedConfig
-					delfile(Luna.Folder .. "/settings/autoload.txt")
+					delfile(autoloadPath)
 					loadlabel:Set({ Text = "None" })
 
 					Luna:Notification({
@@ -6411,8 +6462,8 @@ function Luna:CreateWindow(WindowSettings)
 				end,
 			})
 
-			if isfile(Luna.Folder .. "/settings/autoload.txt") then
-				local name = readfile(Luna.Folder .. "/settings/autoload.txt")
+			if isfile(autoloadPath) then
+				local name = readfile(autoloadPath)
 				loadlabel:Set( { Text = "Current autoload config: " .. name })
 			end     
 		end
@@ -6572,117 +6623,6 @@ function Luna:CreateWindow(WindowSettings)
 				})
 			end
 
-		end
-
-
-		local function BuildFolderTree()
-			if isStudio then return "Config system unavailable." end
-			local paths = {
-				Luna.Folder,
-				Luna.Folder .. "/settings"
-			}
-
-			for i = 1, #paths do
-				local str = paths[i]
-				if not isfolder(str) then
-					makefolder(str)
-				end
-			end
-		end
-
-		local function SetFolder()
-
-			if isStudio then return "Config system unavailable." end
-
-			if WindowSettings.ConfigSettings.RootFolder ~= nil and WindowSettings.ConfigSettings.RootFolder ~= "" then
-				Luna.Folder = WindowSettings.ConfigSettings.RootFolder .. "/" .. WindowSettings.ConfigSettings.ConfigFolder
-			else
-				Luna.Folder = WindowSettings.ConfigSettings.ConfigFolder
-			end
-
-			BuildFolderTree()
-		end
-
-		SetFolder()
-
-		function Luna:SaveConfig(Path)
-			if isStudio then return "Config system unavailable." end
-
-			if (not Path) then
-				return false, "Please select a config file."
-			end
-
-			local fullPath = Luna.Folder .. "/settings/" .. Path .. ".luna"
-
-			local data = {
-				objects = {}
-			}
-
-			for flag, option in next, Luna.Options do
-				if not ClassParser[option.Class] then continue end
-				if option.IgnoreConfig then continue end
-
-				table.insert(data.objects, ClassParser[option.Class].Save(flag, option))
-			end	
-
-			local success, encoded = pcall(HttpService.JSONEncode, HttpService, data)
-			if not success then
-				return false, "Unable to encode into JSON data"
-			end
-
-			writefile(fullPath, encoded)
-			return true
-		end
-
-		function Luna:LoadConfig(Path)
-			if isStudio then return "Config system unavailable." end
-
-			if (not Path) then
-				return false, "Please select a config file."
-			end
-
-			local file = Luna.Folder .. "/settings/" .. Path .. ".luna"
-			if not isfile(file) then return false, "Invalid file" end
-
-			local success, decoded = pcall(HttpService.JSONDecode, HttpService, readfile(file))
-			if not success then return false, "Unable to decode JSON data." end
-
-			for _, option in next, decoded.objects do
-				if ClassParser[option.type] then
-					task.spawn(function() 
-						ClassParser[option.type].Load(option.flag, option) 
-					end)
-				end
-			end
-
-			return true
-		end
-
-		function Luna:LoadAutoloadConfig()
-			if isfile(Luna.Folder .. "/settings/autoload.txt") then
-
-				if isStudio then return "Config system unavailable." end
-
-				local name = readfile(Luna.Folder .. "/settings/autoload.txt")
-
-				local success, err = Luna:LoadConfig(name)
-				if not success then
-					return Luna:Notification({
-						Title = "Interface",
-						Icon = "sparkle",
-						ImageSource = "Material",
-						Content = "Failed to load autoload config: " .. err,
-					})
-				end
-
-				Luna:Notification({
-					Title = "Interface",
-					Icon = "sparkle",
-					ImageSource = "Material",
-					Content = string.format("Auto loaded config %q", name),
-				})
-
-			end 
 		end
 
 		function Window:CreateModal(config)
@@ -7128,29 +7068,135 @@ function Luna:CreateWindow(WindowSettings)
 			return Modal
 		end
 
+		local function BuildFolderTree()
+			if isStudio then return "Config system unavailable." end
+
+			local paths = {
+				Luna.Folder,
+				Luna.Folder .. "/settings",
+				Luna.Folder .. "/settings/" .. gameId -- ✅ GAME FOLDER
+			}
+
+			for i = 1, #paths do
+				if not isfolder(paths[i]) then
+					makefolder(paths[i])
+				end
+			end
+		end
+
+
+		local function SetFolder()
+			if isStudio then return "Config system unavailable." end
+
+			if WindowSettings.ConfigSettings.RootFolder ~= nil and WindowSettings.ConfigSettings.RootFolder ~= "" then
+				Luna.Folder = WindowSettings.ConfigSettings.RootFolder .. "/" .. WindowSettings.ConfigSettings.ConfigFolder
+			else
+				Luna.Folder = WindowSettings.ConfigSettings.ConfigFolder
+			end
+
+			BuildFolderTree()
+		end
+
+		SetFolder()
+
+
+		-- SAVE CONFIG
+		function Luna:SaveConfig(Path)
+			if isStudio then return "Config system unavailable." end
+			if not Path then return false, "Please select a config file." end
+
+			local fullPath = Luna.Folder .. "/settings/" .. gameId .. "/" .. Path .. ".luna" -- ✅ UPDATED
+
+			local data = { objects = {} }
+
+			for flag, option in next, Luna.Options do
+				if not ClassParser[option.Class] then continue end
+				if option.IgnoreConfig then continue end
+
+				table.insert(data.objects, ClassParser[option.Class].Save(flag, option))
+			end	
+
+			local success, encoded = pcall(HttpService.JSONEncode, HttpService, data)
+			if not success then
+				return false, "Unable to encode into JSON data"
+			end
+
+			writefile(fullPath, encoded)
+			return true
+		end
+
+
+		-- LOAD CONFIG
+		function Luna:LoadConfig(Path)
+			if isStudio then return "Config system unavailable." end
+			if not Path then return false, "Please select a config file." end
+
+			local file = Luna.Folder .. "/settings/" .. gameId .. "/" .. Path .. ".luna" -- ✅ UPDATED
+
+			if not isfile(file) then return false, "Invalid file (not for this game)" end
+
+			local success, decoded = pcall(HttpService.JSONDecode, HttpService, readfile(file))
+			if not success then return false, "Unable to decode JSON data." end
+
+			for _, option in next, decoded.objects do
+				if ClassParser[option.type] then
+					task.spawn(function()
+						ClassParser[option.type].Load(option.flag, option)
+					end)
+				end
+			end
+
+			return true
+		end
+
+
+		-- AUTOLOAD (GAME-SPECIFIC)
+		function Luna:LoadAutoloadConfig()
+			if isStudio then return "Config system unavailable." end
+
+			local path = Luna.Folder .. "/settings/" .. gameId .. "/autoload.txt" -- ✅ UPDATED
+
+			if isfile(path) then
+				local name = readfile(path)
+
+				local success, err = Luna:LoadConfig(name)
+				if not success then
+					return Luna:Notification({
+						Title = "Interface",
+						Icon = "sparkle",
+						ImageSource = "Material",
+						Content = "Failed to load autoload config: " .. err,
+					})
+				end
+
+				Luna:Notification({
+					Title = "Interface",
+					Icon = "sparkle",
+					ImageSource = "Material",
+					Content = string.format("Auto loaded config %q", name),
+				})
+			end
+		end
+
+
+		-- REFRESH LIST (ONLY CURRENT GAME)
 		function Luna:RefreshConfigList()
 			if isStudio then return "Config system unavailable." end
 
-			local list = listfiles(Luna.Folder .. "/settings")
+			local folder = Luna.Folder .. "/settings/" .. gameId -- ✅ UPDATED
 
+			if not isfolder(folder) then return {} end
+
+			local list = listfiles(folder)
 			local out = {}
+
 			for i = 1, #list do
 				local file = list[i]
+
 				if file:sub(-5) == ".luna" then
-					local pos = file:find(".luna", 1, true)
-					local start = pos
-
-					local char = file:sub(pos, pos)
-					while char ~= "/" and char ~= "\\" and char ~= "" do
-						pos = pos - 1
-						char = file:sub(pos, pos)
-					end
-
-					if char == "/" or char == "\\" then
-						local name = file:sub(pos + 1, start - 1)
-						if name ~= "options" then
-							table.insert(out, name)
-						end
+					local name = file:match(".+/([^/]+)%.luna$")
+					if name and name ~= "options" then
+						table.insert(out, name)
 					end
 				end
 			end
