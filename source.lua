@@ -6290,6 +6290,18 @@ function Luna:CreateWindow(WindowSettings)
 					end
 				end)
 			end
+			
+			configSelection = Tab:CreateDropdown({
+				Name = "Select Config",
+				Description = "Select a config to load your settings on.",
+				Options = Luna:RefreshConfigList(),
+				CurrentOption = {},
+				MultipleOptions = false,
+				SpecialType = nil,
+				Callback = function(Value)
+					selectedConfig = type(Value) == "table" and Value[1] or Value
+				end,
+			})
 
 
 			local createBtn
@@ -6341,18 +6353,6 @@ function Luna:CreateWindow(WindowSettings)
 
 			Tab:CreateSection("Config Load/Settings")
 
-
-			configSelection = Tab:CreateDropdown({
-				Name = "Select Config",
-				Description = "Select a config to load your settings on.",
-				Options = Luna:RefreshConfigList(),
-				CurrentOption = {},
-				MultipleOptions = false,
-				SpecialType = nil,
-				Callback = function(Value)
-					selectedConfig = type(Value) == "table" and Value[1] or Value
-				end,
-			})
 
 			Tab:CreateButton({
 				Name = "Load Config",
