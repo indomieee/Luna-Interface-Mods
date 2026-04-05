@@ -2932,7 +2932,7 @@ function Luna:CreateWindow(WindowSettings)
 						TweenService:Create(Button, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 						TweenService:Create(Button.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 						Button.Title.Text = "Callback Error"
-						print("Luna Interface Suite | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
+						print("Error : "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
 						wait(0.5)
 						Button.Title.Text = ButtonSettings.Name
 						TweenService:Create(Button, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.5}):Play()
@@ -6255,7 +6255,7 @@ function Luna:CreateWindow(WindowSettings)
 			Title.TextTransparency = 1
 			TweenService:Create(Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
-			Tab:CreateSection("Config Creator")
+			Tab:CreateSection("Create Config")
 
 			Tab:CreateInput({
 				Name = "Config Name",
@@ -6291,19 +6291,6 @@ function Luna:CreateWindow(WindowSettings)
 				end)
 			end
 			
-			configSelection = Tab:CreateDropdown({
-				Name = "Select Config",
-				Description = "Select a config to load your settings on.",
-				Options = Luna:RefreshConfigList(),
-				CurrentOption = {},
-				MultipleOptions = false,
-				SpecialType = nil,
-				Callback = function(Value)
-					selectedConfig = type(Value) == "table" and Value[1] or Value
-				end,
-			})
-
-
 			local createBtn
 			createBtn = Tab:CreateButton({
 				Name = "Create Config",
@@ -6340,11 +6327,11 @@ function Luna:CreateWindow(WindowSettings)
 					})
 
 					-- ✅ SAFE REFRESH (NO ERROR)
-					if configSelection and configSelection.Set then
-						configSelection:Set({
-							Options = Luna:RefreshConfigList()
-						})
-					end
+					-- if configSelection and configSelection.Set then
+					-- 	configSelection:Set({
+					-- 		Options = Luna:RefreshConfigList()
+					-- 	})
+					-- end
 
 					-- ✅ SUCCESS FEEDBACK
 					FeedbackButton(createBtn, "Saved ✔", Color3.fromRGB(80, 200, 120)) -- 🟢
@@ -6353,6 +6340,17 @@ function Luna:CreateWindow(WindowSettings)
 
 			Tab:CreateSection("Config Load/Settings")
 
+			configSelection = Tab:CreateDropdown({
+				Name = "Select Config",
+				Description = "Select a config to load your settings on.",
+				Options = Luna:RefreshConfigList(),
+				CurrentOption = {},
+				MultipleOptions = false,
+				SpecialType = nil,
+				Callback = function(Value)
+					selectedConfig = type(Value) == "table" and Value[1] or Value
+				end,
+			})
 
 			Tab:CreateButton({
 				Name = "Load Config",
