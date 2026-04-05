@@ -3923,9 +3923,9 @@ function Luna:CreateWindow(WindowSettings)
 						end
 
 						-- optional external refresh (SAFE)
-						if DropdownSettings.RefreshCallback then
-							DropdownSettings.RefreshCallback(DropdownSettings)
-						end
+						-- if DropdownSettings.RefreshCallback then
+						-- 	DropdownSettings.RefreshCallback(DropdownSettings)
+						-- end
 
 						Refresh()
 
@@ -5722,9 +5722,9 @@ function Luna:CreateWindow(WindowSettings)
 					end
 
 					-- optional external refresh (SAFE)
-					if DropdownSettings.RefreshCallback then
-						DropdownSettings.RefreshCallback(DropdownSettings)
-					end
+					-- if DropdownSettings.RefreshCallback then
+					-- 	DropdownSettings.RefreshCallback(DropdownSettings)
+					-- end
 
 					Refresh()
 
