@@ -6375,7 +6375,14 @@ function Luna:CreateWindow(WindowSettings)
 				end
 			})
 
-			Tab:CreateSection("Config Load/Settings")
+			Tab:CreateSection("Config Settings")
+			
+			local loadlabel
+			
+			loadlabel = Tab:CreateParagraph({
+				Title = "Current Auto Load",
+				Text = "None"
+			})
 
 			configSelection = Tab:CreateDropdown({
 				Name = "Select Config",
@@ -6451,7 +6458,6 @@ function Luna:CreateWindow(WindowSettings)
 					-- refresh dropdown
 					configSelection:Set({
 						Options = Luna:RefreshConfigList(),
-						CurrentOption = {} -- ✅ forces placeholder
 					})
 
 					selectedConfig = nil
@@ -6490,7 +6496,6 @@ function Luna:CreateWindow(WindowSettings)
 				end,
 			})
 
-			local loadlabel
 			Tab:CreateButton({
 				Name = "Set as autoload",
 				Description = "Set a config to auto load setting in your next session.",
@@ -6506,11 +6511,6 @@ function Luna:CreateWindow(WindowSettings)
 						Content = string.format("Set %q to auto load", name),
 					})
 				end,
-			})
-
-			loadlabel = Tab:CreateParagraph({
-				Title = "Current Auto Load",
-				Text = "None"
 			})
 
 			Tab:CreateButton({
