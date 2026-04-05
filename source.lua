@@ -3927,6 +3927,8 @@ function Luna:CreateWindow(WindowSettings)
 							DropdownSettings.RefreshCallback(DropdownSettings)
 						end
 
+						Luna:RefreshConfigList()
+
 						tween(Dropdown.icon, {Rotation = 180})
 						tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
 					else
@@ -5723,6 +5725,8 @@ function Luna:CreateWindow(WindowSettings)
 					if DropdownSettings.RefreshCallback then
 						DropdownSettings.RefreshCallback(DropdownSettings)
 					end
+
+					Luna:RefreshConfigList()
 
 					tween(Dropdown.icon, {Rotation = 180})
 					tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
