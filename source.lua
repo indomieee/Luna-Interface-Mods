@@ -6279,7 +6279,6 @@ function Luna:CreateWindow(WindowSettings)
 			return ColorPickerV
 		end
 
-
 		function Tab:BuildConfigSection()
 			if isStudio then
 				Tab:CreateLabel({Text = "Config system unavailable. (Environment isStudio)", Style = 3})
@@ -6288,6 +6287,8 @@ function Luna:CreateWindow(WindowSettings)
 
 			local inputPath = nil
 			local selectedConfig = nil
+			local configSelection
+			local isUpdatingDropdown = false -- ✅ FIX
 
 			local Title = Elements.Template.Title:Clone()
 			Title.Text = "Configurations"
@@ -6303,39 +6304,48 @@ function Luna:CreateWindow(WindowSettings)
 				Description = "Insert a name for your to be created config.",
 				PlaceholderText = "Name",
 				CurrentValue = "",
-				Numeric = false,
-				MaxCharacters = nil,
-				Enter = false,
 				Callback = function(input)
 					inputPath = input
 				end,
 			})
 
-			local configSelection
-
 			-- Helper
+			local function SafeRefreshDropdown()
+				if configSelection and configSelection.Set then
+					isUpdatingDropdown = true
+
+					configSelection:Set({
+						Options = Luna:RefreshConfigList()
+					})
+
+					task.defer(function()
+						isUpdatingDropdown = false
+					end)
+				end
+			end
+
 			local function FeedbackButton(button, text, color)
 				if not button or not button.Set then return end
 
 				button:Set({
 					Name = text,
-					Color = color -- depends on Luna support (see note below)
+					Color = color
 				})
 
 				task.delay(2, function()
 					if button then
 						button:Set({
 							Name = "Create Config",
-							Color = nil -- reset
+							Color = nil
 						})
 					end
 				end)
 			end
-			
+
+			-- CREATE CONFIG
 			local createBtn
 			createBtn = Tab:CreateButton({
 				Name = "Create Config",
-				Description = "Create a config with all of your current settings.",
 				Callback = function()
 					if not inputPath or inputPath:gsub(" ", "") == "" then
 						Luna:Notification({
@@ -6344,7 +6354,7 @@ function Luna:CreateWindow(WindowSettings)
 							Content = "Config name cannot be empty."
 						})
 
-						FeedbackButton(createBtn, "Error!", Color3.fromRGB(255, 80, 80)) -- 🔴
+						FeedbackButton(createBtn, "Error!", Color3.fromRGB(255,80,80))
 						return
 					end
 
@@ -6357,7 +6367,7 @@ function Luna:CreateWindow(WindowSettings)
 							Content = "Unable to save config: " .. returned
 						})
 
-						FeedbackButton(createBtn, "Failed ❌", Color3.fromRGB(255, 80, 80)) -- 🔴
+						FeedbackButton(createBtn, "Failed ❌", Color3.fromRGB(255,80,80))
 						return
 					end
 
@@ -6367,43 +6377,38 @@ function Luna:CreateWindow(WindowSettings)
 						Content = string.format("Created config %q", inputPath),
 					})
 
-					-- ✅ SAFE REFRESH (NO ERROR)
-					-- if configSelection and configSelection.Set then
-					-- 	configSelection:Set({
-					-- 		Options = Luna:RefreshConfigList()
-					-- 	})
-					-- end
-
-					-- ✅ SUCCESS FEEDBACK
-					FeedbackButton(createBtn, "Saved ✔", Color3.fromRGB(80, 200, 120)) -- 🟢
+					SafeRefreshDropdown() -- ✅ FIXED
+					FeedbackButton(createBtn, "Saved ✔", Color3.fromRGB(80,200,120))
 				end
 			})
 
+			-- LOAD SECTION
 			Tab:CreateSection("Config Load/Settings")
 
 			configSelection = Tab:CreateDropdown({
 				Name = "Select Config",
-				Description = "Select a config to load your settings on.",
 				Options = Luna:RefreshConfigList(),
 				CurrentOption = {},
 				MultipleOptions = false,
-				SpecialType = nil,
+
 				Callback = function(Value)
+					if isUpdatingDropdown then return end -- ✅ FIX
+
 					selectedConfig = type(Value) == "table" and Value[1] or Value
 				end,
 			})
 
 			Tab:CreateButton({
 				Name = "Load Config",
-				Description = "Load your saved config settings.",
 				Callback = function()
+					if not selectedConfig then return end
+
 					local success, returned = Luna:LoadConfig(selectedConfig)
 					if not success then
 						Luna:Notification({
 							Title = "Interface",
 							Icon = "error",
-							ImageSource = "Material",
-							Content = "Unable to load config, return error: " .. returned
+							Content = "Unable to load config: " .. returned
 						})
 						return
 					end
@@ -6411,7 +6416,6 @@ function Luna:CreateWindow(WindowSettings)
 					Luna:Notification({
 						Title = "Interface",
 						Icon = "info",
-						ImageSource = "Material",
 						Content = string.format("Loaded config %q", selectedConfig),
 					})
 				end
@@ -6419,13 +6423,11 @@ function Luna:CreateWindow(WindowSettings)
 
 			Tab:CreateButton({
 				Name = "Delete Config",
-				Description = "Delete the selected config file.",
 				Callback = function()
-					if not selectedConfig or selectedConfig == "" then
+					if not selectedConfig then
 						Luna:Notification({
 							Title = "Interface",
 							Icon = "warning",
-							ImageSource = "Material",
 							Content = "No config selected."
 						})
 						return
@@ -6437,7 +6439,6 @@ function Luna:CreateWindow(WindowSettings)
 						Luna:Notification({
 							Title = "Interface",
 							Icon = "error",
-							ImageSource = "Material",
 							Content = "Config file does not exist."
 						})
 						return
@@ -6448,30 +6449,25 @@ function Luna:CreateWindow(WindowSettings)
 					Luna:Notification({
 						Title = "Interface",
 						Icon = "info",
-						ImageSource = "Material",
 						Content = string.format("Deleted config %q", selectedConfig),
 					})
 
-					-- refresh dropdown
-					configSelection:Set({
-						Options = Luna:RefreshConfigList()
-					})
-
 					selectedConfig = nil
+					SafeRefreshDropdown() -- ✅ FIXED
 				end
 			})
 
 			Tab:CreateButton({
 				Name = "Overwrite Config",
-				Description = "Overwrite your current config settings.",
 				Callback = function()
+					if not selectedConfig then return end
+
 					local success, returned = Luna:SaveConfig(selectedConfig)
 					if not success then
 						Luna:Notification({
 							Title = "Interface",
 							Icon = "error",
-							ImageSource = "Material",
-							Content = "Unable to overwrite config, return error: " .. returned
+							Content = "Unable to overwrite config: " .. returned
 						})
 						return
 					end
@@ -6479,7 +6475,6 @@ function Luna:CreateWindow(WindowSettings)
 					Luna:Notification({
 						Title = "Interface",
 						Icon = "info",
-						ImageSource = "Material",
 						Content = string.format("Overwrote config %q", selectedConfig),
 					})
 				end
@@ -6487,26 +6482,26 @@ function Luna:CreateWindow(WindowSettings)
 
 			Tab:CreateButton({
 				Name = "Refresh Config List",
-				Description = "Refresh the current config list.",
 				Callback = function()
-					configSelection:Set({ Options = Luna:RefreshConfigList() })
+					SafeRefreshDropdown() -- ✅ FIXED
 				end,
 			})
 
+			-- AUTOLOAD
 			local loadlabel
+
 			Tab:CreateButton({
 				Name = "Set as autoload",
-				Description = "Set a config to auto load setting in your next session.",
 				Callback = function()
-					local name = selectedConfig
-					writefile(autoloadPath, name)
-					loadlabel:Set({ Text = "Current autoload config: " .. name })
+					if not selectedConfig then return end
+
+					writefile(autoloadPath, selectedConfig)
+					loadlabel:Set({ Text = "Current autoload config: " .. selectedConfig })
 
 					Luna:Notification({
 						Title = "Interface",
 						Icon = "info",
-						ImageSource = "Material",
-						Content = string.format("Set %q to auto load", name),
+						Content = string.format("Set %q to auto load", selectedConfig),
 					})
 				end,
 			})
@@ -6518,16 +6513,16 @@ function Luna:CreateWindow(WindowSettings)
 
 			Tab:CreateButton({
 				Name = "Delete Autoload",
-				Description = "Delete The Autoload File",
 				Callback = function()
-					local name = selectedConfig
-					delfile(autoloadPath)
+					if isfile(autoloadPath) then
+						delfile(autoloadPath)
+					end
+
 					loadlabel:Set({ Text = "None" })
 
 					Luna:Notification({
 						Title = "Interface",
 						Icon = "info",
-						ImageSource = "Material",
 						Content = "Deleted Autoload",
 					})
 				end,
@@ -6535,8 +6530,8 @@ function Luna:CreateWindow(WindowSettings)
 
 			if isfile(autoloadPath) then
 				local name = readfile(autoloadPath)
-				loadlabel:Set( { Text = "Current autoload config: " .. name })
-			end     
+				loadlabel:Set({ Text = "Current autoload config: " .. name })
+			end
 		end
 
 		local ClassParser = {
