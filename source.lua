@@ -3923,11 +3923,9 @@ function Luna:CreateWindow(WindowSettings)
 						end
 
 						-- optional external refresh (SAFE)
-						-- if DropdownSettings.RefreshCallback then
-						-- 	DropdownSettings.RefreshCallback(DropdownSettings)
-						-- end
-
-						Refresh()
+						if DropdownSettings.RefreshCallback then
+							DropdownSettings.RefreshCallback(DropdownSettings)
+						end
 
 						tween(Dropdown.icon, {Rotation = 180})
 						tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
@@ -5722,11 +5720,9 @@ function Luna:CreateWindow(WindowSettings)
 					end
 
 					-- optional external refresh (SAFE)
-					-- if DropdownSettings.RefreshCallback then
-					-- 	DropdownSettings.RefreshCallback(DropdownSettings)
-					-- end
-
-					Refresh()
+					if DropdownSettings.RefreshCallback then
+						DropdownSettings.RefreshCallback(DropdownSettings)
+					end
 
 					tween(Dropdown.icon, {Rotation = 180})
 					tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
