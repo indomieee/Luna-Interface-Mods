@@ -3904,13 +3904,27 @@ function Luna:CreateWindow(WindowSettings)
 				Dropdown.Parent = TabPage
 				Dropdown.Visible = true
 
+				
+				local function PlayerTableRefresh()
+					table.clear(DropdownSettings.Options)
+
+					for i,v in pairs(Players:GetChildren()) do
+						table.insert(DropdownSettings.Options, v.Name)
+					end
+				end
+
 				local function Toggle()
 					opened = not opened
 
 					if opened then
-						-- 🔁 Refresh data BEFORE resizing (important)
+						-- update player list safely
 						if DropdownSettings.SpecialType == "Player" then
 							PlayerTableRefresh()
+						end
+
+						-- optional external refresh (SAFE)
+						if DropdownSettings.RefreshCallback then
+							DropdownSettings.RefreshCallback(DropdownSettings)
 						end
 
 						Refresh()
@@ -4044,14 +4058,6 @@ function Luna:CreateWindow(WindowSettings)
 								tween(Option, {TextColor3 = Color3.fromRGB(200,200,200)})
 							end
 						end)	
-					end
-				end
-
-				local function PlayerTableRefresh()
-					table.clear(DropdownSettings.Options)
-
-					for i,v in pairs(Players:GetChildren()) do
-						table.insert(DropdownSettings.Options, v.Name)
 					end
 				end
 
@@ -5697,14 +5703,27 @@ function Luna:CreateWindow(WindowSettings)
 
 			Dropdown.Parent = TabPage
 			Dropdown.Visible = true
+			
+			local function PlayerTableRefresh()
+				table.clear(DropdownSettings.Options)
+
+				for i,v in pairs(Players:GetChildren()) do
+					table.insert(DropdownSettings.Options, v.Name)
+				end
+			end
 
 			local function Toggle()
 				opened = not opened
 
 				if opened then
-					-- 🔁 Refresh data BEFORE resizing (important)
+					-- update player list safely
 					if DropdownSettings.SpecialType == "Player" then
 						PlayerTableRefresh()
+					end
+
+					-- optional external refresh (SAFE)
+					if DropdownSettings.RefreshCallback then
+						DropdownSettings.RefreshCallback(DropdownSettings)
 					end
 
 					Refresh()
@@ -5838,14 +5857,6 @@ function Luna:CreateWindow(WindowSettings)
 							tween(Option, {TextColor3 = Color3.fromRGB(200,200,200)})
 						end
 					end)	
-				end
-			end
-
-			local function PlayerTableRefresh()
-				table.clear(DropdownSettings.Options)
-
-				for i,v in pairs(Players:GetChildren()) do
-					table.insert(DropdownSettings.Options, v.Name)
 				end
 			end
 
