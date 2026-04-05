@@ -6450,7 +6450,7 @@ function Luna:CreateWindow(WindowSettings)
 
 					-- refresh dropdown
 					configSelection:Set({
-						Options = list,
+						Options = Luna:RefreshConfigList(),
 						CurrentOption = {} -- ✅ forces placeholder
 					})
 
