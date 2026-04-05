@@ -3906,7 +3906,15 @@ function Luna:CreateWindow(WindowSettings)
 
 				local function Toggle()
 					opened = not opened
+
 					if opened then
+						-- 🔁 Refresh data BEFORE resizing (important)
+						if DropdownSettings.SpecialType == "Player" then
+							PlayerTableRefresh()
+						end
+
+						Refresh()
+
 						tween(Dropdown.icon, {Rotation = 180})
 						tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
 					else
@@ -4040,9 +4048,7 @@ function Luna:CreateWindow(WindowSettings)
 				end
 
 				local function PlayerTableRefresh()
-					for i,v in pairs(DropdownSettings.Options) do
-						table.remove(DropdownSettings.Options, i)
-					end
+					table.clear(DropdownSettings.Options)
 
 					for i,v in pairs(Players:GetChildren()) do
 						table.insert(DropdownSettings.Options, v.Name)
@@ -5694,7 +5700,15 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function Toggle()
 				opened = not opened
+
 				if opened then
+					-- 🔁 Refresh data BEFORE resizing (important)
+					if DropdownSettings.SpecialType == "Player" then
+						PlayerTableRefresh()
+					end
+
+					Refresh()
+
 					tween(Dropdown.icon, {Rotation = 180})
 					tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
 				else
@@ -5828,9 +5842,7 @@ function Luna:CreateWindow(WindowSettings)
 			end
 
 			local function PlayerTableRefresh()
-				for i,v in pairs(DropdownSettings.Options) do
-					table.remove(DropdownSettings.Options, i)
-				end
+				table.clear(DropdownSettings.Options)
 
 				for i,v in pairs(Players:GetChildren()) do
 					table.insert(DropdownSettings.Options, v.Name)
