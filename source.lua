@@ -5653,10 +5653,7 @@ function Luna:CreateWindow(WindowSettings)
 				Luna.Options[Flag] = InputV
 			end
 
-			InputV.Instance = Input
-			
 			return InputV
-
 		end
 
 		-- Dropdown
@@ -6295,7 +6292,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			Tab:CreateSection("Create Config")
 
-			local ConfigNameInput = Tab:CreateInput({
+			Tab:CreateInput({
 				Name = "Config Name",
 				Description = "Insert a name for your to be created config.",
 				PlaceholderText = "Name",
@@ -6307,17 +6304,6 @@ function Luna:CreateWindow(WindowSettings)
 					inputPath = input
 				end,
 			})
-
-			-- 🔥 AUTO FOCUS AFTER UI LOAD
-			task.defer(function()
-				if ConfigNameInput and ConfigNameInput.Instance then
-					ConfigNameInput.Instance.InputFrame.InputBox:CaptureFocus()
-
-					-- optional: move cursor to end
-					local box = ConfigNameInput.Instance.InputFrame.InputBox
-					box.CursorPosition = #box.Text + 1
-				end
-			end)
 
 			local configSelection
 
