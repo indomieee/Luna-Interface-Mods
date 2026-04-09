@@ -6283,19 +6283,19 @@ function Luna:CreateWindow(WindowSettings)
 			local inputPath = nil
 			local selectedConfig = nil
 
-			local Title = Elements.Template.Title:Clone()
-			Title.Text = "Configurations"
-			Title.Visible = true
-			Title.Parent = TabPage
-			Title.TextTransparency = 1
-			TweenService:Create(Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+			-- local Title = Elements.Template.Title:Clone()
+			-- Title.Text = "Configurations"
+			-- Title.Visible = true
+			-- Title.Parent = TabPage
+			-- Title.TextTransparency = 1
+			-- TweenService:Create(Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
 			Tab:CreateSection("Create Config")
 
 			Tab:CreateInput({
 				Name = "Config Name",
 				Description = "Insert a name for your to be created config.",
-				PlaceholderText = "Name",
+				PlaceholderText = "Input Name",
 				CurrentValue = "",
 				Numeric = false,
 				MaxCharacters = nil,
@@ -6333,7 +6333,7 @@ function Luna:CreateWindow(WindowSettings)
 				Callback = function()
 					if not inputPath or inputPath:gsub(" ", "") == "" then
 						Luna:Notification({
-							Title = "Interface",
+							Title = "Error",
 							Icon = "warning",
 							Content = "Config name cannot be empty."
 						})
@@ -6346,7 +6346,7 @@ function Luna:CreateWindow(WindowSettings)
 
 					if not success then
 						Luna:Notification({
-							Title = "Interface",
+							Title = "Error",
 							Icon = "error",
 							Content = "Unable to save config: " .. returned
 						})
@@ -6356,8 +6356,8 @@ function Luna:CreateWindow(WindowSettings)
 					end
 
 					Luna:Notification({
-						Title = "Interface",
-						Icon = "info",
+						Title = "Success",
+						Icon = "check",
 						Content = string.format("Created config %q", inputPath),
 					})
 
