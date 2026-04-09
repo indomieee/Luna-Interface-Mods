@@ -5507,7 +5507,7 @@ function Luna:CreateWindow(WindowSettings)
 				MaxCharacters = nil,
 				Callback = function(Text)
 
-				end, -- 52
+				end,
 			}, InputSettings or {})
 
 			InputV.CurrentValue = InputSettings.CurrentValue
@@ -5547,7 +5547,19 @@ function Luna:CreateWindow(WindowSettings)
 			TweenService:Create(Input.InputFrame.InputBox, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
 			Input.InputFrame.InputBox.PlaceholderText = InputSettings.PlaceholderText
-			Input.InputFrame.Size = UDim2.new(0, Input.InputFrame.InputBox.TextBounds.X + 52, 0, 30)
+
+			-- FIX 1: minimum width of 120 so the box is always easy to click
+			local minWidth = 120
+			Input.InputFrame.Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 30)
+
+			-- FIX 2: clicking anywhere on the row focuses the input box
+			Input.InputButton.MouseButton1Click:Connect(function()  -- if Input uses a Button
+				Input.InputFrame.InputBox:CaptureFocus()
+			end)
+			-- If the parent is a Frame (not a button), use this instead:
+			Input.MouseButton1Click:Connect(function()
+				Input.InputFrame.InputBox:CaptureFocus()
+			end)
 
 			Input.InputFrame.InputBox.FocusLost:Connect(function(bleh)
 
@@ -5593,7 +5605,8 @@ function Luna:CreateWindow(WindowSettings)
 						Input.InputFrame.InputBox.Text = Input.InputFrame.InputBox.Text:sub(1, InputSettings.MaxCharacters)
 					end
 				end
-				TweenService:Create(Input.InputFrame, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Input.InputFrame.InputBox.TextBounds.X + 52, 0, 30)}):Play()
+				-- FIX 1 also applied here: respect minimum width when text changes
+				TweenService:Create(Input.InputFrame, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 30)}):Play()
 				if not InputSettings.Enter then
 					local Success, Response = pcall(function()
 						InputSettings.Callback(Input.InputFrame.InputBox.Text)
@@ -5639,7 +5652,7 @@ function Luna:CreateWindow(WindowSettings)
 				Input.InputFrame.InputBox:CaptureFocus()
 				Input.InputFrame.InputBox.Text = tostring(InputSettings.CurrentValue)
 				Input.InputFrame.InputBox:ReleaseFocus()
-				Input.InputFrame.Size = UDim2.new(0, Input.InputFrame.InputBox.TextBounds.X + 52, 0, 42)
+				Input.InputFrame.Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 42)
 
 				InputV.CurrentValue = InputSettings.CurrentValue
 			end
