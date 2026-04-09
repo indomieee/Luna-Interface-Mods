@@ -5620,6 +5620,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			Input["MouseEnter"]:Connect(function()
 				tween(Input.UIStroke, {Color = Color3.fromRGB(87, 84, 104)})
+				Input.InputFrame.InputBox:CaptureFocus()
 			end)
 
 			Input["MouseLeave"]:Connect(function()
