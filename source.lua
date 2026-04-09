@@ -5552,15 +5552,6 @@ function Luna:CreateWindow(WindowSettings)
 			local minWidth = 120
 			Input.InputFrame.Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 30)
 
-			-- FIX 2: clicking anywhere on the row focuses the input box
-			Input.InputButton.MouseButton1Click:Connect(function()  -- if Input uses a Button
-				Input.InputFrame.InputBox:CaptureFocus()
-			end)
-			-- If the parent is a Frame (not a button), use this instead:
-			Input.MouseButton1Click:Connect(function()
-				Input.InputFrame.InputBox:CaptureFocus()
-			end)
-
 			Input.InputFrame.InputBox.FocusLost:Connect(function(bleh)
 
 				if InputSettings.Enter then
