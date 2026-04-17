@@ -2909,7 +2909,7 @@ function Luna:CreateWindow(WindowSettings)
 					Button.Desc.Text = ButtonSettings.Description
 				end
 				Button.Visible = true
-				Button.Parent = TabPage
+				Button.Parent = ButtonSettings.Parent or TabPage
 
 				Button.UIStroke.Transparency = 1
 				Button.Title.TextTransparency = 1
@@ -3318,7 +3318,7 @@ function Luna:CreateWindow(WindowSettings)
 				end
 
 				Toggle.Visible = true
-				Toggle.Parent = TabPage
+				Toggle.Parent = ToggleSettings.Parent or TabPage
 
 				Toggle.Name = ToggleSettings.Name .. " - Toggle"
 				Toggle.Title.Text = ToggleSettings.Name
@@ -4538,9 +4538,9 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 			local Section = {}
 
-			function Section:AddToggle(args)
+			function Section:AddToggle(args, flag)
 				args.Parent = Content
-				return Tab:CreateToggle(args)
+				return Tab:CreateToggle(args, flag)
 			end
 
 			function Section:AddButton(args)
@@ -4548,9 +4548,9 @@ function Luna:CreateWindow(WindowSettings)
 				return Tab:CreateButton(args)
 			end
 
-			function Section:AddDropdown(args)
+			function Section:AddDropdown(args, flag)
 				args.Parent = Content
-				return Tab:CreateDropdown(args)
+				return Tab:CreateDropdown(args, flag)
 			end
 
 			return Section
