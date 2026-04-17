@@ -4490,6 +4490,11 @@ function Luna:CreateWindow(WindowSettings)
 			Holder.BackgroundTransparency = 1
 			Holder.Parent = Tab.Container
 
+			local HolderLayout = Instance.new("UIListLayout")
+			HolderLayout.Parent = Holder
+			HolderLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			HolderLayout.Padding = UDim.new(0, 6)
+
 			local Button = Instance.new("TextButton")
 			Button.Size = UDim2.new(1, 0, 0, 32)
 			Button.Text = "▼ " .. SectionTitle
@@ -4512,10 +4517,9 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function UpdateSize()
 				local size = Layout.AbsoluteContentSize.Y
-				Content:TweenSize(
-					Open and UDim2.new(1,0,0,size) or UDim2.new(1,0,0,0),
-					"Out","Quad",0.25,true
-				)
+
+				Content.Size = UDim2.new(1, 0, 0, Open and size or 0)
+				Holder.Size = UDim2.new(1, 0, 0, 32 + (Open and size or 0))
 
 				Button.Text = (Open and "▲ " or "▼ ") .. SectionTitle
 			end
