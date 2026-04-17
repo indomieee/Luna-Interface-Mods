@@ -4539,7 +4539,6 @@ function Luna:CreateWindow(WindowSettings)
 
 			-- override its container
 			Section.TabPage = Content
-			Section.Container = Content
 
 			function Section:AddToggle(args, flag)
 				args.Parent = Content
