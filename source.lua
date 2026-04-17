@@ -4486,9 +4486,11 @@ function Luna:CreateWindow(WindowSettings)
 			local SectionTitle = data.Name or "Dropdown Section"
 
 			local Holder = Instance.new("Frame")
-			Holder.Size = UDim2.new(1, 0, 0, 32)
+			Holder.Size = UDim2.new(1, 0, 0, 0)
 			Holder.BackgroundTransparency = 1
 			Holder.Parent = Tab.Container
+			Holder.AutomaticSize = Enum.AutomaticSize.Y
+			Holder.LayoutOrder = 999 -- or increment if needed
 
 			local HolderLayout = Instance.new("UIListLayout")
 			HolderLayout.Parent = Holder
@@ -4509,6 +4511,7 @@ function Luna:CreateWindow(WindowSettings)
 			Content.ClipsDescendants = true
 			Content.BackgroundTransparency = 1
 			Content.Parent = Holder
+			Content.AutomaticSize = Enum.AutomaticSize.Y
 
 			local Layout = Instance.new("UIListLayout", Content)
 			Layout.Padding = UDim.new(0, 6)
@@ -4518,15 +4521,16 @@ function Luna:CreateWindow(WindowSettings)
 			local function UpdateSize()
 				local size = Layout.AbsoluteContentSize.Y
 
-				Content.Size = UDim2.new(1, 0, 0, Open and size or 0)
-				Holder.Size = UDim2.new(1, 0, 0, 32 + (Open and size or 0))
-
+				Content.Visible = Open
 				Button.Text = (Open and "▲ " or "▼ ") .. SectionTitle
 			end
 
+			Content.Visible = false
+
 			Button.MouseButton1Click:Connect(function()
 				Open = not Open
-				UpdateSize()
+				Content.Visible = Open
+				Button.Text = (Open and "▲ " or "▼ ") .. SectionTitle
 			end)
 
 			-- Auto resize holder
