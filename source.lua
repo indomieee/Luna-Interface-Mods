@@ -4483,6 +4483,79 @@ function Luna:CreateWindow(WindowSettings)
 
 		end
 
+		function Tab:CreateDropdownSection(data)
+			local SectionTitle = data.Name or "Dropdown Section"
+
+			local Holder = Instance.new("Frame")
+			Holder.Size = UDim2.new(1, 0, 0, 32)
+			Holder.BackgroundTransparency = 1
+			Holder.Parent = Tab.Container
+
+			local Button = Instance.new("TextButton")
+			Button.Size = UDim2.new(1, 0, 0, 32)
+			Button.Text = "▼ " .. SectionTitle
+			Button.BackgroundColor3 = Color3.fromRGB(30,30,30)
+			Button.TextColor3 = Color3.new(1,1,1)
+			Button.Parent = Holder
+
+			Instance.new("UICorner", Button).CornerRadius = UDim.new(0,8)
+
+			local Content = Instance.new("Frame")
+			Content.Size = UDim2.new(1, 0, 0, 0)
+			Content.ClipsDescendants = true
+			Content.BackgroundTransparency = 1
+			Content.Parent = Holder
+
+			local Layout = Instance.new("UIListLayout", Content)
+			Layout.Padding = UDim.new(0, 6)
+
+			local Open = false
+
+			local function UpdateSize()
+				local size = Layout.AbsoluteContentSize.Y
+				Content:TweenSize(
+					Open and UDim2.new(1,0,0,size) or UDim2.new(1,0,0,0),
+					"Out","Quad",0.25,true
+				)
+
+				Button.Text = (Open and "▲ " or "▼ ") .. SectionTitle
+			end
+
+			Button.MouseButton1Click:Connect(function()
+				Open = not Open
+				UpdateSize()
+			end)
+
+			-- Auto resize holder
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				if Open then
+					Content.Size = UDim2.new(1,0,0,Layout.AbsoluteContentSize.Y)
+				end
+			end)
+
+			-------------------------------------------------
+			-- RETURN OBJECT (IMPORTANT)
+			-------------------------------------------------
+			local Section = {}
+
+			function Section:AddToggle(args)
+				args.Parent = Content
+				return Tab:CreateToggle(args)
+			end
+
+			function Section:AddButton(args)
+				args.Parent = Content
+				return Tab:CreateButton(args)
+			end
+
+			function Section:AddDropdown(args)
+				args.Parent = Content
+				return Tab:CreateDropdown(args)
+			end
+
+			return Section
+		end
+
 		-- Divider
 		function Tab:CreateDivider()
 			local b = Elements.Template.Divider:Clone()
