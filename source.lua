@@ -2855,8 +2855,8 @@ function Luna:CreateWindow(WindowSettings)
 			local Sectiont = Elements.Template.Section:Clone()
 			Sectiont.Text = name
 			Sectiont.Visible = true
-			Sectiont.Parent = TabPage
 			local TabPage = Sectiont.Frame
+			Sectiont.Parent = TabPage
 
 			Sectiont.TextTransparency = 1
 			tween(Sectiont, {TextTransparency = 0})
