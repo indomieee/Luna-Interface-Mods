@@ -6306,7 +6306,6 @@ function Luna:CreateWindow(WindowSettings)
 			container.Size                   = UDim2.new(1, 0, 0, 0)  -- will auto-resize
 			container.AutomaticSize          = Enum.AutomaticSize.Y
 			container.BackgroundTransparency = 1
-			container.ClipDescendants        = true
 			container.Visible                = open
 			container.Parent                 = Tab.ItemHolder
 
