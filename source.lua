@@ -2909,7 +2909,8 @@ function Luna:CreateWindow(WindowSettings)
 					Button.Desc.Text = ButtonSettings.Description
 				end
 				Button.Visible = true
-				Button.Parent = ButtonSettings.Parent or TabPage
+				Button.Parent = TabPage
+
 				Button.UIStroke.Transparency = 1
 				Button.Title.TextTransparency = 1
 				if ButtonSettings.Description ~= nil and ButtonSettings.Description ~= "" then
@@ -3317,7 +3318,7 @@ function Luna:CreateWindow(WindowSettings)
 				end
 
 				Toggle.Visible = true
-				Toggle.Parent = ToggleSettings.Parent or TabPage
+				Toggle.Parent = TabPage
 
 				Toggle.Name = ToggleSettings.Name .. " - Toggle"
 				Toggle.Title.Text = ToggleSettings.Name
@@ -4480,82 +4481,6 @@ function Luna:CreateWindow(WindowSettings)
 
 			return Section
 
-		end
-
-		function Tab:CreateDropdownSection(data)
-			local SectionTitle = data.Name or "Dropdown Section"
-
-			local Holder = Instance.new("Frame")
-			Holder.Size = UDim2.new(1, 0, 0, 0)
-			Holder.BackgroundTransparency = 1
-			Holder.Parent = Tab.Container
-			Holder.AutomaticSize = Enum.AutomaticSize.Y
-			Holder.LayoutOrder = 999 -- or increment if needed
-
-			local HolderLayout = Instance.new("UIListLayout")
-			HolderLayout.Parent = Holder
-			HolderLayout.SortOrder = Enum.SortOrder.LayoutOrder
-			HolderLayout.Padding = UDim.new(0, 6)
-
-			local Button = Instance.new("TextButton")
-			Button.Size = UDim2.new(1, 0, 0, 32)
-			Button.Text = "▼ " .. SectionTitle
-			Button.BackgroundColor3 = Color3.fromRGB(30,30,30)
-			Button.TextColor3 = Color3.new(1,1,1)
-			Button.Parent = Holder
-
-			Instance.new("UICorner", Button).CornerRadius = UDim.new(0,8)
-
-			local Content = Instance.new("Frame")
-			Content.Size = UDim2.new(1, 0, 0, 0)
-			Content.ClipsDescendants = true
-			Content.BackgroundTransparency = 1
-			Content.Parent = Holder
-			Content.AutomaticSize = Enum.AutomaticSize.Y
-
-			local Layout = Instance.new("UIListLayout", Content)
-			Layout.Padding = UDim.new(0, 6)
-
-			local Open = false
-
-			local function UpdateSize()
-				local size = Layout.AbsoluteContentSize.Y
-
-				Content.Visible = Open
-				Button.Text = (Open and "▲ " or "▼ ") .. SectionTitle
-			end
-
-			Content.Visible = false
-
-			Button.MouseButton1Click:Connect(function()
-				Open = not Open
-				Content.Visible = Open
-				Button.Text = (Open and "▲ " or "▼ ") .. SectionTitle
-			end)
-
-			-- Auto resize holder
-			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				if Open then
-					Content.Size = UDim2.new(1,0,0,Layout.AbsoluteContentSize.Y)
-				end
-			end)
-
-			-------------------------------------------------
-			-- RETURN OBJECT (IMPORTANT)
-			-------------------------------------------------
-			local RealSection = Tab:CreateSection("")
-
-			function RealSection:AddToggle(args, flag)
-				args.Parent = Content
-				return RealSection:CreateToggle(args, flag)
-			end
-
-			function RealSection:AddButton(args)
-				args.Parent = Content
-				return RealSection:CreateButton(args)
-			end
-
-			return RealSection
 		end
 
 		-- Divider
@@ -6351,6 +6276,59 @@ function Luna:CreateWindow(WindowSettings)
 			SafeCallback(ColorPickerSettings.Color)
 
 			return ColorPickerV
+		end
+
+		function Tab:CreateGroup(opts)
+			local title    = opts.Name or "Group"
+			local open     = opts.DefaultOpen ~= false  -- open by default unless specified
+			local Content  = opts.Content               -- a function(group) that builds children
+
+			-- === HEADER BUTTON ===
+			local header = Instance.new("TextButton")
+			header.Size                   = UDim2.new(1, 0, 0, 36)
+			header.BackgroundColor3       = Color3.fromRGB(30, 30, 40)
+			header.BackgroundTransparency = 0.2
+			header.Text                   = (open and "▼  " or "▶  ") .. title
+			header.TextColor3             = Color3.new(1, 1, 1)
+			header.Font                   = Enum.Font.GothamBold
+			header.TextSize               = 13
+			header.TextXAlignment         = Enum.TextXAlignment.Left
+			header.AutoButtonColor        = false
+			header.Parent                 = Tab.ItemHolder  -- adjust to match your tab's container var
+
+			Instance.new("UICorner", header).CornerRadius = UDim.new(0, 6)
+
+			local padding = Instance.new("UIPadding", header)
+			padding.PaddingLeft = UDim.new(0, 10)
+
+			-- === CHILD CONTAINER ===
+			local container = Instance.new("Frame")
+			container.Size                   = UDim2.new(1, 0, 0, 0)  -- will auto-resize
+			container.AutomaticSize          = Enum.AutomaticSize.Y
+			container.BackgroundTransparency = 1
+			container.ClipDescendants        = true
+			container.Visible                = open
+			container.Parent                 = Tab.ItemHolder
+
+			local listLayout = Instance.new("UIListLayout", container)
+			listLayout.SortOrder  = Enum.SortOrder.LayoutOrder
+			listLayout.Padding    = UDim.new(0, 4)
+
+			-- A group proxy so Content() can call Tab-like methods scoped to container
+			local Group = setmetatable({}, { __index = Tab })
+			Group.ItemHolder = container
+
+			-- Toggle open/close
+			header.MouseButton1Click:Connect(function()
+				open = not open
+				container.Visible = open
+				header.Text = (open and "▼  " or "▶  ") .. title
+			end)
+
+			-- Build children
+			if Content then Content(Group) end
+
+			return Group
 		end
 
 
