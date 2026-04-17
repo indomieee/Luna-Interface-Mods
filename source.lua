@@ -4539,25 +4539,19 @@ function Luna:CreateWindow(WindowSettings)
 			-------------------------------------------------
 			-- RETURN OBJECT (IMPORTANT)
 			-------------------------------------------------
-			local Section = {}
+			local RealSection = Tab:CreateSection("")
 
-			function Section:AddToggle(args, flag)
+			function RealSection:AddToggle(args, flag)
 				args.Parent = Content
-				return Tab:CreateToggle(args, flag)
+				return RealSection:CreateToggle(args, flag)
 			end
 
-			function Section:AddButton(args)
+			function RealSection:AddButton(args)
 				args.Parent = Content
-				return Tab:CreateButton(args)
+				return RealSection:CreateButton(args)
 			end
 
-			function Section:AddDropdown(args, flag)
-				args.Parent = Content
-				return Tab:CreateDropdown(args, flag)
-			end
-			
-
-			return Section
+			return RealSection
 		end
 
 		-- Divider
