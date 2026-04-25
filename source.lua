@@ -1940,6 +1940,24 @@ local function Hide(Window, bind, notif)
 
 	-- show floating reopen icon
 	FloatingGui.Enabled = true
+	FloatingGui.IgnoreGuiInset = true
+	FloatingGui.ResetOnSpawn = false
+
+	-- fix mobile controls
+	local player = game.Players.LocalPlayer
+	local playerModule = require(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"))
+	local controls = playerModule:GetControls()
+	controls:Enable()
+
+	-- prevent UI from blocking input
+	for _, v in ipairs(FloatingGui:GetDescendants()) do
+		if v:IsA("Frame") then
+			v.Active = false
+		end
+	end
+
+	-- Only the button should be clickable
+	FloatingIcon.Active = true
 
 	FloatingIcon.MouseButton1Click:Once(function()
 
