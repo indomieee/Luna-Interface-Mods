@@ -1709,7 +1709,7 @@ local function BlurModule(Frame)
 	frame.Size = UDim2.new(0.95, 0, 0.95, 0)
 	frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 	frame.AnchorPoint = Vector2.new(0.5, 0.5)
-	frame.BackgroundTransparency = 1
+	frame.BackgroundTransparency = 0.7
 
 	local GenUid; do -- Generate unique names for RenderStepped bindings
 		local id = 0
