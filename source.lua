@@ -57,7 +57,7 @@ FloatingGui.Enabled 			= false
 FloatingGui.Parent 		= playerGui
 
 local FloatingIcon 		= Instance.new("ImageButton")
-FloatingIcon.Name 		= "SPYxHUB"
+FloatingIcon.Name 		= "Icons"
 FloatingIcon.Size 		= UDim2.new(0,60,0,60)
 FloatingIcon.Position 	= UDim2.new(0.5,0,0,22)
 FloatingIcon.BackgroundTransparency = 1
@@ -2386,7 +2386,7 @@ function Luna:CreateWindow(WindowSettings)
 	Main.Title.subtitle.Text = WindowSettings.Subtitle
 	Main.Logo.Image = "rbxassetid://" .. WindowSettings.LogoID
 	Main.Visible = true
-	Main.BackgroundTransparency = 0.2
+	Main.BackgroundTransparency = 1
 	Main.Size = MainSize
 	Main.Size = UDim2.fromOffset(Main.Size.X.Offset - 70, Main.Size.Y.Offset - 55)
 	Main.Parent.ShadowHolder.Size = Main.Size
