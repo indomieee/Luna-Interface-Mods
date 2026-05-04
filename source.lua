@@ -5566,6 +5566,18 @@ function Luna:CreateWindow(WindowSettings)
 
 			Input.InputFrame.InputBox.PlaceholderText = InputSettings.PlaceholderText
 
+			local box = Input.InputFrame.InputBox
+
+			box.TextXAlignment = Enum.TextXAlignment.Left
+			box.TextWrapped = false -- IMPORTANT
+			box.ClipsDescendants = true
+			box.ClearTextOnFocus = false
+
+			local padding = Instance.new("UIPadding")
+			padding.PaddingLeft = UDim.new(0, 6)
+			padding.PaddingRight = UDim.new(0, 6)
+			padding.Parent = box
+
 			-- FIX 1: minimum width of 120 so the box is always easy to click
 			local minWidth = 120
 
@@ -5662,18 +5674,6 @@ function Luna:CreateWindow(WindowSettings)
 				local fixedWidth = 200 -- or whatever fits your UI
 
 				Input.InputFrame.Size = UDim2.new(0, fixedWidth, 0, 30)
-
-				local box = Input.InputFrame.InputBox
-
-				box.TextXAlignment = Enum.TextXAlignment.Left
-				box.TextWrapped = false -- IMPORTANT
-				box.ClipsDescendants = true
-				box.ClearTextOnFocus = false
-
-				local padding = Instance.new("UIPadding")
-				padding.PaddingLeft = UDim.new(0, 6)
-				padding.PaddingRight = UDim.new(0, 6)
-				padding.Parent = box
 
 				InputV.CurrentValue = InputSettings.CurrentValue
 			end
