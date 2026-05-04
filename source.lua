@@ -5568,7 +5568,6 @@ function Luna:CreateWindow(WindowSettings)
 
 			-- FIX 1: minimum width of 120 so the box is always easy to click
 			local minWidth = 120
-			Input.InputFrame.Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 30)
 
 			Input.InputFrame.InputBox.FocusLost:Connect(function(bleh)
 
@@ -5614,8 +5613,6 @@ function Luna:CreateWindow(WindowSettings)
 						Input.InputFrame.InputBox.Text = Input.InputFrame.InputBox.Text:sub(1, InputSettings.MaxCharacters)
 					end
 				end
-				-- FIX 1 also applied here: respect minimum width when text changes
-				TweenService:Create(Input.InputFrame, TweenInfo.new(0.55, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 30)}):Play()
 				if not InputSettings.Enter then
 					local Success, Response = pcall(function()
 						InputSettings.Callback(Input.InputFrame.InputBox.Text)
@@ -5662,7 +5659,21 @@ function Luna:CreateWindow(WindowSettings)
 				Input.InputFrame.InputBox:CaptureFocus()
 				Input.InputFrame.InputBox.Text = tostring(InputSettings.CurrentValue)
 				Input.InputFrame.InputBox:ReleaseFocus()
-				Input.InputFrame.Size = UDim2.new(0, math.max(Input.InputFrame.InputBox.TextBounds.X + 52, minWidth), 0, 42)
+				local fixedWidth = 200 -- or whatever fits your UI
+
+				Input.InputFrame.Size = UDim2.new(0, fixedWidth, 0, 30)
+
+				local box = Input.InputFrame.InputBox
+
+				box.TextXAlignment = Enum.TextXAlignment.Left
+				box.TextWrapped = false -- IMPORTANT
+				box.ClipsDescendants = true
+				box.ClearTextOnFocus = false
+
+				local padding = Instance.new("UIPadding")
+				padding.PaddingLeft = UDim.new(0, 6)
+				padding.PaddingRight = UDim.new(0, 6)
+				padding.Parent = box
 
 				InputV.CurrentValue = InputSettings.CurrentValue
 			end
