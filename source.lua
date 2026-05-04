@@ -5568,7 +5568,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local box = Input.InputFrame.InputBox
 
-			box.TextXAlignment = Enum.TextXAlignment.Left
+			box.TextXAlignment = Enum.TextXAlignment.center
 			box.TextWrapped = false -- IMPORTANT
 			box.ClipsDescendants = true
 			box.ClearTextOnFocus = false
