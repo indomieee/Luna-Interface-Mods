@@ -6307,56 +6307,144 @@ function Luna:CreateWindow(WindowSettings)
 			return ColorPickerV
 		end
 
-		function Tab:CreateGroup(opts)
-			local title    = opts.Name or "Group"
-			local open     = opts.DefaultOpen ~= false  -- open by default unless specified
-			local Content  = opts.Content               -- a function(group) that builds children
+		function Tab:CreateGroup(Settings)
 
-			-- === HEADER BUTTON ===
-			local header = Instance.new("TextButton")
-			header.Size                   = UDim2.new(1, 0, 0, 36)
-			header.BackgroundColor3       = Color3.fromRGB(30, 30, 40)
-			header.BackgroundTransparency = 0.2
-			header.Text                   = (open and "▼  " or "▶  ") .. title
-			header.TextColor3             = Color3.new(1, 1, 1)
-			header.Font                   = Enum.Font.GothamBold
-			header.TextSize               = 13
-			header.TextXAlignment         = Enum.TextXAlignment.Left
-			header.AutoButtonColor        = false
-			header.Parent                 = Tab.ItemHolder  -- adjust to match your tab's container var
+			Settings = Kwargify({
+				Name = "Group",
+			}, Settings or {})
 
-			Instance.new("UICorner", header).CornerRadius = UDim.new(0, 6)
+			local opened = true
 
-			local padding = Instance.new("UIPadding", header)
-			padding.PaddingLeft = UDim.new(0, 10)
+			------------------------------------------------
+			-- MAIN FRAME
+			------------------------------------------------
 
-			-- === CHILD CONTAINER ===
-			local container = Instance.new("Frame")
-			container.Size                   = UDim2.new(1, 0, 0, 0)  -- will auto-resize
-			container.AutomaticSize          = Enum.AutomaticSize.Y
-			container.BackgroundTransparency = 1
-			container.Visible                = open
-			container.Parent                 = Tab.ItemHolder
+			local Group = Instance.new("Frame")
+			Group.Name = Settings.Name
+			Group.Parent = TabPage
+			Group.BackgroundColor3 = Color3.fromRGB(20,20,26)
+			Group.BackgroundTransparency = 0.35
+			Group.BorderSizePixel = 0
+			Group.Size = UDim2.new(1, -25, 0, 45)
 
-			local listLayout = Instance.new("UIListLayout", container)
-			listLayout.SortOrder  = Enum.SortOrder.LayoutOrder
-			listLayout.Padding    = UDim.new(0, 4)
+			Instance.new("UICorner", Group).CornerRadius = UDim.new(0, 10)
 
-			-- A group proxy so Content() can call Tab-like methods scoped to container
-			local Group = setmetatable({}, { __index = Tab })
-			Group.ItemHolder = container
+			local Stroke = Instance.new("UIStroke")
+			Stroke.Color = Color3.fromRGB(55,55,70)
+			Stroke.Transparency = 0.4
+			Stroke.Parent = Group
 
-			-- Toggle open/close
-			header.MouseButton1Click:Connect(function()
-				open = not open
-				container.Visible = open
-				header.Text = (open and "▼  " or "▶  ") .. title
+			------------------------------------------------
+			-- HEADER
+			------------------------------------------------
+
+			local Header = Instance.new("TextButton")
+			Header.Parent = Group
+			Header.BackgroundTransparency = 1
+			Header.Size = UDim2.new(1, 0, 0, 40)
+			Header.Text = ""
+
+			local Title = Instance.new("TextLabel")
+			Title.Parent = Header
+			Title.BackgroundTransparency = 1
+			Title.Position = UDim2.new(0, 15, 0, 0)
+			Title.Size = UDim2.new(1, -50, 1, 0)
+			Title.Font = Enum.Font.GothamMedium
+			Title.Text = Settings.Name
+			Title.TextSize = 14
+			Title.TextColor3 = Color3.fromRGB(255,255,255)
+			Title.TextXAlignment = Enum.TextXAlignment.Left
+
+			local Arrow = Instance.new("ImageLabel")
+			Arrow.Parent = Header
+			Arrow.BackgroundTransparency = 1
+			Arrow.AnchorPoint = Vector2.new(0.5,0.5)
+			Arrow.Position = UDim2.new(1,-20,0.5,0)
+			Arrow.Size = UDim2.new(0,16,0,16)
+			Arrow.Image = "rbxassetid://6034818372"
+
+			------------------------------------------------
+			-- CONTENT
+			------------------------------------------------
+
+			local Content = Instance.new("Frame")
+			Content.Parent = Group
+			Content.BackgroundTransparency = 1
+			Content.Position = UDim2.new(0, 0, 0, 40)
+			Content.Size = UDim2.new(1, 0, 0, 0)
+			Content.ClipsDescendants = true
+
+			local Layout = Instance.new("UIListLayout")
+			Layout.Parent = Content
+			Layout.Padding = UDim.new(0, 6)
+
+			local Padding = Instance.new("UIPadding")
+			Padding.Parent = Content
+			Padding.PaddingLeft = UDim.new(0, 10)
+			Padding.PaddingRight = UDim.new(0, 10)
+			Padding.PaddingTop = UDim.new(0, 5)
+			Padding.PaddingBottom = UDim.new(0, 5)
+
+			------------------------------------------------
+			-- RESIZE
+			------------------------------------------------
+
+			local function UpdateSize()
+
+				local contentSize = Layout.AbsoluteContentSize.Y + 10
+
+				TweenService:Create(
+					Group,
+					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+					{
+						Size = opened
+							and UDim2.new(1, -25, 0, 40 + contentSize)
+							or UDim2.new(1, -25, 0, 40)
+					}
+				):Play()
+
+				TweenService:Create(
+					Content,
+					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+					{
+						Size = opened
+							and UDim2.new(1, 0, 0, contentSize)
+							or UDim2.new(1, 0, 0, 0)
+					}
+				):Play()
+
+				TweenService:Create(
+					Arrow,
+					TweenInfo.new(0.25),
+					{
+						Rotation = opened and 180 or 0
+					}
+				):Play()
+			end
+
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSize)
+
+			------------------------------------------------
+			-- TOGGLE
+			------------------------------------------------
+
+			Header.MouseButton1Click:Connect(function()
+				opened = not opened
+				UpdateSize()
 			end)
 
-			-- Build children
-			if Content then Content(Group) end
+			task.wait()
+			UpdateSize()
 
-			return Group
+			------------------------------------------------
+			-- API
+			------------------------------------------------
+
+			local GroupAPI = {}
+
+			GroupAPI.Container = Content
+
+			return GroupAPI
 		end
 
 		function Tab:CreateContainer(Settings)
