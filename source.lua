@@ -6313,7 +6313,7 @@ function Luna:CreateWindow(WindowSettings)
 				Name = "Group",
 			}, Settings or {})
 
-			local opened = true
+			local opened = false
 
 			------------------------------------------------
 			-- MAIN FRAME
@@ -6398,8 +6398,8 @@ function Luna:CreateWindow(WindowSettings)
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, -25, 0, 40 + contentSize)
-							or UDim2.new(1, -25, 0, 40)
+							and UDim2.new(1, 0, 0, contentSize)
+							or UDim2.new(1, 0, 0, 0)
 					}
 				):Play()
 
@@ -6417,7 +6417,7 @@ function Luna:CreateWindow(WindowSettings)
 					Arrow,
 					TweenInfo.new(0.25),
 					{
-						Rotation = opened and 180 or 0
+						Rotation = opened and 0 or 180
 					}
 				):Play()
 			end
