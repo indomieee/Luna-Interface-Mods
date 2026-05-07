@@ -6316,32 +6316,39 @@ function Luna:CreateWindow(WindowSettings)
 			local opened = false
 
 			------------------------------------------------
-			-- MAIN FRAME
+			-- OUTER CONTAINER (invisible, just controls layout height)
 			------------------------------------------------
 
 			local Group = Instance.new("Frame")
 			Group.Name = Settings.Name
 			Group.Parent = TabPage
-			Group.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
-			Group.BackgroundTransparency = 0
+			Group.BackgroundTransparency = 1
 			Group.BorderSizePixel = 0
 			Group.Size = UDim2.new(1, 0, 0, 40)
+			Group.ClipsDescendants = false
 
-			Instance.new("UICorner", Group).CornerRadius = UDim.new(0, 10)
+			------------------------------------------------
+			-- HEADER BOX (the only visible rounded box)
+			------------------------------------------------
+
+			local HeaderBox = Instance.new("Frame")
+			HeaderBox.Parent = Group
+			HeaderBox.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
+			HeaderBox.BackgroundTransparency = 0
+			HeaderBox.BorderSizePixel = 0
+			HeaderBox.Size = UDim2.new(1, 0, 0, 40)
+
+			Instance.new("UICorner", HeaderBox).CornerRadius = UDim.new(0, 8)
 
 			local Stroke = Instance.new("UIStroke")
 			Stroke.Color = Color3.fromRGB(55, 55, 70)
 			Stroke.Transparency = 0.4
-			Stroke.Parent = Group
-
-			------------------------------------------------
-			-- HEADER
-			------------------------------------------------
+			Stroke.Parent = HeaderBox
 
 			local Header = Instance.new("TextButton")
-			Header.Parent = Group
+			Header.Parent = HeaderBox
 			Header.BackgroundTransparency = 1
-			Header.Size = UDim2.new(1, 0, 0, 40)
+			Header.Size = UDim2.new(1, 0, 1, 0)
 			Header.Text = ""
 
 			local Title = Instance.new("TextLabel")
@@ -6364,27 +6371,15 @@ function Luna:CreateWindow(WindowSettings)
 			Arrow.Image = "rbxassetid://6034818372"
 
 			------------------------------------------------
-			-- SEPARATOR
-			------------------------------------------------
-
-			local Separator = Instance.new("Frame")
-			Separator.Parent = Group
-			Separator.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-			Separator.BorderSizePixel = 0
-			Separator.Position = UDim2.new(0, 0, 0, 40)
-			Separator.Size = UDim2.new(1, 0, 0, 1)
-			Separator.Visible = false
-
-			------------------------------------------------
-			-- CONTENT
+			-- CONTENT (below the header box, no border/box)
 			------------------------------------------------
 
 			local Content = Instance.new("Frame")
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 0, 0, 41)
-			Content.Size = UDim2.new(0, 0, 0, 0)
+			Content.Position = UDim2.new(0, 0, 0, 46)
+			Content.Size = UDim2.new(1, 0, 0, 0)
 			Content.ClipsDescendants = true
 
 			local Layout = Instance.new("UIListLayout")
@@ -6394,7 +6389,6 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Padding = Instance.new("UIPadding")
 			Padding.Parent = Content
-			Padding.PaddingTop = UDim.new(0, 6)
 			Padding.PaddingBottom = UDim.new(0, 6)
 
 			------------------------------------------------
@@ -6405,14 +6399,12 @@ function Luna:CreateWindow(WindowSettings)
 
 				local contentSize = Layout.AbsoluteContentSize.Y + 6
 
-				Separator.Visible = opened
-
 				TweenService:Create(
 					Group,
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, 0, 0, 41 + contentSize)
+							and UDim2.new(1, 0, 0, 46 + contentSize)
 							or UDim2.new(1, 0, 0, 40)
 					}
 				):Play()
