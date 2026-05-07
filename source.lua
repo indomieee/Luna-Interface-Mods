@@ -6345,7 +6345,7 @@ function Luna:CreateWindow(WindowSettings)
 			Stroke.Color = Color3.fromRGB(55, 55, 70)
 			Stroke.Transparency = 0.4
 			Stroke.Thickness = 1
-			Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Inset
+			Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border  -- draws outside, not inside
 			Stroke.Parent = HeaderBox
 
 			local Header = Instance.new("TextButton")
