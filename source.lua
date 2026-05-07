@@ -6383,7 +6383,7 @@ function Luna:CreateWindow(WindowSettings)
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 0, 0, 41)  -- shifted down 1px to sit below separator
+			Content.Position = UDim2.new(0, 0, 0, 41)  
 			Content.Size = UDim2.new(0, 0, 0, 0)
 			Content.ClipsDescendants = true
 
@@ -6405,7 +6405,7 @@ function Luna:CreateWindow(WindowSettings)
 
 				local contentSize = Layout.AbsoluteContentSize.Y + 6
 
-				Separator.Visible = opened  -- FIX: show/hide separator with open state
+				Separator.Visible = opened  
 
 				TweenService:Create(
 					Group,
