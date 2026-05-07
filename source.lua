@@ -6307,60 +6307,7 @@ function Luna:CreateWindow(WindowSettings)
 			return ColorPickerV
 		end
 
-		
-		function Tab:CreateGroup(opts)
-			local title    = opts.Name or "Group"
-			local open     = opts.DefaultOpen ~= false  -- open by default unless specified
-			local Content  = opts.Content               -- a function(group) that builds children
-
-			-- === HEADER BUTTON ===
-			local header = Instance.new("TextButton")
-			header.Size                   = UDim2.new(1, 0, 0, 36)
-			header.BackgroundColor3       = Color3.fromRGB(30, 30, 40)
-			header.BackgroundTransparency = 0.2
-			header.Text                   = (open and "▼  " or "▶  ") .. title
-			header.TextColor3             = Color3.new(1, 1, 1)
-			header.Font                   = Enum.Font.GothamBold
-			header.TextSize               = 13
-			header.TextXAlignment         = Enum.TextXAlignment.Left
-			header.AutoButtonColor        = false
-			header.Parent                 = Tab.ItemHolder  -- adjust to match your tab's container var
-
-			Instance.new("UICorner", header).CornerRadius = UDim.new(0, 6)
-
-			local padding = Instance.new("UIPadding", header)
-			padding.PaddingLeft = UDim.new(0, 10)
-
-			-- === CHILD CONTAINER ===
-			local container = Instance.new("Frame")
-			container.Size                   = UDim2.new(1, 0, 0, 0)  -- will auto-resize
-			container.AutomaticSize          = Enum.AutomaticSize.Y
-			container.BackgroundTransparency = 1
-			container.Visible                = open
-			container.Parent                 = Tab.ItemHolder
-
-			local listLayout = Instance.new("UIListLayout", container)
-			listLayout.SortOrder  = Enum.SortOrder.LayoutOrder
-			listLayout.Padding    = UDim.new(0, 4)
-
-			-- A group proxy so Content() can call Tab-like methods scoped to container
-			local Group = setmetatable({}, { __index = Tab })
-			Group.ItemHolder = container
-
-			-- Toggle open/close
-			header.MouseButton1Click:Connect(function()
-				open = not open
-				container.Visible = open
-				header.Text = (open and "▼  " or "▶  ") .. title
-			end)
-
-			-- Build children
-			if Content then Content(Group) end
-
-			return Group
-		end
-
-		function Tab:CreateContainer(Settings)
+		function Tab:CreateGroup(Settings)
 
 			Settings = Kwargify({
 				Name = "Group",
