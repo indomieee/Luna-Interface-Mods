@@ -4743,7 +4743,7 @@ function Luna:CreateWindow(WindowSettings)
 			Slider.Name = SliderSettings.Name .. " - Slider"
 			Slider.Title.Text = SliderSettings.Name
 			Slider.Visible = true
-			Slider.Parent = TabPage
+			Slider.Parent = SliderSettings.Parent or TabPage
 
 			Slider.BackgroundTransparency = 1
 			Slider.UIStroke.Transparency = 1
@@ -4943,7 +4943,7 @@ function Luna:CreateWindow(WindowSettings)
 			end
 
 			Toggle.Visible = true
-			Toggle.Parent = TabPage
+			Toggle.Parent = ToggleSettings.Parent or TabPage
 
 			Toggle.Name = ToggleSettings.Name .. " - Toggle"
 			Toggle.Title.Text = ToggleSettings.Name
@@ -6358,6 +6358,87 @@ function Luna:CreateWindow(WindowSettings)
 
 			return Group
 		end
+
+		function Tab:CreateContainer(Settings)
+
+		Settings = Kwargify({
+			Name = "Container",
+		}, Settings or {})
+
+		local opened = true
+
+		local Container = Elements.Template.Dropdown:Clone()
+
+		Container.Name = Settings.Name
+		Container.Title.Text = Settings.Name
+		Container.Parent = TabPage
+		Container.Visible = true
+
+		------------------------------------------------
+		-- CLEAN DROPDOWN PARTS
+		------------------------------------------------
+
+		Container.Selected.Visible = false
+		Container.List.Visible = true
+
+		------------------------------------------------
+		-- AUTO SIZE
+		------------------------------------------------
+
+		local UIListLayout = Container.List.UIListLayout
+
+		local function UpdateSize()
+
+			local listSize = UIListLayout.AbsoluteContentSize.Y
+
+			local targetY = opened and (45 + listSize + 10) or 38
+
+			tween(Container, {
+				Size = UDim2.new(1, -25, 0, targetY)
+			})
+		end
+
+		UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSize)
+
+		------------------------------------------------
+		-- TOGGLE OPEN/CLOSE
+		------------------------------------------------
+
+		Container.Interact.MouseButton1Click:Connect(function()
+
+			opened = not opened
+
+			tween(Container.icon, {
+				Rotation = opened and 180 or 0
+			})
+
+			Container.List.Visible = opened
+
+			UpdateSize()
+		end)
+
+		------------------------------------------------
+		-- START SIZE
+		------------------------------------------------
+
+		task.wait()
+		UpdateSize()
+
+		------------------------------------------------
+		-- RETURN GROUP API
+		------------------------------------------------
+
+		local Group = {}
+
+		function Group:Add(Element)
+			Element.Parent = Container.List
+			UpdateSize()
+		end
+
+		Group.Frame = Container.List
+
+		return Group
+	end
 
 
 		function Tab:BuildConfigSection()
