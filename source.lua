@@ -6323,7 +6323,7 @@ function Luna:CreateWindow(WindowSettings)
 			Group.Name = Settings.Name
 			Group.Parent = TabPage
 			Group.BackgroundColor3 = Color3.fromRGB(20,20,26)
-			Group.BackgroundTransparency = 0.7
+			Group.BackgroundTransparency = 1
 			Group.BorderSizePixel = 0
 			Group.Size = UDim2.new(1, -25, 0, 45)
 
