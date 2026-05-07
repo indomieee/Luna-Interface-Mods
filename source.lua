@@ -6372,7 +6372,7 @@ function Luna:CreateWindow(WindowSettings)
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
 			Content.Position = UDim2.new(0, 0, 0, 40)
-			Content.Size = UDim2.new(1, 0, 0, 0)
+			Content.Size = UDim2.new(0, 0, 0, 0)
 			Content.ClipsDescendants = true
 
 			local Layout = Instance.new("UIListLayout")
@@ -6382,6 +6382,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Padding = Instance.new("UIPadding")
 			Padding.Parent = Content
+			Padding.PaddingTop = UDim.new(0, 6)
 			Padding.PaddingBottom = UDim.new(0, 6)
 
 			------------------------------------------------
