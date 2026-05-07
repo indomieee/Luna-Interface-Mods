@@ -6398,8 +6398,8 @@ function Luna:CreateWindow(WindowSettings)
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, 0, 0, contentSize)
-							or UDim2.new(1, 0, 0, 0)
+							and UDim2.new(1, -25, 0, 40 + contentSize)
+							or UDim2.new(1, -25, 0, 40)
 					}
 				):Play()
 
