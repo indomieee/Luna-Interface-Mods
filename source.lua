@@ -6377,7 +6377,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Layout = Instance.new("UIListLayout")
 			Layout.Parent = Content
-			Layout.PaddingBottom = UDim.new(0, 6)
+			Layout.Padding= UDim.new(0, 6)
 			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 			local Padding = Instance.new("UIPadding")
