@@ -6400,7 +6400,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function UpdateSize()
 
-				local contentSize = Layout.AbsoluteContentSize.Y + 6
+				local contentSize = Layout.AbsoluteContentSize.Y
 
 				TweenService:Create(
 					Group,
