@@ -6336,7 +6336,8 @@ function Luna:CreateWindow(WindowSettings)
 			HeaderBox.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
 			HeaderBox.BackgroundTransparency = 0
 			HeaderBox.BorderSizePixel = 0
-			HeaderBox.Size = UDim2.new(1, 0, 0, 40)
+			HeaderBox.Position = UDim2.new(0, 2, 0, 0)
+			HeaderBox.Size = UDim2.new(1, -4, 0, 40)
 
 			Instance.new("UICorner", HeaderBox).CornerRadius = UDim.new(0, 8)
 
@@ -6344,7 +6345,7 @@ function Luna:CreateWindow(WindowSettings)
 			Stroke.Color = Color3.fromRGB(55, 55, 70)
 			Stroke.Transparency = 0.4
 			Stroke.Thickness = 1
-			Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border  -- draws outside, not inside
+			Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Inset
 			Stroke.Parent = HeaderBox
 
 			local Header = Instance.new("TextButton")
@@ -6380,8 +6381,8 @@ function Luna:CreateWindow(WindowSettings)
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 0, 0, 46)
-			Content.Size = UDim2.new(1, 0, 0, 0)
+			Content.Position = UDim2.new(0, 2, 0, 46)
+			Content.Size = UDim2.new(1, -4, 0, 0)
 			Content.ClipsDescendants = true
 
 			local Layout = Instance.new("UIListLayout")
