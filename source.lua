@@ -6325,7 +6325,7 @@ function Luna:CreateWindow(WindowSettings)
 			Group.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
 			Group.BackgroundTransparency = 0  -- FIX: was 1 (invisible), now visible
 			Group.BorderSizePixel = 0
-			Group.Size = UDim2.new(1, -25, 0, 45)
+			Group.Size = UDim2.new(1, 0, 0, 45)
 
 			Instance.new("UICorner", Group).CornerRadius = UDim.new(0, 10)
 
@@ -6412,8 +6412,8 @@ function Luna:CreateWindow(WindowSettings)
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, -25, 0, 41 + contentSize)
-							or UDim2.new(1, -25, 0, 40)
+							and UDim2.new(1, 0, 0, 41 + contentSize)
+							or UDim2.new(1, 0, 0, 40)
 					}
 				):Play()
 
