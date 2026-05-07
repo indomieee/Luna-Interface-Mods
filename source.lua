@@ -6322,15 +6322,15 @@ function Luna:CreateWindow(WindowSettings)
 			local Group = Instance.new("Frame")
 			Group.Name = Settings.Name
 			Group.Parent = TabPage
-			Group.BackgroundColor3 = Color3.fromRGB(20,20,26)
-			Group.BackgroundTransparency = 1
+			Group.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
+			Group.BackgroundTransparency = 0  -- FIX: was 1 (invisible), now visible
 			Group.BorderSizePixel = 0
 			Group.Size = UDim2.new(1, -25, 0, 45)
 
 			Instance.new("UICorner", Group).CornerRadius = UDim.new(0, 10)
 
 			local Stroke = Instance.new("UIStroke")
-			Stroke.Color = Color3.fromRGB(55,55,70)
+			Stroke.Color = Color3.fromRGB(55, 55, 70)
 			Stroke.Transparency = 0.4
 			Stroke.Parent = Group
 
@@ -6352,16 +6352,28 @@ function Luna:CreateWindow(WindowSettings)
 			Title.Font = Enum.Font.GothamMedium
 			Title.Text = Settings.Name
 			Title.TextSize = 14
-			Title.TextColor3 = Color3.fromRGB(255,255,255)
+			Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 			Title.TextXAlignment = Enum.TextXAlignment.Left
 
 			local Arrow = Instance.new("ImageLabel")
 			Arrow.Parent = Header
 			Arrow.BackgroundTransparency = 1
-			Arrow.AnchorPoint = Vector2.new(0.5,0.5)
-			Arrow.Position = UDim2.new(1,-20,0.5,0)
-			Arrow.Size = UDim2.new(0,16,0,16)
+			Arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+			Arrow.Position = UDim2.new(1, -20, 0.5, 0)
+			Arrow.Size = UDim2.new(0, 16, 0, 16)
 			Arrow.Image = "rbxassetid://6034818372"
+
+			------------------------------------------------
+			-- FIX: RED SEPARATOR LINE
+			------------------------------------------------
+
+			local Separator = Instance.new("Frame")
+			Separator.Parent = Group
+			Separator.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
+			Separator.BorderSizePixel = 0
+			Separator.Position = UDim2.new(0, 0, 0, 40)
+			Separator.Size = UDim2.new(1, 0, 0, 1)
+			Separator.Visible = false  -- hidden when closed
 
 			------------------------------------------------
 			-- CONTENT
@@ -6371,7 +6383,7 @@ function Luna:CreateWindow(WindowSettings)
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 0, 0, 40)
+			Content.Position = UDim2.new(0, 0, 0, 41)  -- shifted down 1px to sit below separator
 			Content.Size = UDim2.new(0, 0, 0, 0)
 			Content.ClipsDescendants = true
 
@@ -6393,12 +6405,14 @@ function Luna:CreateWindow(WindowSettings)
 
 				local contentSize = Layout.AbsoluteContentSize.Y + 6
 
+				Separator.Visible = opened  -- FIX: show/hide separator with open state
+
 				TweenService:Create(
 					Group,
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, -25, 0, 40 + contentSize)
+							and UDim2.new(1, -25, 0, 41 + contentSize)
 							or UDim2.new(1, -25, 0, 40)
 					}
 				):Play()
@@ -6417,7 +6431,7 @@ function Luna:CreateWindow(WindowSettings)
 					Arrow,
 					TweenInfo.new(0.25),
 					{
-						Rotation = opened and 0 or 180
+						Rotation = opened and 180 or 0  -- FIX: was inverted (0=down closed, 180=up open)
 					}
 				):Play()
 			end
