@@ -6370,20 +6370,15 @@ function Luna:CreateWindow(WindowSettings)
 			local Content = Instance.new("Frame")
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
+			Content.BorderSizePixel = 0
 			Content.Position = UDim2.new(0, 0, 0, 40)
 			Content.Size = UDim2.new(1, 0, 0, 0)
 			Content.ClipsDescendants = true
 
 			local Layout = Instance.new("UIListLayout")
 			Layout.Parent = Content
-			Layout.Padding = UDim.new(0, 6)
-
-			local Padding = Instance.new("UIPadding")
-			Padding.Parent = Content
-			Padding.PaddingLeft = UDim.new(0, 10)
-			Padding.PaddingRight = UDim.new(0, 10)
-			Padding.PaddingTop = UDim.new(0, 5)
-			Padding.PaddingBottom = UDim.new(0, 5)
+			Layout.Padding = UDim.new(0, 4)
+			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 			------------------------------------------------
 			-- RESIZE
@@ -6391,14 +6386,14 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function UpdateSize()
 
-				local contentSize = Layout.AbsoluteContentSize.Y + 10
+				local contentSize = Layout.AbsoluteContentSize.Y
 
 				TweenService:Create(
 					Group,
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, -25, 0, 40 + contentSize)
+							and UDim2.new(1, -25, 0, 38 + contentSize)
 							or UDim2.new(1, -25, 0, 40)
 					}
 				):Play()
