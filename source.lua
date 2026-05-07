@@ -6323,7 +6323,7 @@ function Luna:CreateWindow(WindowSettings)
 			Group.Name = Settings.Name
 			Group.Parent = TabPage
 			Group.BackgroundColor3 = Color3.fromRGB(20,20,26)
-			Group.BackgroundTransparency = 0.35
+			Group.BackgroundTransparency = 0.7
 			Group.BorderSizePixel = 0
 			Group.Size = UDim2.new(1, -25, 0, 45)
 
@@ -6377,7 +6377,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Layout = Instance.new("UIListLayout")
 			Layout.Parent = Content
-			Layout.Padding= UDim.new(0, 6)
+			Layout.Padding = UDim.new(0, 6)
 			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 			local Padding = Instance.new("UIPadding")
