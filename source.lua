@@ -6377,8 +6377,11 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Layout = Instance.new("UIListLayout")
 			Layout.Parent = Content
-			Layout.Padding = UDim.new(0, 4)
 			Layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+			local Padding = Instance.new("UIPadding")
+			Padding.Parent = Content
+			Padding.PaddingBottom = UDim.new(0, 6)
 
 			------------------------------------------------
 			-- RESIZE
@@ -6393,7 +6396,7 @@ function Luna:CreateWindow(WindowSettings)
 					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
 					{
 						Size = opened
-							and UDim2.new(1, -25, 0, 38 + contentSize)
+							and UDim2.new(1, -25, 0, 40 + contentSize)
 							or UDim2.new(1, -25, 0, 40)
 					}
 				):Play()
@@ -7297,7 +7300,7 @@ function Luna:CreateWindow(WindowSettings)
 			Scroll.Parent = Frame
 
 			local Layout = Instance.new("UIListLayout")
-			Layout.PaddingBottom = UDim.new(0, 6)
+			Layout.Padding = UDim.new(0, 4)
 			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 			Layout.Parent = Scroll
 
