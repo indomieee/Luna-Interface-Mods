@@ -7297,7 +7297,7 @@ function Luna:CreateWindow(WindowSettings)
 			Scroll.Parent = Frame
 
 			local Layout = Instance.new("UIListLayout")
-			Layout.Padding = UDim.new(0, 4)
+			Layout.PaddingBottom = UDim.new(0, 6)
 			Layout.SortOrder = Enum.SortOrder.LayoutOrder
 			Layout.Parent = Scroll
 
