@@ -6323,9 +6323,9 @@ function Luna:CreateWindow(WindowSettings)
 			Group.Name = Settings.Name
 			Group.Parent = TabPage
 			Group.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
-			Group.BackgroundTransparency = 0  -- FIX: was 1 (invisible), now visible
+			Group.BackgroundTransparency = 0
 			Group.BorderSizePixel = 0
-			Group.Size = UDim2.new(1, 0, 0, 45)
+			Group.Size = UDim2.new(1, 0, 0, 40)
 
 			Instance.new("UICorner", Group).CornerRadius = UDim.new(0, 10)
 
@@ -6364,7 +6364,7 @@ function Luna:CreateWindow(WindowSettings)
 			Arrow.Image = "rbxassetid://6034818372"
 
 			------------------------------------------------
-			-- FIX: RED SEPARATOR LINE
+			-- SEPARATOR
 			------------------------------------------------
 
 			local Separator = Instance.new("Frame")
@@ -6373,7 +6373,7 @@ function Luna:CreateWindow(WindowSettings)
 			Separator.BorderSizePixel = 0
 			Separator.Position = UDim2.new(0, 0, 0, 40)
 			Separator.Size = UDim2.new(1, 0, 0, 1)
-			Separator.Visible = false  -- hidden when closed
+			Separator.Visible = false
 
 			------------------------------------------------
 			-- CONTENT
@@ -6383,7 +6383,7 @@ function Luna:CreateWindow(WindowSettings)
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 0, 0, 41)  
+			Content.Position = UDim2.new(0, 0, 0, 41)
 			Content.Size = UDim2.new(0, 0, 0, 0)
 			Content.ClipsDescendants = true
 
@@ -6405,7 +6405,7 @@ function Luna:CreateWindow(WindowSettings)
 
 				local contentSize = Layout.AbsoluteContentSize.Y + 6
 
-				Separator.Visible = opened  
+				Separator.Visible = opened
 
 				TweenService:Create(
 					Group,
@@ -6431,7 +6431,7 @@ function Luna:CreateWindow(WindowSettings)
 					Arrow,
 					TweenInfo.new(0.25),
 					{
-						Rotation = opened and 180 or 0  -- FIX: was inverted (0=down closed, 180=up open)
+						Rotation = opened and 180 or 0
 					}
 				):Play()
 			end
