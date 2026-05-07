@@ -6382,6 +6382,26 @@ function Luna:CreateWindow(WindowSettings)
 		Container.List.Visible = true
 
 		------------------------------------------------
+		-- FIX DOUBLE FRAME LOOK
+		------------------------------------------------
+
+		Container.List.UIPadding.PaddingTop = UDim.new(0, 4)
+		Container.List.UIPadding.PaddingBottom = UDim.new(0, 4)
+		Container.List.UIPadding.PaddingLeft = UDim.new(0, 4)
+		Container.List.UIPadding.PaddingRight = UDim.new(0, 4)
+
+		Container.BackgroundTransparency = 0.15
+		Container.List.BackgroundTransparency = 1
+
+		if Container.List:FindFirstChild("UIStroke") then
+			Container.List.UIStroke.Enabled = false
+		end
+
+		if Container.List:FindFirstChild("UICorner") then
+			Container.List.UICorner.CornerRadius = UDim.new(0, 0)
+		end
+
+		------------------------------------------------
 		-- AUTO SIZE
 		------------------------------------------------
 
@@ -6391,7 +6411,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local listSize = UIListLayout.AbsoluteContentSize.Y
 
-			local targetY = opened and (45 + listSize + 10) or 38
+			local targetY = opened and (38 + listSize + 4) or 38
 
 			tween(Container, {
 				Size = UDim2.new(1, -25, 0, targetY)
