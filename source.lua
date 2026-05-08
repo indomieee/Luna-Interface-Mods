@@ -19,7 +19,8 @@ Pookie Pepelss | Bug Tester
 Inori | Configuration Concept
 Latte Softworks and qweery | Lucide Icons And Material Icons
 kirill9655 | Loading Circle
-Deity/dp4pv/x64x70 | Certain Scripting and Testing ig
+Deity/dp4pv/x64x70 | Certain Scripting and Testing it
+Indomieee | Modifier
 
 ]]
 
@@ -2005,6 +2006,8 @@ end
 
 LunaUI.Enabled = false
 LunaUI.SmartWindow.Visible = false
+LunaUI.SmartWindow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+LunaUI.SmartWindow.BackgroundTransparency = 0.3
 LunaUI.Notifications.Template.Visible = false
 LunaUI.DisplayOrder = 1000000000
 
@@ -2019,90 +2022,6 @@ local Navigation = Main.Navigation
 local Tabs = Navigation.Tabs
 local Notifications = LunaUI.Notifications
 local KeySystem : Frame = Main.KeySystem
-
--- local function LoadConfiguration(Configuration, autoload)
--- 	local Data = HttpService:JSONDecode(Configuration)
--- 	local changed
--- 	local notified = false
-
--- 	-- Iterate through current UI elements' flags
--- 	for FlagName, Flag in pairs(Luna.Flags) do
--- 		local FlagValue = Data[FlagName]
-
--- 		if FlagValue then
--- 			task.spawn(function()
--- 				if Flag.Type == "ColorPicker" then
--- 					changed = true
--- 					Flag:Set(UnpackColor(FlagValue))
--- 				else
--- 					if (Flag.CurrentValue or Flag.CurrentKeybind or Flag.CurrentOption or Flag.Color) ~= FlagValue then 
--- 						changed = true
--- 						Flag:Set(FlagValue) 	
--- 					end
--- 				end
--- 			end)
--- 		else
--- 			notified = true
--- 			Luna:Notification({Title = "Config Error", Content = "Luna was unable to load or find '"..FlagName.. "'' in the current script. Check ".. website .." for help.", Icon = "flag"})
--- 		end
--- 	end
--- 	if autoload and notified == false then
--- 		Luna:Notification({
--- 			Title = "Config Autoloaded",
--- 			Content = "The Configuration Has Been Automatically Loaded. Thank You For Using Luna Library",
--- 			Icon = "file-code-2",
--- 			ImageSource = "Lucide"
--- 		})
--- 	elseif notified == false then
--- 		Luna:Notification({
--- 			Title = "Config Loaded",
--- 			Content = "The Configuration Has Been Loaded. Thank You For Using Luna Library",
--- 			Icon = "file-code-2",
--- 			ImageSource = "Lucide"
--- 		})
--- 	end
-
--- 	return changed
--- end
-
--- local function SaveConfiguration(Configuration, ConfigFolder, hasRoot)
--- 	local Data = {}
--- 	for i,v in pairs(Luna.Flags) do
--- 		if v.Type == "ColorPicker" then
--- 			Data[i] = PackColor(v.Color)
--- 		else
--- 			Data[i] = v.CurrentValue or v.CurrentBind or v.CurrentOption or v.Color
--- 		end
--- 	end	
--- 	if hasRoot then
--- 		writefile(ConfigurationFolder .. "/" .. hasRoot .. "/" .. ConfigFolder .. "/" .. Configuration .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
--- 	else
--- 		writefile(ConfigurationFolder .. "/" .. "/" .. ConfigFolder .. Configuration .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
--- 	end
--- end
-
--- local function SetAutoload(ConfigName, ConfigFolder, hasRoot)
--- 	if hasRoot then
--- 		writefile(ConfigurationFolder .. "/" .. hasRoot .. "/" .. ConfigFolder .. "/" .. "autoload.txt", tostring(ConfigName) .. ConfigurationExtension)
--- 	else
--- 		writefile(ConfigurationFolder .. "/" .. "/" .. ConfigFolder .. "autoload.txt", tostring(ConfigName) .. ConfigurationExtension)
--- 	end
--- end
-
--- local function LoadAutoLoad(ConfigFolder, hasRoot)
--- 	local autoload = isfile(ConfigurationFolder .. "/" .. "/" .. ConfigFolder .. "autoload.txt")
--- 	if hasRoot then
--- 		autoload = isfile(ConfigurationFolder .. "/" .. hasRoot .. "/" .. ConfigFolder .. "/" .. "autoload.txt")
--- 	end
-
--- 	if autoload then
--- 		if hasRoot then
--- 			LoadConfiguration(readfile(ConfigurationFolder .. "/" .. hasRoot .. "/" .. ConfigFolder .. "/" .. readfile(ConfigurationFolder .. "/" .. hasRoot .. "/" .. ConfigFolder .. "/" .. "autoload.txt")), true)
--- 		else
--- 			LoadConfiguration(readfile(ConfigurationFolder .. "/" .. ConfigFolder .. "/" .. readfile(ConfigurationFolder .. "/" .. ConfigFolder .. "/" .. "autoload.txt")), true)
--- 		end
--- 	end
--- end
 
 local function Draggable(Bar, Window, enableTaptic, tapticOffset)
 	pcall(function()
@@ -2418,26 +2337,6 @@ function Luna:CreateWindow(WindowSettings)
 	end)
 
 	LoadingFrame.Visible = true
-
-	-- pcall(function()
-	-- 	if not isfolder(ConfigurationFolder) then
-	-- 		makefolder(ConfigurationFolder)
-	-- 	end
-	-- 	if WindowSettings.ConfigSettings.RootFolder then
-	-- 		if not isfolder(ConfigurationFolder .. WindowSettings.ConfigSettings.RootFolder) then
-	-- 			makefolder(ConfigurationFolder .. WindowSettings.ConfigSettings.RootFolder)
-	-- 			if not isfolder(ConfigurationFolder .. WindowSettings.ConfigSettings.RootFolder .. WindowSettings.ConfigSettings.ConfigFolder) then
-	-- 				makefolder(ConfigurationFolder .. WindowSettings.ConfigSettings.RootFolder .. WindowSettings.ConfigSettings.ConfigFolder)
-	-- 			end
-	-- 		end
-	-- 	else
-	-- 		if not isfolder(ConfigurationFolder .. WindowSettings.ConfigSettings.ConfigFolder) then
-	-- 			makefolder(ConfigurationFolder .. WindowSettings.ConfigSettings.ConfigFolder)
-	-- 		end
-	-- 	end
-
-	-- 	LoadAutoLoad(WindowSettings.ConfigSettings.ConfigFolder, WindowSettings.ConfigSettings.RootFolder)
-	-- end)
 
 	LunaUI.Enabled = true
 
@@ -2816,7 +2715,8 @@ function Luna:CreateWindow(WindowSettings)
 		Tab.Page = TabPage
 
 		if TabSettings.ShowTitle == false then
-			TabPage.UIPadding.PaddingTop = UDim.new(0,10)
+			TabPage.UIPadding.PaddingTop = UDim.new(0, 10)
+			TabPage.UIPadding.PaddingLeft = UDim.new(0, 5)
 		end
 
 		TabPage.LayoutOrder = #Elements:GetChildren() - 3
@@ -2866,14 +2766,38 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Section = {}
 
-			if name == nil then name = "Section" end
+			if not name then
+				name = "Section"
+			end
 
-			Section.Name = name
+			------------------------------------------------
+			-- FIND GROUP
+			------------------------------------------------
+
+			local groupName = string.match(name, "^(%S+Group)")
+			local cleanName = string.gsub(name, "^%S+Group%s*", "")
+
+			------------------------------------------------
+			-- USE CLEAN NAME
+			------------------------------------------------
+
+			Section.Name = cleanName ~= "" and cleanName or name
+
+			------------------------------------------------
+			-- FIND GROUP OBJECT
+			------------------------------------------------
+
+			local targetParent = TabPage
+
+			if groupName then
+				targetParent = Tab.Groups[groupName].Container
+			end
 
 			local Sectiont = Elements.Template.Section:Clone()
-			Sectiont.Text = name
+			Sectiont.Text = Section.Name
 			Sectiont.Visible = true
 			Sectiont.Parent = TabPage
+			Sectiont.Parent = targetParent
 			local TabPage = Sectiont.Frame
 
 			Sectiont.TextTransparency = 1
@@ -3310,7 +3234,6 @@ function Luna:CreateWindow(WindowSettings)
 				end)
 
 				return SliderV
-
 			end
 
 			-- Toggle
@@ -3325,7 +3248,6 @@ function Luna:CreateWindow(WindowSettings)
 					Callback = function(Value)
 					end,
 				}, ToggleSettings or {})
-
 
 				local Toggle
 
@@ -3487,7 +3409,6 @@ function Luna:CreateWindow(WindowSettings)
 				end
 
 				return ToggleV
-
 			end
 
 			-- Bind
@@ -3670,7 +3591,6 @@ function Luna:CreateWindow(WindowSettings)
 				end)
 
 				function BindV:Set(NewBindSettings)
-
 					NewBindSettings = Kwargify({
 						Name = BindSettings.Name,
 						Description = BindSettings.Description,
@@ -3705,7 +3625,6 @@ function Luna:CreateWindow(WindowSettings)
 				end
 
 				-- Luna.Flags[BindSettings.Flag] = BindSettings
-
 				return BindV
 
 			end
@@ -3794,7 +3713,6 @@ function Luna:CreateWindow(WindowSettings)
 					if InputSettings.RemoveTextAfterFocusLost then
 						Input.InputFrame.InputBox.Text = ""
 					end
-
 				end)
 
 				if InputSettings.Numeric then
@@ -3841,7 +3759,6 @@ function Luna:CreateWindow(WindowSettings)
 					tween(Input.UIStroke, {Color = Color3.fromRGB(64,61,76)})
 				end)
 
-
 				function InputV:Set(NewInputSettings)
 
 					NewInputSettings = Kwargify(InputSettings, NewInputSettings or {})
@@ -3874,7 +3791,6 @@ function Luna:CreateWindow(WindowSettings)
 
 
 				return InputV
-
 			end
 
 			-- Dropdown
@@ -3921,7 +3837,6 @@ function Luna:CreateWindow(WindowSettings)
 
 				Dropdown.Parent = TabPage
 				Dropdown.Visible = true
-
 				
 				local function PlayerTableRefresh()
 					table.clear(DropdownSettings.Options)
@@ -3983,7 +3898,6 @@ function Luna:CreateWindow(WindowSettings)
 						end
 					end
 				end)
-
 
 				local function Clear()
 					for _, option in ipairs(Dropdown.List:GetChildren()) do
@@ -4108,7 +4022,6 @@ function Luna:CreateWindow(WindowSettings)
 
 					Players.PlayerAdded:Connect(function() PlayerTableRefresh() end)
 					Players.PlayerRemoving:Connect(function() PlayerTableRefresh() end)
-
 				end
 
 				Refresh()
@@ -4246,7 +4159,6 @@ function Luna:CreateWindow(WindowSettings)
 				-- Luna.Flags[DropdownSettings.Flag] = DropdownSettings
 
 				return DropdownV
-
 			end
 
 			-- Color Picker
@@ -4502,11 +4414,41 @@ function Luna:CreateWindow(WindowSettings)
 		end
 
 		-- Divider
-		function Tab:CreateDivider()
+		function Tab:CreateDivider(name)
+			name = name or ""
+
+			------------------------------------------------
+			-- FIND GROUP PREFIX
+			------------------------------------------------
+
+			local groupName = string.match(name, "^(%S+Group)")
+
+			------------------------------------------------
+			-- PARENT
+			------------------------------------------------
+
+			local targetParent = TabPage
+
+			if groupName and Tab.Groups and Tab.Groups[groupName] then
+				targetParent = Tab.Groups[groupName].Container
+			end
+
+			------------------------------------------------
+			-- CREATE DIVIDER
+			------------------------------------------------
+
 			local b = Elements.Template.Divider:Clone()
-			b.Parent = TabPage
+
+			b.Parent = targetParent
+			b.Size = UDim2.new(1, 50, 0, 10)
+
 			b.Line.BackgroundTransparency = 1
-			tween(b.Line, {BackgroundTransparency = 0})
+
+			tween(b.Line, {
+				BackgroundTransparency = 0
+			})
+
+			return b
 		end
 
 		-- Button
@@ -4527,18 +4469,22 @@ function Luna:CreateWindow(WindowSettings)
 
 
 			local Button
+			local addSize = 0
 			if ButtonSettings.Description == nil and ButtonSettings.Description ~= "" then
 				Button = Elements.Template.Button:Clone()
 			else
 				Button = Elements.Template.ButtonDesc:Clone()
+				addSize = 10
 			end
 			Button.Name = ButtonSettings.Name
 			Button.Title.Text = ButtonSettings.Name
+			
 			if ButtonSettings.Description ~= nil and ButtonSettings.Description ~= "" then
 				Button.Desc.Text = ButtonSettings.Description
 			end
 			Button.Visible = true
-			Button.Parent = TabPage
+			Button.Parent = ButtonSettings.Parent or TabPage
+			if ButtonSettings.Parent and ButtonSettings.Parent ~= nil then Button.Size = UDim2.new(1, 0, 0, 38 + addSize) end
 
 			Button.UIStroke.Transparency = 1
 			Button.Title.TextTransparency = 1
@@ -4681,13 +4627,15 @@ function Luna:CreateWindow(WindowSettings)
 			Paragraph.Text.Text = ParagraphSettings.Text
 			Paragraph.Visible = true
 			Paragraph.Parent = TabPage
+			Paragraph.Parent = ParagraphSettings.Parent or TabPage
+			if ParagraphSettings.Parent and ParagraphSettings.Parent ~= nil then Paragraph.Size = UDim2.new(1, 0, 0, 80) end
 
-			Paragraph.BackgroundTransparency = 1
+			Paragraph.BackgroundTransparency = 0.5
 			Paragraph.UIStroke.Transparency = 1
 			Paragraph.Title.TextTransparency = 1
 			Paragraph.Text.TextTransparency = 1
 
-			TweenService:Create(Paragraph, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 1}):Play()
+			TweenService:Create(Paragraph, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.5}):Play()
 			TweenService:Create(Paragraph.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0.5}):Play()
 			TweenService:Create(Paragraph.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 			TweenService:Create(Paragraph.Text, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
@@ -4744,6 +4692,7 @@ function Luna:CreateWindow(WindowSettings)
 			Slider.Title.Text = SliderSettings.Name
 			Slider.Visible = true
 			Slider.Parent = SliderSettings.Parent or TabPage
+			if SliderSettings.Parent and SliderSettings.Parent ~= nil then Slider.Size = UDim2.new(1, 0, 0, 50) end
 
 			Slider.BackgroundTransparency = 1
 			Slider.UIStroke.Transparency = 1
@@ -4944,6 +4893,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			Toggle.Visible = true
 			Toggle.Parent = ToggleSettings.Parent or TabPage
+			if ToggleSettings.Parent and ToggleSettings.Parent ~= nil then Toggle.Size = UDim2.new(1, 0, 0, 38) end
 
 			Toggle.Name = ToggleSettings.Name .. " - Toggle"
 			Toggle.Title.Text = ToggleSettings.Name
@@ -5536,8 +5486,10 @@ function Luna:CreateWindow(WindowSettings)
 			end
 
 			local Input 
+			local addSize = 0
 			if descriptionbool then
 				Input = Elements.Template.InputDesc:Clone()
+				addSize = 10
 			else
 				Input = Elements.Template.Input:Clone()
 			end
@@ -5546,7 +5498,8 @@ function Luna:CreateWindow(WindowSettings)
 			Input.Title.Text = InputSettings.Name
 			if descriptionbool then Input.Desc.Text = InputSettings.Description end
 			Input.Visible = true
-			Input.Parent = TabPage
+			Input.Parent = InputSettings.Parent or TabPage
+			if InputSettings.Parent and InputSettings.Parent ~= nil then Input.Size = UDim2.new(1, 0, 0, 38 + addSize) end
 
 			Input.BackgroundTransparency = 1
 			Input.UIStroke.Transparency = 1
@@ -5577,9 +5530,6 @@ function Luna:CreateWindow(WindowSettings)
 			padding.PaddingLeft = UDim.new(0, 6)
 			padding.PaddingRight = UDim.new(0, 6)
 			padding.Parent = box
-
-			-- FIX 1: minimum width of 120 so the box is always easy to click
-			local minWidth = 120
 
 			Input.InputFrame.InputBox.FocusLost:Connect(function(bleh)
 
@@ -5718,6 +5668,7 @@ function Luna:CreateWindow(WindowSettings)
 			if descriptionbool then
 				closedsize = 48
 				openedsize = 170
+
 			elseif not descriptionbool then
 				closedsize = 38
 				openedsize = 160
@@ -5731,7 +5682,14 @@ function Luna:CreateWindow(WindowSettings)
 			Dropdown.Title.Text = DropdownSettings.Name
 			if descriptionbool then Dropdown.Desc.Text = DropdownSettings.Description end
 
-			Dropdown.Parent = TabPage
+			Dropdown.Parent = DropdownSettings.Parent or TabPage
+
+			local XOffset = -25
+			if DropdownSettings.Parent and DropdownSettings.Parent ~= nil then 
+				XOffset = 0 
+				Dropdown.Size = UDim2.new(1, XOffset, 0, closedsize)
+			end
+
 			Dropdown.Visible = true
 			
 			local function PlayerTableRefresh()
@@ -5757,10 +5715,10 @@ function Luna:CreateWindow(WindowSettings)
 					end
 
 					tween(Dropdown.icon, {Rotation = 180})
-					tween(Dropdown, {Size = UDim2.new(1, -25, 0, openedsize)})
+					tween(Dropdown, {Size = UDim2.new(1, XOffset, 0, openedsize)})
 				else
 					tween(Dropdown.icon, {Rotation = 0})
-					tween(Dropdown, {Size = UDim2.new(1, -25, 0, closedsize)})
+					tween(Dropdown, {Size = UDim2.new(1, XOffset, 0, closedsize)})
 				end
 			end
 
@@ -6057,7 +6015,6 @@ function Luna:CreateWindow(WindowSettings)
 			-- Luna.Flags[DropdownSettings.Flag] = DropdownSettings
 
 			return DropdownV
-
 		end
 
 		-- Color Picker
@@ -6333,11 +6290,10 @@ function Luna:CreateWindow(WindowSettings)
 
 			local HeaderBox = Instance.new("Frame")
 			HeaderBox.Parent = Group
-			HeaderBox.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
-			HeaderBox.BackgroundTransparency = 0
+			HeaderBox.BackgroundColor3 = Color3.fromRGB(32, 30, 38)
+			HeaderBox.BackgroundTransparency = 0.5
 			HeaderBox.BorderSizePixel = 0
-			HeaderBox.Position = UDim2.new(0, 2, 0, 0)
-			HeaderBox.Size = UDim2.new(1, -4, 0, 40)
+			HeaderBox.Size = UDim2.new(1, 0, 0, 40)
 
 			Instance.new("UICorner", HeaderBox).CornerRadius = UDim.new(0, 8)
 
@@ -6381,8 +6337,8 @@ function Luna:CreateWindow(WindowSettings)
 			Content.Parent = Group
 			Content.BackgroundTransparency = 1
 			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 2, 0, 46)
-			Content.Size = UDim2.new(1, -4, 0, 0)
+			Content.Position = UDim2.new(0, 0, 0, 46)
+			Content.Size = UDim2.new(1, 0, 0, 0)
 			Content.ClipsDescendants = true
 
 			local Layout = Instance.new("UIListLayout")
@@ -6392,6 +6348,9 @@ function Luna:CreateWindow(WindowSettings)
 
 			local Padding = Instance.new("UIPadding")
 			Padding.Parent = Content
+			Padding.PaddingLeft = UDim.new(0, 1)
+			Padding.PaddingRight = UDim.new(0, 1)
+			Padding.PaddingTop = UDim.new(0, 1)
 			Padding.PaddingBottom = UDim.new(0, 6)
 
 			------------------------------------------------
@@ -6400,7 +6359,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			local function UpdateSize()
 
-				local contentSize = Layout.AbsoluteContentSize.Y
+				local contentSize = Layout.AbsoluteContentSize.Y + 2
 
 				TweenService:Create(
 					Group,
@@ -6437,8 +6396,20 @@ function Luna:CreateWindow(WindowSettings)
 			-- TOGGLE
 			------------------------------------------------
 
+			local closedColor = Color3.fromRGB(32, 30, 38)
+			local openedColor = Color3.fromRGB(0, 0, 0)
+
 			Header.MouseButton1Click:Connect(function()
 				opened = not opened
+
+				TweenService:Create(
+					HeaderBox,
+					TweenInfo.new(0.25, Enum.EasingStyle.Quart),
+					{
+						BackgroundColor3 = opened and openedColor or closedColor
+					}
+				):Play()
+
 				UpdateSize()
 			end)
 
@@ -6452,6 +6423,11 @@ function Luna:CreateWindow(WindowSettings)
 			local GroupAPI = {}
 
 			GroupAPI.Container = Content
+
+			Tab.Groups = Tab.Groups or {}
+
+			local groupId = Settings.Id or Settings.Name
+			Tab.Groups[groupId] = GroupAPI
 
 			return GroupAPI
 		end
@@ -6472,15 +6448,20 @@ function Luna:CreateWindow(WindowSettings)
 			-- Title.TextTransparency = 1
 			-- TweenService:Create(Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
-			Tab:CreateSection("Create Config")
+			local ConfigGroup = Tab:CreateGroup({
+				Id 		= "ConfigGroup",
+				Name 	= "Config Settings"
+			})
+			Tab:CreateSection("ConfigGroup Create Config")
 
 			Tab:CreateInput({
-				Name = "Config Name",
-				Description = "Insert a name for your to be created config.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Config Name",
+				Description 	= "Insert a name for your to be created config.",
 				PlaceholderText = "Input Name",
-				CurrentValue = "",
-				Numeric = false,
-				MaxCharacters = nil,
+				CurrentValue 	= "",
+				Numeric 		= false,
+				MaxCharacters 	= nil,
 				Enter = false,
 				Callback = function(input)
 					inputPath = input
@@ -6510,8 +6491,9 @@ function Luna:CreateWindow(WindowSettings)
 			
 			local createBtn
 			createBtn = Tab:CreateButton({
-				Name = "Create Config",
-				Description = "Create a config with all of your current settings.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Create Config",
+				Description 	= "Create a config with all of your current settings.",
 				Callback = function()
 					if not inputPath or inputPath:gsub(" ", "") == "" then
 						Luna:Notification({
@@ -6555,30 +6537,33 @@ function Luna:CreateWindow(WindowSettings)
 				end
 			})
 
-			Tab:CreateSection("Config Settings")
+			Tab:CreateSection("ConfigGroup Config Settings")
 			
 			local loadlabel
 			
 			loadlabel = Tab:CreateParagraph({
-				Title = "Current Auto Load",
-				Text = "None"
+				Parent       	= ConfigGroup.Container,
+				Title 			= "Current Auto Load",
+				Text 			= "None"
 			})
 
 			configSelection = Tab:CreateDropdown({
-				Name = "Select Config",
-				Description = "Select a config to load your settings on.",
-				Options = Luna:RefreshConfigList(),
-				CurrentOption = {},
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Select Config",
+				Description 	= "Select a config to load your settings on.",
+				Options 		= Luna:RefreshConfigList(),
+				CurrentOption 	= {},
 				MultipleOptions = false,
-				SpecialType = nil,
+				SpecialType 	= nil,
 				Callback = function(Value)
 					selectedConfig = type(Value) == "table" and Value[1] or Value
 				end,
 			})
 
 			Tab:CreateButton({
-				Name = "Load Config",
-				Description = "Load your saved config settings.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Load Config",
+				Description 	= "Load your saved config settings.",
 				Callback = function()
 					local success, returned = Luna:LoadConfig(selectedConfig)
 					if not success then
@@ -6601,8 +6586,9 @@ function Luna:CreateWindow(WindowSettings)
 			})
 
 			Tab:CreateButton({
-				Name = "Delete Config",
-				Description = "Delete the selected config file.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Delete Config",
+				Description 	= "Delete the selected config file.",
 				Callback = function()
 					if not selectedConfig or selectedConfig == "" then
 						Luna:Notification({
@@ -6645,8 +6631,9 @@ function Luna:CreateWindow(WindowSettings)
 			})
 
 			Tab:CreateButton({
-				Name = "Overwrite Config",
-				Description = "Overwrite your current config settings.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Overwrite Config",
+				Description 	= "Overwrite your current config settings.",
 				Callback = function()
 					local success, returned = Luna:SaveConfig(selectedConfig)
 					if not success then
@@ -6669,16 +6656,18 @@ function Luna:CreateWindow(WindowSettings)
 			})
 
 			Tab:CreateButton({
-				Name = "Refresh Config List",
-				Description = "Refresh the current config list.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Refresh Config List",
+				Description 	= "Refresh the current config list.",
 				Callback = function()
 					configSelection:Set({ Options = Luna:RefreshConfigList() })
 				end,
 			})
 
 			Tab:CreateButton({
-				Name = "Set as autoload",
-				Description = "Set a config to auto load setting in your next session.",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Set as autoload",
+				Description 	= "Set a config to auto load setting in your next session.",
 				Callback = function()
 					local name = selectedConfig
 					writefile(autoloadPath, name)
@@ -6694,8 +6683,9 @@ function Luna:CreateWindow(WindowSettings)
 			})
 
 			Tab:CreateButton({
-				Name = "Delete Autoload",
-				Description = "Delete The Autoload File",
+				Parent       	= ConfigGroup.Container,
+				Name 			= "Delete Autoload",
+				Description 	= "Delete The Autoload File",
 				Callback = function()
 					local name = selectedConfig
 					delfile(autoloadPath)
@@ -6802,7 +6792,6 @@ function Luna:CreateWindow(WindowSettings)
 			}
 		}
 
-
 		function Tab:BuildThemeSection()
 
 			local Title = Elements.Template.Title:Clone()
@@ -6812,61 +6801,76 @@ function Luna:CreateWindow(WindowSettings)
 			Title.TextTransparency = 1
 			TweenService:Create(Title, TweenInfo.new(0.4, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
-			Tab:CreateSection("Custom Editor")
+			local ThemeGroup = Tab:CreateGroup({
+				Id 		= "ThemeGroup",
+				Name 	= "Theme"
+			})
+			Tab:CreateSection("ThemeGroup Custom Editor")
 
 			local c1cp = Tab:CreateColorPicker({
-				Name = "Color 1",
-				Color = Color3.fromRGB(117, 164, 206),
+				Parent       	= ThemeGroup.Container,
+				Name 			= "Color 1",
+				Color 			= Color3.fromRGB(117, 164, 206),
 			}, "LunaInterfaceSuitePrebuiltCPC1") -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 
 			local c2cp = Tab:CreateColorPicker({
-				Name = "Color 2",
-				Color = Color3.fromRGB(123, 201, 201),
+				Parent       	= ThemeGroup.Container,
+				Name 			= "Color 2",
+				Color 			= Color3.fromRGB(123, 201, 201),
 			}, "LunaInterfaceSuitePrebuiltCPC2")
 
 			local c3cp = Tab:CreateColorPicker({
-				Name = "Color 3",
-				Color = Color3.fromRGB(224, 138, 184),
+				Parent       	= ThemeGroup.Container,
+				Name 			= "Color 3",
+				Color 			= Color3.fromRGB(224, 138, 184),
 			}, "LunaInterfaceSuitePrebuiltCPC3") 
 
 			task.wait(1)
 
+			local function UpdateThemeGradient()
+				local c1 = c1cp.Color or Color3.fromRGB(255,255,255)
+				local c2 = c2cp.Color or Color3.fromRGB(255,255,255)
+				local c3 = c3cp.Color or Color3.fromRGB(255,255,255)
+
+				Luna.ThemeGradient = ColorSequence.new({
+					ColorSequenceKeypoint.new(0.00, c1),
+					ColorSequenceKeypoint.new(0.50, c2),
+					ColorSequenceKeypoint.new(1.00, c3),
+				})
+
+				LunaUI.ThemeRemote.Value = not LunaUI.ThemeRemote.Value
+			end
+
 			c1cp:Set({
-				Callback = function(Value)
-					if c2cp and c3cp then
-						Luna.ThemeGradient = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Value or Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(0.50, c2cp.Color or Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(1.00, c3cp.Color or Color3.fromRGB(255,255,255))}
-						LunaUI.ThemeRemote.Value = not LunaUI.ThemeRemote.Value
-					end
+				Callback = function()
+					UpdateThemeGradient()
 				end
 			})
 
 			c2cp:Set({
-				Callback = function(Value)
-					if c1cp and c3cp then
-						Luna.ThemeGradient = ColorSequence.new{ColorSequenceKeypoint.new(0.00, c1cp.Color or Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(0.50, Value or Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(1.00, c3cp.Color or Color3.fromRGB(255,255,255))}
-						LunaUI.ThemeRemote.Value = not LunaUI.ThemeRemote.Value
-					end
+				Callback = function()
+					UpdateThemeGradient()
 				end
 			})
 
 			c3cp:Set({
-				Callback = function(Valuex)
-					if c2cp and c1cp then
-						Luna.ThemeGradient = ColorSequence.new{ColorSequenceKeypoint.new(0.00, c1cp.Color or Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(0.50, c2cp.Color or Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(1.00, Valuex or Color3.fromRGB(255,255,255))}
-						LunaUI.ThemeRemote.Value = not LunaUI.ThemeRemote.Value
-					end
+				Callback = function()
+					UpdateThemeGradient()
 				end
 			})
 
-			Tab:CreateSection("Preset Gradients")
+			Tab:CreateSection("ThemeGroup Preset Gradients")
 
 			for i,v in pairs(PresetGradients) do
 				Tab:CreateButton({
-					Name = tostring(i),
+					Parent       	= ThemeGroup.Container,
+					Name 			= tostring(i),
 					Callback = function()
 						c1cp:Set({ Color = v[1] })
 						c2cp:Set({ Color = v[2] })
 						c3cp:Set({ Color = v[3] })
+
+						UpdateThemeGradient()
 					end,
 				})
 			end
@@ -7456,7 +7460,7 @@ function Luna:CreateWindow(WindowSettings)
 
 
 	Elements.Parent.Visible = true
-	tween(Elements.Parent, {BackgroundTransparency = 0.1})
+	tween(Elements.Parent, {BackgroundTransparency = 1})
 	Navigation.Visible = true
 	tween(Navigation.Line, {BackgroundTransparency = 0})
 
@@ -7580,238 +7584,6 @@ if isStudio then
 			}
 		}
 	})
-	
-	--[[local Window = Luna:CreateWindow({
-		Name = "Luna Example Window",
-		Subtitle = "Test",
-		LogoID = "6031097225",
-		LoadingEnabled = true,
-		LoadingTitle = "Luna Interface Suite",
-		LoadingSubtitle = "by Nebula Softworks",
-		KeySystem = true,
-		KeySettings = {
-			Title = "Luna Example Key",
-			Subtitle = "Key System",
-			Note = "Please Enter Your Key To Use Example Hub",
-			FileName = "Key", -- the name of the key file. this will be saved in ur RootFolder. However, if you don't have one, it'll save in ur config folder instead
-			SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-			Key = {"Example Key"} -- List of keys that will be accepted by the system, please use a system like Pelican or Luarmor that provide key strings based on your HWID since putting a simple string is very easy to bypass
-		}
-	})
-
-	Luna:Notification({ 
-		Title = "Welcome to Luna",
-		Icon = "sparkle",
-		ImageSource = "Material",
-		Content = "Welcome to the Luna Interface Suite. This Is an Amazing Quality Freemium UI Library For Roblox Exploiting Made By Nebula Softworks. Luna was Created in hopes of improving the standard of UI Library designs by being the golden standard for it. Luna Has Amazing Features like a key system, notification and perfection in aesthetics and design. So, What Are You Waiting For? Start Using Luna Today at " .. website
-	})
-
-	local Tabs = {
-		Main = Window:CreateTab({
-			Name = "Tab Example 1",
-			Icon = "view_in_ar",
-			ImageSource = "Material",
-			ShowTitle = true
-		}),
-		Main2 = Window:CreateTab({
-			Name = "Tab Example 2",
-			Icon = "location_searching",
-			ImageSource = "Material",
-			ShowTitle = false
-		}),
-		Premium = Window:CreateTab({
-			Name = "Premium Tab",
-			Icon = "sparkle",
-			ImageSource = "Material",
-			ShowTitle = true
-		}),
-		Debug = Window:CreateTab({
-			Name = "Debug",
-			Icon = "settings"
-		})
-	}
-
-
-	Window:CreateHomeTab()
-	local bleh =Tabs.Debug:CreateColorPicker()
-	Tabs.Debug:CreateButton({
-		Callback = function()
-			bleh:Set({
-				Color = Color3.fromRGB(0,0,0)
-			})
-		end,
-	})
-
-	Tabs.Main:CreateSection("Section Example")
-	Tabs.Main:CreateButton({
-		Name = "Button Example!",
-		Description = "Every Element Except For Sliders Can Have a description like this"
-	})
-	Tabs.Main:CreateLabel({
-		Text = "Label Example",
-		Style = 1
-	})
-	Tabs.Main:CreateLabel({
-		Text = "Information Example",
-		Style = 2
-	})
-	Tabs.Main:CreateLabel({
-		Text = "Warning Example",
-		Style = 3
-	})
-	Tabs.Main:CreateParagraph({
-		Title = "Paragraph Example ",
-		Text = "This Is A Paragraph. You Can Type Very Long Strings Here And They'll Automatically Fit! This Counts As A Description Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text?"
-	})
-	Tabs.Main:CreateSlider({
-		Name = "Slider Example",
-		Range = {0, 200},
-		Increment = 0.1,
-		CurrentValue = 100,
-		Flag = "Slider",
-	})
-	Tabs.Main:CreateToggle({
-		Name = "Toggle Example",
-		Description = "This Is A Toggle. See I Was Right? Sliders Don't Have Descriptions!",
-		CurrentValue = false,
-	})
-
-	Tabs.Main:CreateBind({
-		Name = "Bind Example",
-		Description = "Btw Using CreateKeybind is deprecated, use CreateBind For Future Binds :)",
-		CurrentKeybind = "Q",
-		HoldToInteract = false,
-	})
-	Tabs.Main:CreateInput({
-		Name = "Dynamic Input Example",
-		Description = "Every Element has :Set(). Sadly this one is broken;the text wont update :(",
-		PlaceholderText = "Input Placeholder",
-		CurrentValue = "",
-		Numeric = false,
-		MaxCharacters = nil,
-		Enter = false
-	})
-	Tabs.Main:CreateDropdown({
-		Name = "Dropdown Example",
-		Description = "U can access a element's values using .Settings!",
-		Options = {"Option 1","Option 2","Option 3","Option 4","Option 5","Option 6"},
-		CurrentOption = "Option 1",
-		MultipleOptions = false,
-		SpecialType = nil
-	})
-
-	Tabs.Main:CreateColorPicker({
-		Name = "Color Picker Example",
-		Color = Color3.fromRGB(86, 171, 128),
-		Flag = "ColorPicker1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-		Callback = function(Value)
-			-- The function that takes place every time the color picker is moved/changed
-			-- The variable (Value) is a Color3fromRGB value based on which color is selected
-		end
-	})
-
-	Tabs.Main2:CreateSection("The Elements Here Are To Show Unique Features")
-	Tabs.Main2:CreateToggle({
-		Name = "Toggle - Default On",
-		Description = "Toggles Can be Onned By Default!",
-		CurrentValue = true
-	})
-	Tabs.Main2:CreateBind({
-		Name = "Hold To Interact - Walkspeed Example",
-		Description = "Binds Can Be Made to only Callback when held",
-		HoldToInteract = true,
-		CurrentBind = "E",
-		Callback = function(v)
-			if v then 
-				Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
-			else
-				Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-			end
-		end,
-	})
-	Tabs.Main2:CreateInput({
-		Name = "Numeric And 12 Max Characters",
-		Description = "You Can Limit The Max Characters or Allow Only Numbers",
-		Numeric = true,
-		MaxCharacters = 12
-	})
-	Tabs.Main2:CreateInput({
-		Name = "Require Enter",
-		Description = "You Can Only make the callback happen after user hits enter",
-		Enter = true
-	})
-	Tabs.Main2:CreateLabel({
-		Text = "Every Element Can be Destroyed as well!"
-	})
-	Tabs.Main2:CreateDropdown({
-		Name = "Dropdown - Multi Options",
-		Description = "Multiple Special Features can be used on the same element!",
-		Options = {"Option 1","Option 2","Option 3","Option 4","Option 5","Option 6"},
-		CurrentOption = {"Option 1","Option 3","Option 6"},
-		MultipleOptions = true
-	})
-	Tabs.Main2:CreateDropdown({
-		Name = "Dropdown - Players",
-		Description = "Luna's Dropdowns Has a built in Player Dropdown!",
-		Options = {"u can put anything here, it wont be shown anyway"},
-		CurrentOption = {"same here, itll be the first option"},
-		MultipleOptions = false,
-		SpecialType = "Player"
-	})
-
-	local s = Tabs.Premium:CreateSection("You can add elements inside section too")
-	s:CreateButton()
-	s:CreateLabel()
-	s:CreateDivider()
-	s:CreateDropdown()
-
-	Tabs.Premium:BuildConfigSection()
-	Tabs.Premium:BuildThemeSection()]]
 end
 
--- THIS IS THE DEBUG DEMO, ONLY USED WHEN TESTING NEW ELEMENTS AND CODE
---[[if isStudio then
-    window = Luna:CreateWindow({LoadingEnabled = false})
-    t1 = window:CreateTab()
-    t2 = window:CreateTab({ Name = "Tab 2", Icon = "location_searching"})
-    Luna:Notification({ 
-        Title = "Welcome to Luna",
-        Icon = "sparkle",
-        ImageSource = "Material",
-        Content = "Welcome to the Luna Interface Suite. This Is an Amazing Quality Freemium UI Library For Roblox Exploiting Made By Nebula Softworks. Luna was Created in hopes of improving the standard of UI Library designs by being the golden standard for it. Luna Has Amazing Features like a key system, notification and perfection in aesthetics and design. So, What Are You Waiting For? Start Using Luna Today at " .. website
-    })
-    t1:CreateSection()
-    local btn = t1:CreateButton({Callback = "", Description = "This Is A Description"})
-    local l = t1:CreateLabel({ Style = 2})
-    local l2 = t1:CreateLabel({ Text = "Another Label" })
-    t2:CreateButton({ Callback = function() 
-        l:Destroy()
-        l2:Set("New Text")
-    end})
-    t2:CreateLabel({Style = 3})
-    t1:CreateParagraph({Text = "Single String"})
-    t1:CreateParagraph({Text = "Welcome to the Luna Interface Suite. This Is an Amazing Quality Freemium UI Library For Roblox Exploiting Made By Nebula Softworks. Luna was Created in hopes of improving the standard of UI Library designs by being the golden standard for it. Luna Has Amazing Features like a key system, notification and perfection in aesthetics and design. So, What Are You Waiting For? Start Using Luna Today at " .. website})
-    s = t2:CreateSlider({ Callback = function(v) print(v) end })	
-    t1:CreateButton({ Callback = function()
-        s:Set({Name = "new name", Callback = ""})
-        wait(5)
-        s:Destroy()
-    end})
-    t1:CreateColorPicker()
-    local toggle = t1:CreateToggle({Name = "test", Description = "test", CurrentValue = true, Callback = ""}, "toggle2")
-    t1:CreateToggle({Callback = function(Value) toggle:Destroy() print(Value) end})
-    local bind = t2:CreateBind({Name = "test", Description = "test", CurrentBind = "E", HoldToInteract = false, Callback = ""})
-    t2:CreateKeybind({HoldToInteract = true, Callback = function(v)
-        if v then
-            Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
-        else
-            Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-        end
-    end,})
-    local input = t2:CreateInput({Name = "test",ClearTextAfterFocusLost = false, Description = "Numbers only, 8 max characters and enter required.",MaxCharacters = 8 ,Numeric = true, Enter = true, Callback = ""})
-    t2:CreateInput({Callback = function(text) print(text) end})
-    local d = t1:CreateDropdown({Name = "test", Options = {"Apples", "Bananas", "Strawberries", "Elixir"}, Description = "MultiOptions", MultipleOptions = true, Callback = function(t) print(t) end, CurrentOption = {"Apples", "Elixir"}})
-    t1:CreateDropdown({Callback = function(t) print(unpack(t)) end})
-    t1:CreateDropdown({Description = "Special Type - Player", Callback = "", SpecialType = "Player"})
-end]]--
 return Luna
