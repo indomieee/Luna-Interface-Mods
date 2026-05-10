@@ -6017,6 +6017,664 @@ function Luna:CreateWindow(WindowSettings)
 			return DropdownV
 		end
 
+		--// Dropdown New Floating
+		function Tab:CreateDropdownNew(DropdownSettings, Flag)
+
+			local DropdownV = {
+				IgnoreConfig = false,
+				Class = "Dropdown",
+				Settings = DropdownSettings
+			}
+
+			DropdownSettings = Kwargify({
+				Name = "Dropdown",
+				Description = nil,
+				Options = {"Option 1", "Option 2"},
+				CurrentOption = {},
+				MultipleOptions = false,
+				SpecialType = nil,
+				Callback = function() end,
+				RefreshCallback = nil,
+			}, DropdownSettings or {})
+
+			if type(DropdownSettings.CurrentOption) == "string" then
+				DropdownSettings.CurrentOption = {DropdownSettings.CurrentOption}
+			end
+
+			DropdownV.CurrentOption = DropdownSettings.CurrentOption
+
+			local opened = false
+
+			------------------------------------------------
+			-- MAIN DROPDOWN
+			------------------------------------------------
+
+			local Dropdown = Instance.new("Frame")
+			Dropdown.Name = DropdownSettings.Name
+			Dropdown.Parent = DropdownSettings.Parent or TabPage
+
+			local XOffset = -25
+			if DropdownSettings.Parent and DropdownSettings.Parent ~= nil then 
+				XOffset = 0 
+			end
+
+			Dropdown.BackgroundColor3 = Color3.fromRGB(32, 30, 38)
+			Dropdown.BackgroundTransparency = 0.5
+			Dropdown.BorderSizePixel = 0
+			Dropdown.Size = UDim2.new(1, XOffset, 0, 38)
+			Dropdown.ClipsDescendants = false
+
+			local Corner = Instance.new("UICorner")
+			Corner.CornerRadius = UDim.new(0, 6)
+			Corner.Parent = Dropdown
+
+			local Stroke = Instance.new("UIStroke")
+			Stroke.Color = Color3.fromRGB(64, 61, 76)
+			Stroke.Transparency = 0.5
+			Stroke.Parent = Dropdown
+
+			------------------------------------------------
+			-- TITLE
+			------------------------------------------------
+
+			local Title = Instance.new("TextLabel")
+			Title.Name = "Title"
+			Title.Parent = Dropdown
+			Title.BackgroundTransparency = 1
+			Title.Position = UDim2.new(0, 16, 0, 0)
+			Title.Size = UDim2.new(0.4, 0, 1, 0)
+			Title.Font = Enum.Font.Gotham
+			Title.Text = DropdownSettings.Name
+			Title.TextColor3 = Color3.fromRGB(255,255,255)
+			Title.TextSize = 16
+			Title.TextXAlignment = Enum.TextXAlignment.Left
+
+			------------------------------------------------
+			-- SEARCH / SELECTED
+			------------------------------------------------
+
+			local Selected = Instance.new("TextBox")
+			Selected.Parent = Dropdown
+			Selected.Name = "Selected"
+			Selected.Text = DropdownSettings.CurrentOption[1] or ""
+			Selected.Text = DropdownSettings.CurrentOption[1] or ""
+			Selected.Font = Enum.Font.Gotham
+			Selected.TextSize = 14
+			Selected.TextColor3 = Color3.fromRGB(255,255,255)
+			Selected.PlaceholderColor3 = Color3.fromRGB(140,140,140)
+			Selected.BackgroundColor3 = Color3.fromRGB(52,52,52)
+			Selected.BorderSizePixel = 0
+			Selected.Position = UDim2.new(0.79, 0, 0.1, 0)
+			Selected.Size = UDim2.new(0.2, 0, 0, 30)
+			Selected.TextXAlignment = Enum.TextXAlignment.Left
+			Selected.ZIndex = 5
+			Selected.ClearTextOnFocus = false
+			Selected.TextEditable = false
+			Selected.CursorPosition = -1
+			Selected.Active = false
+
+			local SelectedCorner = Instance.new("UICorner")
+			SelectedCorner.CornerRadius = UDim.new(0, 10)
+			SelectedCorner.Parent = Selected
+
+			local SelectedPadding = Instance.new("UIPadding")
+			SelectedPadding.PaddingLeft = UDim.new(0, 10)
+			SelectedPadding.Parent = Selected
+
+			------------------------------------------------
+			-- ARROW
+			------------------------------------------------
+
+			local Arrow = Instance.new("ImageLabel")
+			Arrow.Name = "Arrow"
+			Arrow.Parent = Selected
+			Arrow.BackgroundTransparency = 1
+			Arrow.AnchorPoint = Vector2.new(1, 0.5)
+			Arrow.Position = UDim2.new(1, -10, 0.5, 0)
+			Arrow.Size = UDim2.new(0,16,0,16)
+			Arrow.Image = "rbxassetid://6034818372"
+			Arrow.ImageColor3 = Color3.fromRGB(200,200,200)
+			Arrow.ZIndex = 6
+
+			------------------------------------------------
+			-- CLICK
+			------------------------------------------------
+
+			local Interact = Instance.new("TextButton")
+			Interact.Parent = Dropdown
+			Interact.BackgroundTransparency = 1
+			Interact.Size = UDim2.new(1,0,1,0)
+			Interact.Text = ""
+			Interact.ZIndex = 4
+
+			------------------------------------------------
+			-- FLOATING POPUP
+			------------------------------------------------
+
+			local ScreenGui = Dropdown:FindFirstAncestorOfClass("ScreenGui")
+
+			local Popup = Instance.new("Frame")
+			Popup.Name = "Popup"
+			Popup.Parent = ScreenGui
+			Popup.BackgroundColor3 = Color3.fromRGB(8,8,8)
+			Popup.BorderSizePixel = 0
+			Popup.Visible = false
+			Popup.ZIndex = 999
+
+			local PopupCorner = Instance.new("UICorner")
+			PopupCorner.CornerRadius = UDim.new(0, 12)
+			PopupCorner.Parent = Popup
+
+			local PopupStroke = Instance.new("UIStroke")
+			PopupStroke.Color = Color3.fromRGB(45,45,45)
+			PopupStroke.Transparency = 0.4
+			PopupStroke.Parent = Popup
+
+			local ClickOutside = Instance.new("TextButton")
+			ClickOutside.Name = "ClickOutside"
+			ClickOutside.Parent = ScreenGui
+			ClickOutside.BackgroundTransparency = 1
+			ClickOutside.BorderSizePixel = 0
+			ClickOutside.AutoButtonColor = false
+			ClickOutside.Text = ""
+			ClickOutside.Visible = false
+			ClickOutside.ZIndex = 998
+			ClickOutside.Size = UDim2.fromScale(1,1)
+
+			------------------------------------------------
+			-- SCROLL
+			------------------------------------------------
+
+			local Scroll = Instance.new("ScrollingFrame")
+			Scroll.Parent = Popup
+			Scroll.BackgroundTransparency = 1
+			Scroll.BorderSizePixel = 0
+			Scroll.Position = UDim2.new(0,5,0,5)
+			Scroll.Size = UDim2.new(1,-10,1,-10)
+			Scroll.CanvasSize = UDim2.new(0,0,0,0)
+			Scroll.ScrollBarThickness = 0
+			Scroll.ZIndex = 1000
+
+			local Layout = Instance.new("UIListLayout")
+			Layout.Padding = UDim.new(0,2)
+			Layout.Parent = Scroll
+
+			Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+				Scroll.CanvasSize = UDim2.new(
+					0,
+					0,
+					0,
+					Layout.AbsoluteContentSize.Y + 4
+				)
+			end)
+
+			------------------------------------------------
+			-- POSITION UPDATE
+			------------------------------------------------
+
+			local MIN_POPUP_SIZE = 40
+			local MAX_POPUP_SIZE = 180
+			local OPTION_HEIGHT = 34
+
+			local function UpdatePopupPosition()
+
+				local selectedPos = Selected.AbsolutePosition
+				local selectedSize = Selected.AbsoluteSize
+
+				local contentHeight =
+					(#DropdownSettings.Options * OPTION_HEIGHT) + 8
+
+				local popupHeight = math.clamp(
+					contentHeight,
+					MIN_POPUP_SIZE,
+					MAX_POPUP_SIZE
+				)
+
+				Popup.Position = UDim2.new(
+					0,
+					selectedPos.X,
+
+					0,
+					selectedPos.Y + selectedSize.Y + 65
+				)
+
+				Popup.Size = UDim2.new(
+					0,
+					selectedSize.X,
+
+					0,
+					popupHeight
+				)
+
+				------------------------------------------------
+				-- SCROLLING
+				------------------------------------------------
+
+				Scroll.CanvasSize = UDim2.new(
+					0,
+					0,
+					0,
+					contentHeight
+				)
+
+				Scroll.ScrollingEnabled =
+					contentHeight > MAX_POPUP_SIZE
+			end
+
+			Dropdown:GetPropertyChangedSignal("AbsolutePosition"):Connect(UpdatePopupPosition)
+			Dropdown:GetPropertyChangedSignal("AbsoluteSize"):Connect(UpdatePopupPosition)
+
+			------------------------------------------------
+			-- HELPERS
+			------------------------------------------------
+
+			local function PlayerTableRefresh()
+
+				table.clear(DropdownSettings.Options)
+
+				for _,v in pairs(Players:GetPlayers()) do
+					table.insert(DropdownSettings.Options, v.Name)
+				end
+			end
+
+			local function SafeCallback(param)
+
+				local Success, Response = pcall(function()
+					DropdownSettings.Callback(param)
+				end)
+
+				if not Success then
+					warn(Response)
+				end
+			end
+
+			local function UpdatePlaceholder()
+
+				if DropdownSettings.MultipleOptions then
+
+					if #DropdownSettings.CurrentOption == 0 then
+						Selected.PlaceholderText = "None"
+
+					elseif #DropdownSettings.CurrentOption == 1 then
+						Selected.PlaceholderText =
+							DropdownSettings.CurrentOption[1]
+
+					else
+						Selected.PlaceholderText =
+							unpackt(DropdownSettings.CurrentOption)
+					end
+
+				else
+
+					Selected.PlaceholderText =
+						DropdownSettings.CurrentOption[1] or "None"
+				end
+			end
+
+			local function Toggle(force)
+
+				if force ~= nil then
+					opened = force
+				else
+					opened = not opened
+				end
+
+				if opened then
+
+					UpdatePopupPosition()
+
+					Popup.Visible = true
+					ClickOutside.Visible = true
+
+					tween(Arrow,{
+						Rotation = 180
+					})
+
+					if DropdownSettings.SpecialType == "Player" then
+						PlayerTableRefresh()
+					end
+
+					if DropdownSettings.RefreshCallback then
+						DropdownSettings.RefreshCallback(DropdownSettings)
+					end
+
+				else
+
+					Popup.Visible = false
+					ClickOutside.Visible = false
+
+					tween(Arrow,{
+						Rotation = 0
+					})
+				end
+			end
+
+			ClickOutside.MouseButton1Click:Connect(function()
+				if opened then
+					Toggle(false)
+				end
+			end)
+
+			local UserInputService = game:GetService("UserInputService")
+			local GuiService = game:GetService("GuiService")
+
+			UserInputService.InputBegan:Connect(function(input, gameProcessed)
+
+				if gameProcessed then
+					return
+				end
+
+				if not opened then
+					return
+				end
+
+				if input.UserInputType
+					~= Enum.UserInputType.MouseButton1 then
+					return
+				end
+
+				task.wait()
+
+				local mousePos =
+					UserInputService:GetMouseLocation()
+
+				local inset =
+					GuiService:GetGuiInset()
+
+				mousePos -= inset
+
+				------------------------------------------------
+				-- POPUP BOUNDS
+				------------------------------------------------
+
+				local popupPos = Popup.AbsolutePosition
+				local popupSize = Popup.AbsoluteSize
+
+				local insidePopup =
+					mousePos.X >= popupPos.X and
+					mousePos.X <= popupPos.X + popupSize.X and
+					mousePos.Y >= popupPos.Y and
+					mousePos.Y <= popupPos.Y + popupSize.Y
+
+				------------------------------------------------
+				-- SELECTED BOUNDS
+				------------------------------------------------
+
+				local selectedPos = Selected.AbsolutePosition
+				local selectedSize = Selected.AbsoluteSize
+
+				local insideSelected =
+					mousePos.X >= selectedPos.X and
+					mousePos.X <= selectedPos.X + selectedSize.X and
+					mousePos.Y >= selectedPos.Y and
+					mousePos.Y <= selectedPos.Y + selectedSize.Y
+
+				------------------------------------------------
+				-- CLOSE
+				------------------------------------------------
+
+				if not insidePopup and not insideSelected then
+					Toggle(false)
+				end
+			end)
+
+			local function Clear()
+
+				for _,v in pairs(Scroll:GetChildren()) do
+					if v:IsA("TextButton") then
+						v:Destroy()
+					end
+				end
+			end
+
+			------------------------------------------------
+			-- REFRESH
+			------------------------------------------------
+
+			local function Refresh()
+
+				Clear()
+
+				for _,v in ipairs(DropdownSettings.Options) do
+
+					local Option = Instance.new("TextButton")
+					Option.Name = v
+					Option.Parent = Scroll
+					Option.Size = UDim2.new(1,0,0,32)
+					Option.BackgroundColor3 = Color3.fromRGB(12,12,12)
+					Option.BorderSizePixel = 0
+					Option.AutoButtonColor = false
+					Option.Font = Enum.Font.Gotham
+					Option.TextSize = 14
+					Option.TextXAlignment = Enum.TextXAlignment.Left
+					Option.TextColor3 = Color3.fromRGB(190,190,190)
+					Option.Text = v
+					Option.ZIndex = 1001
+
+					local Padding = Instance.new("UIPadding")
+					Padding.PaddingLeft = UDim.new(0, 12)
+					Padding.Parent = Option
+
+					local OptionCorner = Instance.new("UICorner")
+					OptionCorner.CornerRadius = UDim.new(0,10)
+					OptionCorner.Parent = Option
+
+					if table.find(DropdownSettings.CurrentOption, v) then
+
+						Option.BackgroundColor3 =
+							Color3.fromRGB(24,24,24)
+
+						Option.TextColor3 =
+							Color3.fromRGB(255,255,255)
+					end
+
+					------------------------------------------------
+					-- HOVER
+					------------------------------------------------
+
+					Option.MouseEnter:Connect(function()
+
+						if not table.find(
+							DropdownSettings.CurrentOption,
+							v
+						) then
+
+							tween(Option,{
+								BackgroundColor3 =
+									Color3.fromRGB(28,28,28),
+
+								TextColor3 =
+									Color3.fromRGB(255,255,255)
+							})
+						end
+					end)
+
+					Option.MouseLeave:Connect(function()
+
+						if not table.find(
+							DropdownSettings.CurrentOption,
+							v
+						) then
+
+							tween(Option,{
+								BackgroundColor3 =
+									Color3.fromRGB(20,20,20),
+
+								TextColor3 =
+									Color3.fromRGB(190,190,190)
+							})
+						end
+					end)
+
+					------------------------------------------------
+					-- CLICK
+					------------------------------------------------
+
+					Option.MouseButton1Click:Connect(function()
+
+						if DropdownSettings.MultipleOptions then
+
+							if table.find(
+								DropdownSettings.CurrentOption,
+								v
+							) then
+
+								RemoveTable(
+									DropdownSettings.CurrentOption,
+									v
+								)
+
+								tween(Option,{
+									BackgroundColor3 =
+										Color3.fromRGB(20,20,20),
+
+									TextColor3 =
+										Color3.fromRGB(190,190,190)
+								})
+
+							else
+
+								table.insert(
+									DropdownSettings.CurrentOption,
+									v
+								)
+
+								tween(Option,{
+									BackgroundColor3 =
+										Color3.fromRGB(36,36,36),
+
+									TextColor3 =
+										Color3.fromRGB(255,255,255)
+								})
+							end
+
+							DropdownV.CurrentOption =
+								DropdownSettings.CurrentOption
+
+							SafeCallback(
+								DropdownSettings.CurrentOption
+							)
+
+						else
+
+							DropdownSettings.CurrentOption = {v}
+							DropdownV.CurrentOption = v
+
+							for _,btn in pairs(Scroll:GetChildren()) do
+
+								if btn:IsA("TextButton") then
+
+									tween(btn,{
+										BackgroundColor3 =
+											Color3.fromRGB(20,20,20),
+
+										TextColor3 =
+											Color3.fromRGB(190,190,190)
+									})
+								end
+							end
+
+							tween(Option,{
+								BackgroundColor3 =
+									Color3.fromRGB(36,36,36),
+
+								TextColor3 =
+									Color3.fromRGB(255,255,255)
+							})
+
+							SafeCallback(v)
+
+							Toggle(false)
+						end
+
+						UpdatePlaceholder()
+						Selected.Text = DropdownSettings.CurrentOption[1] or ""
+					end)
+				end
+			end
+
+			------------------------------------------------
+			-- OPEN
+			------------------------------------------------
+
+			Interact.MouseButton1Click:Connect(function()
+				if opened then
+					Toggle(false)
+				else
+					Refresh()
+					Toggle(true)
+				end
+			end)
+
+			------------------------------------------------
+			-- PLAYER TYPE
+			------------------------------------------------
+
+			if DropdownSettings.SpecialType == "Player" then
+
+				PlayerTableRefresh()
+
+				Players.PlayerAdded:Connect(function()
+					PlayerTableRefresh()
+					Refresh()
+				end)
+
+				Players.PlayerRemoving:Connect(function()
+					PlayerTableRefresh()
+					Refresh()
+				end)
+			end
+
+			------------------------------------------------
+			-- INIT
+			------------------------------------------------
+
+			Refresh()
+			UpdatePlaceholder()
+			UpdatePopupPosition()
+
+			------------------------------------------------
+			-- METHODS
+			------------------------------------------------
+
+			function DropdownV:Set(NewDropdownSettings)
+
+				NewDropdownSettings = Kwargify(
+					DropdownSettings,
+					NewDropdownSettings or {}
+				)
+
+				DropdownSettings = NewDropdownSettings
+				DropdownV.Settings = NewDropdownSettings
+
+				Title.Text = DropdownSettings.Name
+
+				Refresh()
+				UpdatePlaceholder()
+				UpdatePopupPosition()
+			end
+
+			function DropdownV:Refresh()
+				Refresh()
+				UpdatePlaceholder()
+			end
+
+			function DropdownV:Destroy()
+
+				if Popup then
+					Popup:Destroy()
+				end
+
+				Dropdown:Destroy()
+			end
+
+			if Flag then
+				Luna.Options[Flag] = DropdownV
+			end
+
+			return DropdownV
+		end
+
 		-- Color Picker
 		function Tab:CreateColorPicker(ColorPickerSettings, Flag) -- by Rayfield/Throit
 			local ColorPickerV = {IgnoreClass = false, Class = "Colorpicker", Settings = ColorPickerSettings}
@@ -6547,7 +7205,7 @@ function Luna:CreateWindow(WindowSettings)
 				Text 			= "None"
 			})
 
-			configSelection = Tab:CreateDropdown({
+			configSelection = Tab:CreateDropdownNew({
 				Parent       	= ConfigGroup.Container,
 				Name 			= "Select Config",
 				Description 	= "Select a config to load your settings on.",
