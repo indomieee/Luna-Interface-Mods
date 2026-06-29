@@ -5597,7 +5597,7 @@ function Luna:CreateWindow(WindowSettings)
 
 			Input["MouseEnter"]:Connect(function()
 				tween(Input.UIStroke, {Color = Color3.fromRGB(87, 84, 104)})
-				-- Input.InputFrame.InputBox:CaptureFocus()
+				Input.InputFrame.InputBox:CaptureFocus()
 			end)
 
 			Input["MouseLeave"]:Connect(function()
@@ -5618,7 +5618,7 @@ function Luna:CreateWindow(WindowSettings)
 					Input.Desc.Text = InputSettings.Description
 				end
 
-				Input.InputFrame.InputBox:CaptureFocus()
+				-- Input.InputFrame.InputBox:CaptureFocus()
 				Input.InputFrame.InputBox.Text = tostring(InputSettings.CurrentValue)
 				Input.InputFrame.InputBox:ReleaseFocus()
 				local fixedWidth = 200 -- or whatever fits your UI
