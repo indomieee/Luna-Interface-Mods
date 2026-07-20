@@ -62,7 +62,7 @@ FloatingIcon.Name 		= "Icons"
 FloatingIcon.Size 		= UDim2.new(0,60,0,60)
 FloatingIcon.Position 	= UDim2.new(0.47,0,0.2,0)
 FloatingIcon.BackgroundTransparency = 1
-FloatingIcon.Image 		= "rbxassetid://90481214941501" -- your logo
+FloatingIcon.Image 		= "rbxassetid://121370549006192" -- your logo
 FloatingIcon.Parent 	= FloatingGui
 
 local dragging = false
