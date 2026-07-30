@@ -4480,11 +4480,10 @@ function Tab:CreateDivider(name)
 	-- Transparan di pinggir, terang di tengah
 	gradient.Transparency = NumberSequence.new({
 		NumberSequenceKeypoint.new(0.00, 1.00),
-		NumberSequenceKeypoint.new(0.15, 0.80),
-		NumberSequenceKeypoint.new(0.35, 0.25),
-		NumberSequenceKeypoint.new(0.50, 0.00),
-		NumberSequenceKeypoint.new(0.65, 0.25),
-		NumberSequenceKeypoint.new(0.85, 0.80),
+		NumberSequenceKeypoint.new(0.20, 0.75),
+		NumberSequenceKeypoint.new(0.40, 0.05),
+		NumberSequenceKeypoint.new(0.60, 0.05),
+		NumberSequenceKeypoint.new(0.80, 0.75),
 		NumberSequenceKeypoint.new(1.00, 1.00),
 	})
 
