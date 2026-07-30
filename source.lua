@@ -4414,42 +4414,90 @@ function Luna:CreateWindow(WindowSettings)
 		end
 
 		-- Divider
-		function Tab:CreateDivider(name)
-			name = name or ""
+function Tab:CreateDivider(name)
+	name = name or ""
 
-			------------------------------------------------
-			-- FIND GROUP PREFIX
-			------------------------------------------------
+	------------------------------------------------
+	-- FIND GROUP PREFIX
+	------------------------------------------------
 
-			local groupName = string.match(name, "^(%S+Group)")
+	local groupName = string.match(name, "^(%S+Group)")
 
-			------------------------------------------------
-			-- PARENT
-			------------------------------------------------
+	------------------------------------------------
+	-- PARENT
+	------------------------------------------------
 
-			local targetParent = TabPage
+	local targetParent = TabPage
 
-			if groupName and Tab.Groups and Tab.Groups[groupName] then
-				targetParent = Tab.Groups[groupName].Container
-			end
+	if groupName and Tab.Groups and Tab.Groups[groupName] then
+		targetParent = Tab.Groups[groupName].Container
+	end
 
-			------------------------------------------------
-			-- CREATE DIVIDER
-			------------------------------------------------
+	------------------------------------------------
+	-- CREATE DIVIDER
+	------------------------------------------------
 
-			local b = Elements.Template.Divider:Clone()
+	local b = Elements.Template.Divider:Clone()
 
-			b.Parent = targetParent
-			b.Size = UDim2.new(1, 50, 0, 10)
+	b.Parent = targetParent
+	b.Size = UDim2.new(1, 50, 0, 10)
 
-			b.Line.BackgroundTransparency = 1
+	------------------------------------------------
+	-- LINE STYLE
+	------------------------------------------------
 
-			tween(b.Line, {
-				BackgroundTransparency = 0
-			})
+	local line = b.Line
 
-			return b
-		end
+	-- Garis tipis di tengah container divider
+	line.AnchorPoint = Vector2.new(0.5, 0.5)
+	line.Position = UDim2.fromScale(0.5, 0.5)
+	line.Size = UDim2.new(1, 0, 0, 2)
+
+	-- Warna orange: #f15a29
+	line.BackgroundColor3 = Color3.fromRGB(241, 90, 41)
+	line.BackgroundTransparency = 1
+	line.BorderSizePixel = 0
+
+	------------------------------------------------
+	-- ORANGE CENTER GRADIENT
+	------------------------------------------------
+
+	-- Hindari UIGradient duplikat dari template
+	local gradient = line:FindFirstChildOfClass("UIGradient")
+
+	if not gradient then
+		gradient = Instance.new("UIGradient")
+		gradient.Parent = line
+	end
+
+	gradient.Rotation = 0
+
+	-- Warna tetap orange di seluruh garis
+	gradient.Color = ColorSequence.new(
+		Color3.fromRGB(241, 90, 41)
+	)
+
+	-- Transparan di pinggir, terang di tengah
+	gradient.Transparency = NumberSequence.new({
+		NumberSequenceKeypoint.new(0.00, 1.00),
+		NumberSequenceKeypoint.new(0.15, 0.80),
+		NumberSequenceKeypoint.new(0.35, 0.25),
+		NumberSequenceKeypoint.new(0.50, 0.00),
+		NumberSequenceKeypoint.new(0.65, 0.25),
+		NumberSequenceKeypoint.new(0.85, 0.80),
+		NumberSequenceKeypoint.new(1.00, 1.00),
+	})
+
+	------------------------------------------------
+	-- FADE IN
+	------------------------------------------------
+
+	tween(line, {
+		BackgroundTransparency = 0
+	})
+
+	return b
+end
 
 		-- Button
 		function Tab:CreateButton(ButtonSettings)
